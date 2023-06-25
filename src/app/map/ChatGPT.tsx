@@ -1,17 +1,18 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { systemResponseRules } from "./gptRules";
 import { nanoid } from "nanoid";
 import { GptContext } from "../context/GptContext";
 import { useEdges } from "reactflow";
+import { setGptResponse } from "@/redux/features/gptResponseSlice";
+import { useAppDispatch } from "@/redux/hooks";
 const API_URL = "https://api.openai.com/v1/chat/completions";
 
 export default function ChatGPT() {
+  const dispatch = useAppDispatch();
   const [inputMsg, setInputMsg] = useState<string>("");
   const [responseMessage, setResponseMessage] = useState<string>("");
-  const { nodes, setNodes, onNodesChange, edges, setEdges, onEdgesChange } =
-    useContext(GptContext);
   const [newNodes, setNewNodes] = useState([]);
   const [isResfinished, setIsResFinished] = useState(true);
   const controller = new AbortController();
@@ -146,7 +147,8 @@ export default function ChatGPT() {
         for (const line of lines) {
           // console.log(line.choices[0].delta.content);
           const newWord = line.choices[0].delta.content;
-          console.log(newWord);
+          dispatch(setGptResponse(newWord));
+          // console.log(newWord);
           // generateNodes(newWord);
           setResponseMessage((prev) => prev + newWord);
         }
