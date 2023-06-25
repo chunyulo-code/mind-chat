@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { systemResponseRules } from "./gptRules";
 import { nanoid } from "nanoid";
-import { GptContext } from "../context/GptContext";
 import { useEdges } from "reactflow";
 import { setGptResponse } from "@/redux/features/gptResponseSlice";
 import { useAppDispatch } from "@/redux/hooks";
