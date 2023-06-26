@@ -1,3 +1,4 @@
+"use client";
 export default function OutPut() {
   return (
     <div className="h-full overflow-y-scroll p-2 text-xs text-white">

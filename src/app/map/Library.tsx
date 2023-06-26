@@ -1,3 +1,4 @@
+"use client";
 const keywords: string[] = ["React.js", "ES6+", "Redux", "TypeScript"];
 
 export default function Library() {
