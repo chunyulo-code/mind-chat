@@ -19,43 +19,53 @@ const Canvas = ({ canvasRef, ctx, color }: CanvasProps) => {
         canvas.style.height = `${window.innerHeight}px`;
         const context = canvas.getContext("2d", { willReadFrequently: true });
 
-        // context.stroke = '#f00000';
-        // context.strokeWidth = '2';
-        context.scale(2, 2);
-        context.lineCap = "round";
-        context.strokeStyle = color;
-        context.lineWidth = 5;
-        context.fillStyle = "rgba(31,40,51,0.1)";
-        context.fillRect(0, 0, canvas.width, canvas.height); // 填滿整個畫布
+        if (context) {
+          context.scale(2, 2);
+          context.lineCap = "round";
+          context.strokeStyle = color;
+          context.lineWidth = 5;
+          context.fillStyle = "rgba(31,40,51,0.1)";
+          context.fillRect(0, 0, canvas.width, canvas.height); // 填滿整個畫布
 
-        ctx.current = context;
+          if (ctx) {
+            ctx.current = context;
+          }
+        }
       }
     }
   }, []);
 
   useEffect(() => {
-    ctx.current.strokeStyle = color;
+    if (ctx && ctx.current) {
+      ctx.current.strokeStyle = color;
+    }
   }, [color]);
 
-  const handleMouseDown = ({ nativeEvent }) => {
+  const handleMouseDown = ({ nativeEvent }: React.MouseEvent) => {
     console.log("this");
     const { offsetX, offsetY } = nativeEvent;
-    ctx.current.beginPath();
-    ctx.current.moveTo(offsetX, offsetY);
-    setIsDrawing(true);
+    if (ctx && ctx.current) {
+      ctx.current.beginPath();
+      ctx.current.moveTo(offsetX, offsetY);
+      setIsDrawing(true);
+    }
   };
-  const handleMouseMove = ({ nativeEvent }) => {
+  const handleMouseMove = ({ nativeEvent }: React.MouseEvent) => {
     console.log("this");
     if (!isDrawing) {
       return;
     }
     const { offsetX, offsetY } = nativeEvent;
 
-    ctx.current.lineTo(offsetX, offsetY);
-    ctx.current.stroke();
+    if (ctx && ctx.current) {
+      ctx.current.lineTo(offsetX, offsetY);
+      ctx.current.stroke();
+    }
   };
   const handleMouseUp = () => {
-    ctx.current.closePath();
+    if (ctx && ctx.current) {
+      ctx.current.closePath();
+    }
     setIsDrawing(false);
   };
 
