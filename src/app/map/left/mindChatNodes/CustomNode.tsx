@@ -2,7 +2,13 @@
 import React, { memo } from "react";
 import { Handle, Position } from "reactflow";
 
-function CustomNode({ data }) {
+type dataProps = {
+  data: {
+    label: string;
+  };
+};
+
+function CustomNode({ data }: dataProps) {
   return (
     <div className="rounded-md border-2 border-[#66fcf1] px-4 py-2 shadow-md">
       <div className="text-lg font-bold text-[#ffffff]">{data.label}</div>
