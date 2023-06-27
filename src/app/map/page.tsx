@@ -32,8 +32,8 @@ export default function Page() {
 
   return (
     <div className="h-screen w-screen">
-      <Allotment>
-        <Allotment.Pane snap className="relative">
+      <Allotment className="h-full w-full">
+        <Allotment.Pane snap className="relative h-full">
           <FormatConverter />
           <ChatGPT />
           <Images />
