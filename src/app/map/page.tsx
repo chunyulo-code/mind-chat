@@ -1,7 +1,6 @@
 "use client";
-/// <reference types="../types/react-split-pane-next" />
 import { useState, useRef } from "react";
-import SplitPane, { Pane } from "react-split-pane-next";
+import { Allotment } from "allotment";
 import ChatGPT from "./left/ChatGPT";
 import Outline from "./left/Outline";
 import Flow from "./left/Flow";
@@ -13,6 +12,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { DisplayFormatNumber } from "../types/displayFormatSliceTypes";
 import { ClearCanvas } from "../types/canvasTypes";
 import Images from "./tools/Images";
+import "allotment/dist/style.css";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -32,8 +32,8 @@ export default function Page() {
 
   return (
     <div className="h-screen w-screen">
-      <SplitPane split="vertical">
-        <Pane className="relative">
+      <Allotment>
+        <Allotment.Pane snap className="relative">
           <FormatConverter />
           <ChatGPT />
           <Images />
@@ -44,11 +44,11 @@ export default function Page() {
           )}
           <Canvas canvasRef={canvasRef} ctx={ctx} color={color} />
           <ToolBar clearCanvas={clearCanvas} setColor={setColor} />
-        </Pane>
-        <Pane initialSize="200px" minSize="150px">
+        </Allotment.Pane>
+        <Allotment.Pane preferredSize={200} minSize={150}>
           <RightBar />
-        </Pane>
-      </SplitPane>
+        </Allotment.Pane>
+      </Allotment>
     </div>
   );
 }
