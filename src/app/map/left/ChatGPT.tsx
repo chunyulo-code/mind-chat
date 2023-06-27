@@ -2,95 +2,26 @@
 
 import { useState, useEffect } from "react";
 import { systemResponseRules } from "@/app/map/left/gptRules";
-import { nanoid } from "nanoid";
+
 import { useEdges } from "reactflow";
-import { setGptResponse } from "@/redux/features/gptResponseSlice";
+import {
+  setGptResponse,
+  setGptIncomingText,
+  setTempResponse,
+  emptyTempResponse,
+  setIsResponseDone,
+  setShouldGenerateNode,
+  resetAndAddWord
+} from "@/redux/features/gptResponseSlice";
 import { useAppDispatch } from "@/redux/hooks";
 const API_URL = "https://api.openai.com/v1/chat/completions";
+const headingTags = ["#", "##", "###", "####", "#####", "######"];
 
 export default function ChatGPT() {
   const dispatch = useAppDispatch();
   const [inputMsg, setInputMsg] = useState<string>("");
   const [responseMessage, setResponseMessage] = useState<string>("");
-  const [newNodes, setNewNodes] = useState([]);
-  const [isResfinished, setIsResFinished] = useState(true);
   const controller = new AbortController();
-
-  let headingIds = {
-    heading1: "",
-    heading2: "",
-    heading3: "",
-    heading4: "",
-    heading5: "",
-    heading6: "",
-    hyphen: ""
-  };
-  let prevLevel = 0;
-  let currentNodeId = "";
-  let currentString = "";
-
-  function addChildNode(parentNodeId: String | null) {
-    if (currentString) {
-      const newNode = {
-        id: currentNodeId,
-        type: "custom",
-        data: { label: currentString },
-        parentNode: parentNodeId,
-        position: {
-          x: 200,
-          y: 0
-        }
-      };
-      console.log(newNode);
-      setNewNodes((prev) => prev.concat(newNode));
-    }
-  }
-
-  function generateNodes(str: string) {
-    switch (str) {
-      case "#":
-        currentNodeId = nanoid();
-        headingIds.heading1 = currentNodeId;
-        break;
-      case "##":
-        prevLevel = 1;
-        addChildNode(headingIds.heading1);
-        currentNodeId = nanoid();
-        headingIds.heading2 = currentNodeId;
-        break;
-      case "###":
-        prevLevel = 2;
-        addChildNode(headingIds.heading2);
-        currentNodeId = nanoid();
-        headingIds.heading3 = currentNodeId;
-        break;
-      case "####":
-        prevLevel = 3;
-        addChildNode(headingIds.heading3);
-        currentNodeId = nanoid();
-        headingIds.heading4 = currentNodeId;
-        break;
-      case "#####":
-        prevLevel = 4;
-        addChildNode(headingIds.heading4);
-        currentNodeId = nanoid();
-        headingIds.heading5 = currentNodeId;
-        break;
-      case "######":
-        prevLevel = 5;
-        addChildNode(headingIds.heading5);
-        currentNodeId = nanoid();
-        headingIds.heading6 = currentNodeId;
-        break;
-      case "-":
-        addChildNode(headingIds[`heading${prevLevel}`]);
-        currentNodeId = nanoid();
-        headingIds.hyphen = currentNodeId;
-        break;
-      default:
-        currentString += str;
-    }
-  }
 
   async function callGPT(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -115,7 +46,7 @@ export default function ChatGPT() {
     };
 
     try {
-      setIsResFinished(false);
+      setIsResponseDone(false);
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -135,10 +66,11 @@ export default function ChatGPT() {
         while (true) {
           const { done, value } = await reader.read();
           if (done) {
-            setIsResFinished(true);
+            setIsResponseDone(true);
             break;
           }
           const chunk = decoder.decode(value);
+
           const lines = chunk
             .split("\n")
             .map((line) => line.replace("data: ", ""))
@@ -146,11 +78,16 @@ export default function ChatGPT() {
             .filter((line) => line !== "[DONE]")
             .map((line) => JSON.parse(line));
           for (const line of lines) {
-            // console.log(line.choices[0].delta.content);
             const newWord = line.choices[0].delta.content;
-            dispatch(setGptResponse(newWord));
-            // console.log(newWord);
-            // generateNodes(newWord);
+            if (newWord === " \n" || newWord === " \n\n") {
+              {
+                dispatch(setGptResponse(" \n"));
+                dispatch(setGptIncomingText(" \n"));
+              }
+            } else {
+              dispatch(setGptResponse(newWord));
+              dispatch(setGptIncomingText(newWord));
+            }
             setResponseMessage((prev) => prev + newWord);
           }
         }
@@ -162,11 +99,6 @@ export default function ChatGPT() {
     e.preventDefault();
     controller.abort();
   }
-
-  useEffect(() => {
-    // console.log(newNodes);
-    // setNodes((prev) => prev.concat(newNodes));
-  }, [isResfinished]);
 
   return (
     <div className=" absolute top-10 z-50 flex flex-col items-center p-5">

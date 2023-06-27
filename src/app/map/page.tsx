@@ -22,10 +22,8 @@ export default function Page() {
   const clearCanvas: ClearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
-      const context = canvas.getContext("2d");
+      const context = canvas.getContext("2d", { willReadFrequently: true });
       if (context) {
-        // context.fillStyle = "#1F2833";
-        // context.fillRect(0, 0, canvas.width, canvas.height);
         context.clearRect(0, 0, canvas.width, canvas.height);
       }
     }
@@ -46,7 +44,7 @@ export default function Page() {
           <Canvas canvasRef={canvasRef} ctx={ctx} color={color} />
           <ToolBar clearCanvas={clearCanvas} setColor={setColor} />
         </Pane>
-        <Pane initialSize="200px" minSize="50px">
+        <Pane initialSize="200px" minSize="150px">
           <RightBar />
         </Pane>
       </SplitPane>

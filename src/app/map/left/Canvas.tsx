@@ -17,7 +17,7 @@ const Canvas = ({ canvasRef, ctx, color }: CanvasProps) => {
         canvas.width = window.innerWidth * 2;
         canvas.style.width = `${window.innerWidth}px`;
         canvas.style.height = `${window.innerHeight}px`;
-        const context = canvas.getContext("2d");
+        const context = canvas.getContext("2d", { willReadFrequently: true });
 
         // context.stroke = '#f00000';
         // context.strokeWidth = '2';
