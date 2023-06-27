@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { systemResponseRules } from "./gptRules";
+import { systemResponseRules } from "@/app/map/left/gptRules";
 import { nanoid } from "nanoid";
 import { useEdges } from "reactflow";
 import { setGptResponse } from "@/redux/features/gptResponseSlice";
@@ -125,31 +125,34 @@ export default function ChatGPT() {
         body: JSON.stringify(requestBody),
         signal: controller.signal
       });
-      // Read the response as a stream of data
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      setResponseMessage("");
+      const responseBody = response.body;
+      if (responseBody) {
+        // Read the response as a stream of data
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        setResponseMessage("");
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          setIsResFinished(true);
-          break;
-        }
-        const chunk = decoder.decode(value);
-        const lines = chunk
-          .split("\n")
-          .map((line) => line.replace("data: ", ""))
-          .filter((line) => line.length > 0)
-          .filter((line) => line !== "[DONE]")
-          .map((line) => JSON.parse(line));
-        for (const line of lines) {
-          // console.log(line.choices[0].delta.content);
-          const newWord = line.choices[0].delta.content;
-          dispatch(setGptResponse(newWord));
-          // console.log(newWord);
-          // generateNodes(newWord);
-          setResponseMessage((prev) => prev + newWord);
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            setIsResFinished(true);
+            break;
+          }
+          const chunk = decoder.decode(value);
+          const lines = chunk
+            .split("\n")
+            .map((line) => line.replace("data: ", ""))
+            .filter((line) => line.length > 0)
+            .filter((line) => line !== "[DONE]")
+            .map((line) => JSON.parse(line));
+          for (const line of lines) {
+            // console.log(line.choices[0].delta.content);
+            const newWord = line.choices[0].delta.content;
+            dispatch(setGptResponse(newWord));
+            // console.log(newWord);
+            // generateNodes(newWord);
+            setResponseMessage((prev) => prev + newWord);
+          }
         }
       }
     } catch (error) {}
@@ -166,9 +169,9 @@ export default function ChatGPT() {
   }, [isResfinished]);
 
   return (
-    <div className=" absolute z-50 mt-2 flex flex-col items-center p-5">
+    <div className=" absolute top-10 z-50 flex flex-col items-center p-5">
       <form action="" className="mb-2">
-        <h2 className="text-mindchat-bg-dark">Chat GPT</h2>
+        <h2 className="text-white">Chat GPT</h2>
         <input
           type="text"
           className="rounded-lg border border-black px-2 text-black"

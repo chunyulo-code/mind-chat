@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type gptResponseState = {
+type GptResponseState = {
   value: string;
 };
 
 const initialState = {
   value: ""
-} as gptResponseState;
+} as GptResponseState;
 
 export const gptResponse = createSlice({
   name: "gptResponse",
