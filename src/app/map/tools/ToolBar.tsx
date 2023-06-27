@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { ClearCanvas } from "../../types/canvasTypes";
 import { useAppDispatch } from "@/redux/hooks";
 import { toMindMapMode, toDrawingMode } from "@/redux/features/userModeSlice";
+import { addImageUrls } from "@/redux/features/imageUrlsSlice";
 
 type ToolBarProps = {
   clearCanvas: ClearCanvas;
@@ -17,13 +19,25 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
   const toMindMapModeHandler = () => dispatch(toMindMapMode());
   const toDrawingModeHandler = () => dispatch(toDrawingMode());
   const clearCanvasHandler = () => clearCanvas();
-  const importFilesHandler = () => console.log("You can import files now");
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("uploaded");
+    const fileList = e.target.files;
+    if (fileList) {
+      const newImages = Array.from(fileList);
+      const newImageUrls: string[] = [];
+      newImages.forEach((image) => {
+        newImageUrls.push(URL.createObjectURL(image));
+      });
+      console.log(newImageUrls);
+      dispatch(addImageUrls(newImageUrls));
+    }
+  };
 
   const tools: Tool[] = [
     { clickHandler: toMindMapModeHandler, text: "P" },
     { clickHandler: toDrawingModeHandler, text: "D" },
-    { clickHandler: clearCanvasHandler, text: "C" },
-    { clickHandler: importFilesHandler, text: "F" }
+    { clickHandler: clearCanvasHandler, text: "C" }
   ];
 
   const primaryClickHandler = () => {
@@ -69,6 +83,23 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
           {tool.text}
         </div>
       ))}
+      <div>
+        <label
+          htmlFor="inputFiles"
+          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-mindchat-primary text-white"
+        >
+          F
+        </label>
+        <input
+          id="inputFiles"
+          className="hidden"
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleFileChange}
+        />
+      </div>
+
       <div className="text-mindchat-secondary">|</div>
       {colors.map((color) => (
         <div

@@ -100,21 +100,23 @@ export default function Outline() {
   //     }
   //   }
   // ];
-  
-  const gptResponse = useAppSelector((state) => state.gptResponseReducer.value);
 
-  function formatString(oldString) {
-    const newString = oldString.replace(/(\#+|\-+)/g, "\n$1");
-    return newString;
-  }
+  // function formatString(oldString) {
+  //   const newString = oldString.replace(/(\#+|\-+)/g, "\n$1");
+  //   return newString;
+  // }
 
-  const formattedData = formatString(gptResponse);
+  // const formattedData = formatString(gptResponse);
+
+  const gptResponse = useAppSelector(
+    (state) => state.gptResponseReducer.allResponse
+  );
 
   return (
-    <div className="relative h-screen w-screen bg-mindchat-bg-dark text-white">
+    <div className="relative h-screen w-screen overflow-y-scroll bg-mindchat-bg-dark text-white">
       <div className="text-white">Outline mode</div>
       <div className="absolute left-1/3 top-10">
-        <ReactMarkdown className="prose">{formattedData}</ReactMarkdown>
+        <ReactMarkdown className="prose">{gptResponse}</ReactMarkdown>
       </div>
     </div>
   );
