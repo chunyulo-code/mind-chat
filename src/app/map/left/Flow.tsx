@@ -9,12 +9,12 @@ import ReactFlow, {
   OnConnect
 } from "reactflow";
 import "reactflow/dist/style.css";
-import CustomNode from "./mindChatNodes/CustomNode";
+import CustomNode from "@/app/map/left/mindChatNodes/CustomNode";
 import { useAppSelector } from "@/redux/hooks";
-import useContextMenu from "../hooks/useContextMenu";
-import ContextMenu from "./ContextMenu";
-import { initialNodes } from "./data/initialNodes";
-import { initialEdges } from "./data/initialEdges";
+import useContextMenu from "@/app/hooks/useContextMenu";
+import ContextMenu from "@/app/map/tools/ContextMenu";
+import { initialNodes } from "@/app/map/data/initialNodes";
+import { initialEdges } from "@/app/map/data/initialEdges";
 
 const nodeTypes = {
   custom: CustomNode
@@ -62,7 +62,7 @@ export default function Flow() {
   }, [nodes]);
 
   return (
-    <>
+    <div className="absolute left-0 top-0 h-full w-full">
       <ReactFlow
         nodeTypes={nodeTypes}
         className="bg-mindchat-bg-dark"
@@ -76,6 +76,6 @@ export default function Flow() {
       {clicked && (
         <ContextMenu points={points} menuClickHandler={menuClickHandler} />
       )}
-    </>
+    </div>
   );
 }

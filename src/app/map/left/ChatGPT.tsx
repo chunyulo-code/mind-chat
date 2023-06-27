@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { systemResponseRules } from "./gptRules";
+import { systemResponseRules } from "@/app/map/left/gptRules";
 import { nanoid } from "nanoid";
 import { useEdges } from "reactflow";
 import { setGptResponse } from "@/redux/features/gptResponseSlice";

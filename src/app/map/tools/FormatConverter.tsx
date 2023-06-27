@@ -1,5 +1,5 @@
 import React from "react";
-import { toMindMap, toOutline } from "@/redux/features/formatSlice";
+import { toMindMap, toOutline } from "@/redux/features/displayFormatSlice";
 import { useAppDispatch } from "@/redux/hooks";
 
 export default function FormatConverter() {

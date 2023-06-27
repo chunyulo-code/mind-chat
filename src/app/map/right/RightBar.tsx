@@ -1,7 +1,7 @@
 "use client";
-import Spolight from "./Spolight";
-import Library from "./Library";
-import Output from "./Output";
+import Spolight from "@/app/map/right/Spolight";
+import Library from "@/app/map/right/Library";
+import Output from "@/app/map/right/Output";
 export default function RightBar() {
   return (
     <div className="flex h-full flex-col gap-5 bg-mindchat-bg-dark p-5">
