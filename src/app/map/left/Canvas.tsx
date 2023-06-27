@@ -10,23 +10,27 @@ const Canvas = ({ canvasRef, ctx, color }: CanvasProps) => {
   const userMode = useAppSelector((state) => state.userModeReducer.value);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    canvas.height = window.innerHeight * 2;
-    canvas.width = window.innerWidth * 2;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
-    const context = canvas.getContext("2d");
+    if (canvasRef) {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.height = window.innerHeight * 2;
+        canvas.width = window.innerWidth * 2;
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
+        const context = canvas.getContext("2d");
 
-    // context.stroke = '#f00000';
-    // context.strokeWidth = '2';
-    context.scale(2, 2);
-    context.lineCap = "round";
-    context.strokeStyle = color;
-    context.lineWidth = 5;
-    context.fillStyle = "rgba(31,40,51,0.1)";
-    context.fillRect(0, 0, canvas.width, canvas.height); // 填滿整個畫布
+        // context.stroke = '#f00000';
+        // context.strokeWidth = '2';
+        context.scale(2, 2);
+        context.lineCap = "round";
+        context.strokeStyle = color;
+        context.lineWidth = 5;
+        context.fillStyle = "rgba(31,40,51,0.1)";
+        context.fillRect(0, 0, canvas.width, canvas.height); // 填滿整個畫布
 
-    ctx.current = context;
+        ctx.current = context;
+      }
+    }
   }, []);
 
   useEffect(() => {

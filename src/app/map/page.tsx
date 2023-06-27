@@ -11,6 +11,7 @@ import FormatConverter from "./tools/FormatConverter";
 import { useAppSelector } from "@/redux/hooks";
 import { DisplayFormatNumber } from "../types/displayFormatSliceTypes";
 import { ClearCanvas } from "../types/canvasTypes";
+import Images from "./tools/Images";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -36,6 +37,7 @@ export default function Page() {
         <Pane className="relative">
           <FormatConverter />
           <ChatGPT />
+          <Images />
           {formatValue === DisplayFormatNumber.MIND_MAP ? (
             <Flow />
           ) : (
