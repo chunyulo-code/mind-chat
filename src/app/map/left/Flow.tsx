@@ -123,7 +123,7 @@ export default function Flow() {
   }
 
   useEffect(() => {
-    if (allGptResponse.length % 5 === 0) {
+    if (allGptResponse && allGptResponse.length % 5 === 0) {
       setNodes(convertString(allGptResponse));
     }
   }, [allGptResponse]);
