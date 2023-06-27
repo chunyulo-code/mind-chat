@@ -1,4 +1,5 @@
 "use client";
+/// <reference types="../types/react-split-pane-next" />
 import { useState, useRef } from "react";
 import SplitPane, { Pane } from "react-split-pane-next";
 import ChatGPT from "./left/ChatGPT";
