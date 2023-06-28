@@ -70,63 +70,132 @@ export default function Flow() {
     console.log(`${targetId} is clicked`);
   };
 
+  function generateNewNode(
+    id: string,
+    label: string,
+    parentNode: string | undefined,
+    position: { x: number; y: number }
+  ) {
+    return {
+      id,
+      type: "custom",
+      data: { label },
+      parentNode,
+      position: { x: position.x, y: position.y }
+    };
+  }
+
+  type EdgeProps = {
+    id: string;
+    source: string;
+    target: string;
+  };
+
+  function generateNewEdge(edgeProps: EdgeProps) {
+    return {
+      id: edgeProps.id,
+      source: edgeProps.source,
+      target: edgeProps.target,
+      animated: true
+    };
+  }
+
+  type CurrentNodeId = {
+    h1: string | null;
+    h2: string | null;
+    h3: string | null;
+    currentNodeId: string | null;
+  };
+
   function convertString(str: string) {
     const lines = str.trim().split("\n");
     const nodes = [];
-    let currentNode = null;
+    const edges = [];
+    let currentNodeIds: CurrentNodeId = {
+      h1: null,
+      h2: null,
+      h3: null,
+      currentNodeId: null
+    };
 
     for (let line of lines) {
       if (line.startsWith("# ")) {
         const label = line.substring(2).trim();
-        currentNode = {
-          id: nanoid(),
-          type: "custom",
-          data: { label },
-          parentNode: undefined,
-          position: { x: 200, y: 200 }
-        };
-        nodes.push(currentNode);
+        const id = nanoid();
+        const newNode: Node = generateNewNode(id, label, undefined, {
+          x: 200,
+          y: 200
+        });
+        nodes.push(newNode);
+        currentNodeIds.h1 = id;
+        currentNodeIds.currentNodeId = id;
       } else if (line.startsWith("## ")) {
         const label = line.substring(3).trim();
-        const newNode: Node = {
-          id: nanoid(),
-          type: "custom",
-          data: { label },
-          parentNode: currentNode ? currentNode.id : undefined,
-          position: { x: 200, y: 0 }
-        };
-        nodes.push(newNode);
-        currentNode = newNode;
+        const id = nanoid();
+        if (currentNodeIds.h1) {
+          const parentNodeId = currentNodeIds.h1;
+          const newNode: Node = generateNewNode(id, label, parentNodeId, {
+            x: 200,
+            y: 0
+          });
+          nodes.push(newNode);
+          const newEdge: Edge = generateNewEdge({
+            id: `e${parentNodeId}-${id}`,
+            source: parentNodeId,
+            target: id
+          });
+          edges.push(newEdge);
+          currentNodeIds.h2 = id;
+          currentNodeIds.currentNodeId = id;
+        }
       } else if (line.startsWith("### ")) {
         const label = line.substring(4).trim();
-        const newNode: Node = {
-          id: nanoid(),
-          type: "custom",
-          data: { label },
-          parentNode: currentNode ? currentNode.id : undefined,
-          position: { x: 200, y: 0 }
-        };
-        nodes.push(newNode);
-        currentNode = newNode;
+        const id = nanoid();
+        if (currentNodeIds.h2) {
+          const parentNodeId = currentNodeIds.h2;
+          const newNode: Node = generateNewNode(id, label, parentNodeId, {
+            x: 200,
+            y: 0
+          });
+          nodes.push(newNode);
+          const newEdge: Edge = generateNewEdge({
+            id: `e${parentNodeId}-${id}`,
+            source: parentNodeId,
+            target: id
+          });
+          edges.push(newEdge);
+          currentNodeIds.h3 = id;
+          currentNodeIds.currentNodeId = id;
+        }
       } else if (line.startsWith("- ")) {
         const label = line.substring(2).trim();
-        const newNode: Node = {
-          id: nanoid(),
-          type: "custom",
-          data: { label },
-          parentNode: currentNode ? currentNode.id : undefined,
-          position: { x: 200, y: 0 }
-        };
-        nodes.push(newNode);
+        const id = nanoid();
+        if (currentNodeIds.currentNodeId) {
+          const parentNodeId = currentNodeIds.currentNodeId;
+          const newNode: Node = generateNewNode(id, label, parentNodeId, {
+            x: 200,
+            y: 0
+          });
+          nodes.push(newNode);
+          const newEdge: Edge = generateNewEdge({
+            id: `e${parentNodeId}-${id}`,
+            source: parentNodeId,
+            target: id
+          });
+          edges.push(newEdge);
+        }
       }
     }
 
-    return nodes;
+    return { nodes, edges };
   }
 
   useEffect(() => {
     if (allGptResponse && allGptResponse.length % 5 === 0) {
-      setNodes(convertString(allGptResponse));
+      const convertedData: { nodes: Node[]; edges: Edge[] } =
+        convertString(allGptResponse);
+      setNodes(convertedData.nodes);
+      setEdges(convertedData.edges);
     }
   }, [allGptResponse]);
 
@@ -148,6 +217,7 @@ export default function Flow() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeContextMenu={onNodeContextMenu}
+        fitView
       >
         <Controls />
         <MiniMap />
