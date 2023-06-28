@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
   Background,
+  Controls,
+  MiniMap,
   BackgroundVariant,
   useNodesState,
   useEdgesState,
@@ -147,6 +149,8 @@ export default function Flow() {
         onConnect={onConnect}
         onNodeContextMenu={onNodeContextMenu}
       >
+        <Controls />
+        <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
       </ReactFlow>
       {clicked && (
