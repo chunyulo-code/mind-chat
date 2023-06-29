@@ -46,7 +46,7 @@ export default function ChatGPT() {
     };
 
     try {
-      setIsResponseDone(false);
+      dispatch(setIsResponseDone(false));
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -66,7 +66,7 @@ export default function ChatGPT() {
         while (true) {
           const { done, value } = await reader.read();
           if (done) {
-            setIsResponseDone(true);
+            dispatch(setIsResponseDone(true));
             break;
           }
           const chunk = decoder.decode(value);

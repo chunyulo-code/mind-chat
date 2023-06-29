@@ -4,6 +4,7 @@ import gptResponseReducer from "@/redux/features/gptResponseSlice";
 import dataFotmatReducer from "@/redux/features/displayFormatSlice";
 import userModeReducer from "@/redux/features/userModeSlice";
 import imageUrlsReducer from "@/redux/features/imageUrlsSlice";
+import flowReducer from "./features/flowSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     gptResponseReducer,
     dataFotmatReducer,
     userModeReducer,
-    imageUrlsReducer
+    imageUrlsReducer,
+    flowReducer
   }
   // devTools: process.env.NODE_ENV !== "production"
 });

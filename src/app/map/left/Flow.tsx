@@ -10,23 +10,38 @@ import ReactFlow, {
   Node,
   Edge,
   addEdge,
-  OnConnect
+  OnConnect,
+  NodeChange,
+  EdgeChange,
+  Connection
 } from "reactflow";
 import "reactflow/dist/style.css";
 import CustomNode from "@/app/map/left/mindChatNodes/CustomNode";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import useContextMenu from "@/app/hooks/useContextMenu";
 import ContextMenu from "@/app/map/tools/ContextMenu";
-import { initialNodes } from "@/app/map/data/initialNodes";
-import { initialEdges } from "@/app/map/data/initialEdges";
+import { initialNodes } from "@/redux/data/initialNodes";
+import { initialEdges } from "@/redux/data/initialEdges";
 import { nanoid } from "nanoid";
 import { gptResponse } from "@/redux/features/gptResponseSlice";
+import {
+  setNodes,
+  setEdges,
+  addNodes,
+  addEdges,
+  onNodesChange,
+  onEdgesChange,
+  onConnect
+} from "@/redux/features/flowSlice";
 
 const nodeTypes = {
   custom: CustomNode
 };
 
 export default function Flow() {
+  const dispatch = useAppDispatch();
+  const nodes = useAppSelector((state) => state.flowReducer.nodes);
+  const edges = useAppSelector((state) => state.flowReducer.edges);
   const allGptResponse = useAppSelector(
     (state) => state.gptResponseReducer.allResponse
   );
@@ -43,14 +58,9 @@ export default function Flow() {
     (state) => state.gptResponseReducer.shouldGenerateNode
   );
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>(initialEdges);
+  // const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>(initialNodes);
+  // const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>(initialEdges);
   const { clicked, setClicked, points, setPoints } = useContextMenu();
-
-  const onConnect: OnConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
-  );
 
   const onNodeContextMenu: (e: React.MouseEvent, node: Node) => void = (
     e,
@@ -191,11 +201,13 @@ export default function Flow() {
   }
 
   useEffect(() => {
-    if (allGptResponse && allGptResponse.length % 5 === 0) {
-      const convertedData: { nodes: Node[]; edges: Edge[] } =
-        convertString(allGptResponse);
-      setNodes(convertedData.nodes);
-      setEdges(convertedData.edges);
+    if (!isResponseDone) {
+      if (allGptResponse) {
+        const convertedData: { nodes: Node[]; edges: Edge[] } =
+          convertString(allGptResponse);
+        dispatch(setNodes(convertedData.nodes));
+        dispatch(setEdges(convertedData.edges));
+      }
     }
   }, [allGptResponse]);
 
@@ -206,6 +218,18 @@ export default function Flow() {
     if (selectedNode) setSelectedNodeId(selectedNode.id);
   }, [nodes]);
 
+  function nodesChangeHandler(changes: NodeChange[]) {
+    dispatch(onNodesChange(changes));
+  }
+
+  function edgesChangeHandler(changes: EdgeChange[]) {
+    dispatch(onEdgesChange(changes));
+  }
+
+  function onConnectHandler(connection: Connection) {
+    dispatch(onConnect(connection));
+  }
+
   return (
     <div className="absolute left-0 top-0 h-full w-full">
       <ReactFlow
@@ -213,9 +237,9 @@ export default function Flow() {
         className="bg-mindchat-bg-dark"
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        onNodesChange={nodesChangeHandler}
+        onEdgesChange={edgesChangeHandler}
+        onConnect={onConnectHandler}
         onNodeContextMenu={onNodeContextMenu}
         fitView
       >
