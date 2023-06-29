@@ -2,20 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { systemResponseRules } from "@/app/map/left/gptRules";
-
-import { useEdges } from "reactflow";
 import {
   setGptResponse,
   setGptIncomingText,
-  setTempResponse,
-  emptyTempResponse,
-  setIsResponseDone,
-  setShouldGenerateNode,
-  resetAndAddWord
+  setGptStatus
 } from "@/redux/features/gptResponseSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 const API_URL = "https://api.openai.com/v1/chat/completions";
-const headingTags = ["#", "##", "###", "####", "#####", "######"];
 
 export default function ChatGPT() {
   const dispatch = useAppDispatch();
@@ -46,7 +40,7 @@ export default function ChatGPT() {
     };
 
     try {
-      dispatch(setIsResponseDone(false));
+      dispatch(setGptStatus(GptStatus.DOING));
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -66,7 +60,7 @@ export default function ChatGPT() {
         while (true) {
           const { done, value } = await reader.read();
           if (done) {
-            dispatch(setIsResponseDone(true));
+            dispatch(setGptStatus(GptStatus.DONE));
             break;
           }
           const chunk = decoder.decode(value);
@@ -82,11 +76,11 @@ export default function ChatGPT() {
             if (newWord === " \n" || newWord === " \n\n") {
               {
                 dispatch(setGptResponse(" \n"));
-                dispatch(setGptIncomingText(" \n"));
+                // dispatch(setGptIncomingText(" \n"));
               }
             } else {
               dispatch(setGptResponse(newWord));
-              dispatch(setGptIncomingText(newWord));
+              // dispatch(setGptIncomingText(newWord));
             }
             setResponseMessage((prev) => prev + newWord);
           }

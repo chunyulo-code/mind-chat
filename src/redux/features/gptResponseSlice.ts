@@ -1,18 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 
 type GptResponseState = {
   allResponse: string;
   incomingText: string;
-  tempResponse: string;
-  isResponseDone: boolean;
+  gptStatus: number;
   shouldGenerateNode: boolean;
 };
 
 const initialState: GptResponseState = {
   allResponse: "",
   incomingText: "",
-  tempResponse: "",
-  isResponseDone: true,
+  gptStatus: GptStatus.STAND_BY,
   shouldGenerateNode: false
 };
 
@@ -26,20 +25,11 @@ export const gptResponse = createSlice({
     setGptIncomingText: (state, action: PayloadAction<string>) => {
       state.incomingText = action.payload;
     },
-    setTempResponse: (state, action: PayloadAction<string>) => {
-      state.tempResponse += action.payload;
-    },
-    emptyTempResponse: (state) => {
-      state.tempResponse = "";
-    },
-    setIsResponseDone: (state, action: PayloadAction<boolean>) => {
-      state.isResponseDone = action.payload;
+    setGptStatus: (state, action: PayloadAction<number>) => {
+      state.gptStatus = action.payload;
     },
     setShouldGenerateNode: (state, action: PayloadAction<boolean>) => {
       state.shouldGenerateNode = action.payload;
-    },
-    resetAndAddWord: (state, action: PayloadAction<string>) => {
-      state.tempResponse = action.payload;
     }
   }
 });
@@ -47,10 +37,7 @@ export const gptResponse = createSlice({
 export const {
   setGptResponse,
   setGptIncomingText,
-  setTempResponse,
-  emptyTempResponse,
-  setIsResponseDone,
-  setShouldGenerateNode,
-  resetAndAddWord
+  setGptStatus,
+  setShouldGenerateNode
 } = gptResponse.actions;
 export default gptResponse.reducer;

@@ -1,10 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  Connection,
   Edge,
-  EdgeChange,
   Node,
-  NodeChange,
   addEdge,
   OnNodesChange,
   OnEdgesChange,
@@ -47,7 +44,6 @@ export const flow = createSlice({
     },
     onNodesChange: (state, action) => {
       state.nodes = applyNodeChanges(action.payload, state.nodes);
-      console.log(state.nodes);
     },
     onEdgesChange: (state, action) => {
       state.edges = applyEdgeChanges(action.payload, state.edges);

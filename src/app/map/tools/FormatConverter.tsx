@@ -1,6 +1,8 @@
 import React from "react";
 import { toMindMap, toOutline } from "@/redux/features/displayFormatSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { setGptStatus } from "@/redux/features/gptResponseSlice";
+import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 
 export default function FormatConverter() {
   const dispatch = useAppDispatch();
@@ -8,6 +10,7 @@ export default function FormatConverter() {
     dispatch(toMindMap());
   };
   const toOutlineHandler = () => {
+    dispatch(setGptStatus(GptStatus.STAND_BY));
     dispatch(toOutline());
   };
   return (

@@ -5,12 +5,8 @@ import ReactFlow, {
   Controls,
   MiniMap,
   BackgroundVariant,
-  useNodesState,
-  useEdgesState,
   Node,
   Edge,
-  addEdge,
-  OnConnect,
   NodeChange,
   EdgeChange,
   Connection
@@ -20,10 +16,7 @@ import CustomNode from "@/app/map/left/mindChatNodes/CustomNode";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import useContextMenu from "@/app/hooks/useContextMenu";
 import ContextMenu from "@/app/map/tools/ContextMenu";
-import { initialNodes } from "@/redux/data/initialNodes";
-import { initialEdges } from "@/redux/data/initialEdges";
 import { nanoid } from "nanoid";
-import { gptResponse } from "@/redux/features/gptResponseSlice";
 import {
   setNodes,
   setEdges,
@@ -33,6 +26,9 @@ import {
   onEdgesChange,
   onConnect
 } from "@/redux/features/flowSlice";
+import { getLayoutedElements } from "./autoLayout";
+import { GptStatus } from "@/app/types/gptResponseSliceTypes";
+import { setGptStatus } from "@/redux/features/gptResponseSlice";
 
 const nodeTypes = {
   custom: CustomNode
@@ -42,24 +38,19 @@ export default function Flow() {
   const dispatch = useAppDispatch();
   const nodes = useAppSelector((state) => state.flowReducer.nodes);
   const edges = useAppSelector((state) => state.flowReducer.edges);
-  const allGptResponse = useAppSelector(
+  const allResponse = useAppSelector(
     (state) => state.gptResponseReducer.allResponse
   );
   const gptIncomingText = useAppSelector(
     (state) => state.gptResponseReducer.incomingText
   );
-  const tempResponse = useAppSelector(
-    (state) => state.gptResponseReducer.tempResponse
-  );
-  const isResponseDone = useAppSelector(
-    (state) => state.gptResponseReducer.isResponseDone
+  const gptStatus = useAppSelector(
+    (state) => state.gptResponseReducer.gptStatus
   );
   const shouldGenerateNode = useAppSelector(
     (state) => state.gptResponseReducer.shouldGenerateNode
   );
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  // const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>(initialNodes);
-  // const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>(initialEdges);
   const { clicked, setClicked, points, setPoints } = useContextMenu();
 
   const onNodeContextMenu: (e: React.MouseEvent, node: Node) => void = (
@@ -80,18 +71,12 @@ export default function Flow() {
     console.log(`${targetId} is clicked`);
   };
 
-  function generateNewNode(
-    id: string,
-    label: string,
-    parentNode: string | undefined,
-    position: { x: number; y: number }
-  ) {
+  function generateNewNode(id: string, label: string) {
     return {
       id,
       type: "custom",
       data: { label },
-      parentNode,
-      position: { x: position.x, y: position.y }
+      position: { x: 0, y: 0 }
     };
   }
 
@@ -132,10 +117,7 @@ export default function Flow() {
       if (line.startsWith("# ")) {
         const label = line.substring(2).trim();
         const id = nanoid();
-        const newNode: Node = generateNewNode(id, label, undefined, {
-          x: 200,
-          y: 200
-        });
+        const newNode: Node = generateNewNode(id, label);
         nodes.push(newNode);
         currentNodeIds.h1 = id;
         currentNodeIds.currentNodeId = id;
@@ -144,10 +126,7 @@ export default function Flow() {
         const id = nanoid();
         if (currentNodeIds.h1) {
           const parentNodeId = currentNodeIds.h1;
-          const newNode: Node = generateNewNode(id, label, parentNodeId, {
-            x: 200,
-            y: 0
-          });
+          const newNode: Node = generateNewNode(id, label);
           nodes.push(newNode);
           const newEdge: Edge = generateNewEdge({
             id: `e${parentNodeId}-${id}`,
@@ -163,10 +142,7 @@ export default function Flow() {
         const id = nanoid();
         if (currentNodeIds.h2) {
           const parentNodeId = currentNodeIds.h2;
-          const newNode: Node = generateNewNode(id, label, parentNodeId, {
-            x: 200,
-            y: 0
-          });
+          const newNode: Node = generateNewNode(id, label);
           nodes.push(newNode);
           const newEdge: Edge = generateNewEdge({
             id: `e${parentNodeId}-${id}`,
@@ -182,10 +158,7 @@ export default function Flow() {
         const id = nanoid();
         if (currentNodeIds.currentNodeId) {
           const parentNodeId = currentNodeIds.currentNodeId;
-          const newNode: Node = generateNewNode(id, label, parentNodeId, {
-            x: 200,
-            y: 0
-          });
+          const newNode: Node = generateNewNode(id, label);
           nodes.push(newNode);
           const newEdge: Edge = generateNewEdge({
             id: `e${parentNodeId}-${id}`,
@@ -200,16 +173,34 @@ export default function Flow() {
     return { nodes, edges };
   }
 
+  type Direction = "LR" | "TB";
+
+  const onLayout = useCallback(
+    (direction: Direction) => {
+      const { nodes: layoutedNodes, edges: layoutedEdges } =
+        getLayoutedElements(nodes, edges, direction);
+      console.log("Layouting...");
+      dispatch(setNodes([...layoutedNodes]));
+      dispatch(setEdges([...layoutedEdges]));
+      console.log("Layout done");
+    },
+    [nodes, edges, dispatch]
+  );
+
   useEffect(() => {
-    if (!isResponseDone) {
-      if (allGptResponse) {
+    if (gptStatus === GptStatus.DOING) {
+      if (allResponse) {
         const convertedData: { nodes: Node[]; edges: Edge[] } =
-          convertString(allGptResponse);
+          convertString(allResponse);
         dispatch(setNodes(convertedData.nodes));
         dispatch(setEdges(convertedData.edges));
       }
     }
-  }, [allGptResponse]);
+  }, [allResponse]);
+
+  useEffect(() => {
+    if (gptStatus === GptStatus.DONE) onLayout("LR");
+  }, [gptStatus]);
 
   useEffect(() => {
     const selectedNode: Node = nodes.filter(
