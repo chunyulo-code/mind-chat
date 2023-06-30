@@ -1,6 +1,6 @@
 "use client";
 
-import { addNode } from "@/redux/features/flowSlice";
+import { addNode, setNodes } from "@/redux/features/flowSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nanoid } from "nanoid";
 import { useReactFlow } from "reactflow";
@@ -29,10 +29,18 @@ type Node = {
 export default function ContextMenu({ points }: ContextMenuProps) {
   const dispatch = useAppDispatch();
   const { project } = useReactFlow();
+  const nodes = useAppSelector((state) => state.flowReducer.nodes);
   const selectedNode: Node | undefined = useAppSelector<Node | undefined>(
     (state) => state.flowReducer.selectedNode
   );
   const textToCopy = selectedNode?.data.label;
+
+  function deleteSelectedNode(selectedNode: Node | null) {
+    if (selectedNode) {
+      const filteredNodes = nodes.filter((node) => node.id !== selectedNode.id);
+      dispatch(setNodes(filteredNodes));
+    }
+  }
 
   async function copyTextToClipboard(text: string | undefined) {
     if (text !== undefined) {
@@ -52,7 +60,7 @@ export default function ContextMenu({ points }: ContextMenuProps) {
       text: "Delete",
       id: "delete",
       clickHandler: () => {
-        console.log("Delete clicked");
+        if (selectedNode) deleteSelectedNode(selectedNode);
       }
     },
     {
