@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
+  ReactFlowProvider,
   Background,
   Controls,
   MiniMap,
@@ -12,7 +13,8 @@ import ReactFlow, {
   Connection
 } from "reactflow";
 import "reactflow/dist/style.css";
-import CustomNode from "@/app/map/left/mindChatNodes/CustomNode";
+import CustomNode from "@/app/map/main/mindChatNodes/CustomNode";
+import CustomInputNode from "./mindChatNodes/CustomInputNode";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import useContextMenu from "@/app/hooks/useContextMenu";
 import ContextMenu from "@/app/map/tools/ContextMenu";
@@ -24,14 +26,15 @@ import {
   addEdges,
   onNodesChange,
   onEdgesChange,
-  onConnect
+  onConnect,
+  setSelectedNode
 } from "@/redux/features/flowSlice";
 import { getLayoutedElements } from "./autoLayout";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
-import { setGptStatus } from "@/redux/features/gptResponseSlice";
 
 const nodeTypes = {
-  custom: CustomNode
+  custom: CustomNode,
+  customInput: CustomInputNode
 };
 
 export default function Flow() {
@@ -41,16 +44,9 @@ export default function Flow() {
   const allResponse = useAppSelector(
     (state) => state.gptResponseReducer.allResponse
   );
-  const gptIncomingText = useAppSelector(
-    (state) => state.gptResponseReducer.incomingText
-  );
   const gptStatus = useAppSelector(
     (state) => state.gptResponseReducer.gptStatus
   );
-  const shouldGenerateNode = useAppSelector(
-    (state) => state.gptResponseReducer.shouldGenerateNode
-  );
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const { clicked, setClicked, points, setPoints } = useContextMenu();
 
   const onNodeContextMenu: (e: React.MouseEvent, node: Node) => void = (
@@ -179,10 +175,8 @@ export default function Flow() {
     (direction: Direction) => {
       const { nodes: layoutedNodes, edges: layoutedEdges } =
         getLayoutedElements(nodes, edges, direction);
-      console.log("Layouting...");
       dispatch(setNodes([...layoutedNodes]));
       dispatch(setEdges([...layoutedEdges]));
-      console.log("Layout done");
     },
     [nodes, edges, dispatch]
   );
@@ -202,15 +196,10 @@ export default function Flow() {
     if (gptStatus === GptStatus.DONE) onLayout("LR");
   }, [gptStatus]);
 
-  useEffect(() => {
-    const selectedNode: Node = nodes.filter(
-      (node) => node.selected === true
-    )[0];
-    if (selectedNode) setSelectedNodeId(selectedNode.id);
-  }, [nodes]);
-
   function nodesChangeHandler(changes: NodeChange[]) {
+    const selectedNode = nodes.filter((node) => node.selected === true)[0];
     dispatch(onNodesChange(changes));
+    dispatch(setSelectedNode(selectedNode));
   }
 
   function edgesChangeHandler(changes: EdgeChange[]) {
@@ -222,26 +211,26 @@ export default function Flow() {
   }
 
   return (
-    <div className="absolute left-0 top-0 h-full w-full">
-      <ReactFlow
-        nodeTypes={nodeTypes}
-        className="bg-mindchat-bg-dark"
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={nodesChangeHandler}
-        onEdgesChange={edgesChangeHandler}
-        onConnect={onConnectHandler}
-        onNodeContextMenu={onNodeContextMenu}
-        fitView
-      >
-        <Controls />
-        <MiniMap />
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
-      </ReactFlow>
-      {clicked && (
-        <ContextMenu points={points} menuClickHandler={menuClickHandler} />
-      )}
-    </div>
+    <ReactFlowProvider>
+      <div className="absolute left-0 top-0 h-full w-full">
+        <ReactFlow
+          nodeTypes={nodeTypes}
+          className="bg-mindchat-bg-dark"
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={nodesChangeHandler}
+          onEdgesChange={edgesChangeHandler}
+          onConnect={onConnectHandler}
+          onNodeContextMenu={onNodeContextMenu}
+          fitView
+        >
+          <Controls />
+          <MiniMap />
+          <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
+        </ReactFlow>
+        {clicked && <ContextMenu points={points} />}
+      </div>
+    </ReactFlowProvider>
   );
 }
 

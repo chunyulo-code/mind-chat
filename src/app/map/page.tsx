@@ -1,10 +1,10 @@
 "use client";
 import { useState, useRef } from "react";
 import { Allotment } from "allotment";
-import ChatGPT from "./left/ChatGPT";
-import Outline from "./left/Outline";
-import Flow from "./left/Flow";
-import Canvas from "./left/Canvas";
+import ChatGPT from "./main/ChatGPT";
+import Outline from "./main/Outline";
+import Flow from "./main/Flow";
+import Canvas from "./main/Canvas";
 import RightBar from "./right/RightBar";
 import ToolBar from "./tools/ToolBar";
 import FormatConverter from "./tools/FormatConverter";

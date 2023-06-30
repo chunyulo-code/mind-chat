@@ -6,11 +6,19 @@ type dataProps = {
   data: {
     label: string;
   };
+  selected: boolean;
 };
 
-function CustomNode({ data }: dataProps) {
+function CustomNode({ data, selected }: dataProps) {
+  const selectedStyle = `border-4 border-mindchat-focus`;
+  const normalStyle = "border-2 border-mindchat-primary";
+
   return (
-    <div className="rounded-md border-2 border-[#66fcf1] px-4 py-2 shadow-md">
+    <div
+      className={`rounded-md px-4 py-2 ${
+        selected ? selectedStyle : normalStyle
+      }`}
+    >
       <div className="text-lg font-bold text-[#ffffff]">{data.label}</div>
       <Handle
         type="source"

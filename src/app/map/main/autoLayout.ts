@@ -43,6 +43,5 @@ export const getLayoutedElements = (
     return updatedNode;
   });
 
-  console.log(updatedNodes, edges);
   return { nodes: updatedNodes, edges };
 };

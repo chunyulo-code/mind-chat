@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { systemResponseRules } from "@/app/map/left/gptRules";
+import { systemResponseRules } from "@/app/map/main/gptRules";
 import {
   setGptResponse,
   setGptIncomingText,

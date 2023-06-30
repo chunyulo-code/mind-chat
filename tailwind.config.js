@@ -15,6 +15,7 @@ module.exports = {
       colors: {
         "mindchat-bg-dark": "#1F2833",
         "mindchat-primary": "#66FCF1",
+        "mindchat-focus": "#ff7d6e",
         "mindchat-primary-dark": "#45A29E",
         "mindchat-secondary": "#C5C6C7"
       }

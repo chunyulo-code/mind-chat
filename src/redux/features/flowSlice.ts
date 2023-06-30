@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import {
   Edge,
   Node,
@@ -12,17 +12,10 @@ import {
 import { initialNodes } from "../data/initialNodes";
 import { initialEdges } from "../data/initialEdges";
 
-type RFState = {
-  nodes: Node[];
-  edges: Edge[];
-  onNodesChange: OnNodesChange;
-  onEdgesChange: OnEdgesChange;
-  onConnect: OnConnect;
-};
-
 const initialState = {
   nodes: initialNodes,
-  edges: initialEdges
+  edges: initialEdges,
+  selectedNode: undefined
 };
 
 export const flow = createSlice({
@@ -30,11 +23,13 @@ export const flow = createSlice({
   initialState,
   reducers: {
     setNodes: (state, action) => {
-      console.log("setting nodes");
       state.nodes = action.payload;
     },
     setEdges: (state, action) => {
       state.edges = action.payload;
+    },
+    addNode: (state, action: PayloadAction<Node>) => {
+      state.nodes.push(action.payload);
     },
     addNodes: (state, action) => {
       state.nodes = state.nodes.concat(action.payload);
@@ -50,6 +45,9 @@ export const flow = createSlice({
     },
     onConnect: (state, action) => {
       state.edges = addEdge(action.payload, state.edges);
+    },
+    setSelectedNode: (state, action) => {
+      state.selectedNode = action.payload;
     }
   }
 });
@@ -57,11 +55,13 @@ export const flow = createSlice({
 export const {
   setNodes,
   setEdges,
+  addNode,
   addNodes,
   addEdges,
   onNodesChange,
   onEdgesChange,
-  onConnect
+  onConnect,
+  setSelectedNode
 } = flow.actions;
 
 export default flow.reducer;

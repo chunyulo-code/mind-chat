@@ -5,14 +5,12 @@ type GptResponseState = {
   allResponse: string;
   incomingText: string;
   gptStatus: number;
-  shouldGenerateNode: boolean;
 };
 
 const initialState: GptResponseState = {
   allResponse: "",
   incomingText: "",
-  gptStatus: GptStatus.STAND_BY,
-  shouldGenerateNode: false
+  gptStatus: GptStatus.STAND_BY
 };
 
 export const gptResponse = createSlice({
@@ -27,17 +25,10 @@ export const gptResponse = createSlice({
     },
     setGptStatus: (state, action: PayloadAction<number>) => {
       state.gptStatus = action.payload;
-    },
-    setShouldGenerateNode: (state, action: PayloadAction<boolean>) => {
-      state.shouldGenerateNode = action.payload;
     }
   }
 });
 
-export const {
-  setGptResponse,
-  setGptIncomingText,
-  setGptStatus,
-  setShouldGenerateNode
-} = gptResponse.actions;
+export const { setGptResponse, setGptIncomingText, setGptStatus } =
+  gptResponse.actions;
 export default gptResponse.reducer;
