@@ -1,6 +1,6 @@
 "use client";
 import React, { memo, useState } from "react";
-import { Handle, Position } from "reactflow";
+import { Handle, Position, Node } from "reactflow";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setNodes } from "@/redux/features/flowSlice";
 
@@ -21,7 +21,7 @@ function CustomInputNode({ id, data, selected }: CustomInputNodeProps) {
   const normalInputStyle = "border border-mindchat-primary-dark";
 
   function updateText(inputText: string) {
-    return nodes.map((node) => {
+    return nodes.map((node: Node) => {
       if (node.id === id) return { ...node, data: { label: inputText } };
       else return node;
     });

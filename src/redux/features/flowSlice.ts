@@ -9,12 +9,16 @@ import {
   applyNodeChanges,
   applyEdgeChanges
 } from "reactflow";
-import { initialNodes } from "../data/initialNodes";
-import { initialEdges } from "../data/initialEdges";
 
-const initialState = {
-  nodes: initialNodes,
-  edges: initialEdges,
+type FlowState = {
+  nodes: Node[];
+  edges: Edge[];
+  selectedNode: Node | undefined;
+};
+
+const initialState: FlowState = {
+  nodes: [],
+  edges: [],
   selectedNode: undefined
 };
 

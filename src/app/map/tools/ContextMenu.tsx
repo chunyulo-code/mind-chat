@@ -3,7 +3,7 @@
 import { addNode, setNodes } from "@/redux/features/flowSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nanoid } from "nanoid";
-import { useReactFlow } from "reactflow";
+import { useReactFlow, Node } from "reactflow";
 
 type Points = {
   x: number;
@@ -20,12 +20,6 @@ type MenuList = {
   clickHandler: () => void;
 };
 
-type Node = {
-  data: {
-    label: string;
-  };
-};
-
 export default function ContextMenu({ points }: ContextMenuProps) {
   const dispatch = useAppDispatch();
   const { project } = useReactFlow();
@@ -37,7 +31,9 @@ export default function ContextMenu({ points }: ContextMenuProps) {
 
   function deleteSelectedNode(selectedNode: Node | null) {
     if (selectedNode) {
-      const filteredNodes = nodes.filter((node) => node.id !== selectedNode.id);
+      const filteredNodes = nodes.filter(
+        (node: Node) => node.id !== selectedNode.id
+      );
       dispatch(setNodes(filteredNodes));
     }
   }

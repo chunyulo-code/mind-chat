@@ -114,7 +114,6 @@ export default function Outline() {
 
   return (
     <div className="relative h-screen w-screen overflow-y-scroll bg-mindchat-bg-dark text-white">
-      <div className="text-white">Outline mode</div>
       <div className="absolute left-1/3 top-10">
         <ReactMarkdown className="prose">{gptResponse}</ReactMarkdown>
       </div>

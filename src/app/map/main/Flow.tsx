@@ -197,7 +197,9 @@ export default function Flow() {
   }, [gptStatus]);
 
   function nodesChangeHandler(changes: NodeChange[]) {
-    const selectedNode = nodes.filter((node) => node.selected === true)[0];
+    const selectedNode = nodes.filter(
+      (node: Node) => node.selected === true
+    )[0];
     dispatch(onNodesChange(changes));
     dispatch(setSelectedNode(selectedNode));
   }
