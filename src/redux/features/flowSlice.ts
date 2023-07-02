@@ -13,6 +13,8 @@ import {
 type FlowState = {
   nodes: Node[];
   edges: Edge[];
+  bufferNodes: Node[];
+  bufferEdges: Edge[];
   selectedNode: Node | undefined;
   isAllowAsked: boolean;
 };
@@ -20,6 +22,8 @@ type FlowState = {
 const initialState: FlowState = {
   nodes: [],
   edges: [],
+  bufferNodes: [],
+  bufferEdges: [],
   selectedNode: undefined,
   isAllowAsked: true
 };
@@ -42,6 +46,12 @@ export const flow = createSlice({
     },
     addEdges: (state, action) => {
       state.edges = state.edges.concat(action.payload);
+    },
+    setBufferNodes: (state, action) => {
+      state.bufferNodes = action.payload;
+    },
+    setBufferEdges: (state, action) => {
+      state.bufferEdges = action.payload;
     },
     onNodesChange: (state, action) => {
       state.nodes = applyNodeChanges(action.payload, state.nodes);
@@ -70,6 +80,8 @@ export const {
   addNode,
   addNodes,
   addEdges,
+  setBufferNodes,
+  setBufferEdges,
   onNodesChange,
   onEdgesChange,
   onConnect,

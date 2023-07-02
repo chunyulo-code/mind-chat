@@ -23,8 +23,11 @@ import QuestionBar from "./QuestionBar";
 import {
   setNodes,
   setEdges,
+  addNode,
   addNodes,
   addEdges,
+  setBufferNodes,
+  setBufferEdges,
   onNodesChange,
   onEdgesChange,
   onConnect,
@@ -180,8 +183,8 @@ export default function Flow() {
       if (allResponse) {
         const convertedData: { nodes: Node[]; edges: Edge[] } =
           convertString(allResponse);
-        dispatch(setNodes(convertedData.nodes));
-        dispatch(setEdges(convertedData.edges));
+        dispatch(setBufferNodes(convertedData.nodes));
+        dispatch(setBufferEdges(convertedData.edges));
       }
     }
   }, [allResponse]);
