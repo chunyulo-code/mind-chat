@@ -44,7 +44,8 @@
     "conventional-changelog-cli": "^3.0.0",
     "cz-conventional-changelog": "^3.3.0",
     "prettier": "^2.8.8",
-    "prettier-plugin-tailwindcss": "^0.2.1"
+    "prettier-plugin-tailwindcss": "^0.2.1",
+    "redux-devtools-extension": "^2.13.9"
   },
   "config": {
     "commitizen": {

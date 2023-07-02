@@ -14,8 +14,8 @@ export const store = configureStore({
     userMode: userModeReducer,
     imageUrls: imageUrlsReducer,
     flow: flowReducer
-  }
-  // devTools: process.env.NODE_ENV !== "production"
+  },
+  devTools: process.env.NODE_ENV !== "production"
 });
 
 export type RootState = ReturnType<typeof store.getState>;

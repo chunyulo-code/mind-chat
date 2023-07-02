@@ -28,6 +28,10 @@ import {
   addEdges,
   setBufferNodes,
   setBufferEdges,
+  updateNodes,
+  updateEdges,
+  mergeNodes,
+  mergeEdges,
   onNodesChange,
   onEdgesChange,
   onConnect,
@@ -172,8 +176,8 @@ export default function Flow() {
     (direction: Direction) => {
       const { nodes: layoutedNodes, edges: layoutedEdges } =
         getLayoutedElements(nodes, edges, direction);
-      dispatch(setNodes([...layoutedNodes]));
-      dispatch(setEdges([...layoutedEdges]));
+      dispatch(setNodes(layoutedNodes));
+      dispatch(setEdges(layoutedEdges));
     },
     [nodes, edges, dispatch]
   );
@@ -185,6 +189,8 @@ export default function Flow() {
           convertString(allResponse);
         dispatch(setBufferNodes(convertedData.nodes));
         dispatch(setBufferEdges(convertedData.edges));
+        dispatch(updateNodes());
+        dispatch(updateEdges());
       }
     }
   }, [allResponse]);
@@ -192,6 +198,8 @@ export default function Flow() {
   useEffect(() => {
     if (gptStatus === GptStatus.DONE) {
       dispatch(hideQuestionBar());
+      dispatch(mergeNodes());
+      dispatch(mergeEdges());
       onLayout("LR");
     }
   }, [gptStatus]);

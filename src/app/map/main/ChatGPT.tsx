@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { systemResponseRules } from "@/app/map/main/gptRules";
 import {
-  setGptResponse,
+  insertChunkToGptResponse,
   setGptStatus
 } from "@/redux/features/gptResponseSlice";
 import { useAppDispatch } from "@/redux/hooks";
@@ -74,10 +74,10 @@ export default function ChatGPT() {
             const newWord = line.choices[0].delta.content;
             if (newWord === " \n" || newWord === " \n\n") {
               {
-                dispatch(setGptResponse(" \n"));
+                dispatch(insertChunkToGptResponse(" \n"));
               }
             } else {
-              dispatch(setGptResponse(newWord));
+              dispatch(insertChunkToGptResponse(newWord));
             }
             setResponseMessage((prev) => prev + newWord);
           }
