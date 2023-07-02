@@ -8,12 +8,12 @@ import flowReducer from "./features/flowSlice";
 
 export const store = configureStore({
   reducer: {
-    counterReducer,
-    gptResponseReducer,
-    dataFotmatReducer,
-    userModeReducer,
-    imageUrlsReducer,
-    flowReducer
+    counter: counterReducer,
+    gptResponse: gptResponseReducer,
+    dataFormat: dataFotmatReducer,
+    userMode: userModeReducer,
+    imageUrls: imageUrlsReducer,
+    flow: flowReducer
   }
   // devTools: process.env.NODE_ENV !== "production"
 });

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { systemResponseRules } from "@/app/map/main/gptRules";
 import {
   setGptResponse,
-  setGptIncomingText,
   setGptStatus
 } from "@/redux/features/gptResponseSlice";
 import { useAppDispatch } from "@/redux/hooks";
@@ -76,11 +75,9 @@ export default function ChatGPT() {
             if (newWord === " \n" || newWord === " \n\n") {
               {
                 dispatch(setGptResponse(" \n"));
-                // dispatch(setGptIncomingText(" \n"));
               }
             } else {
               dispatch(setGptResponse(newWord));
-              // dispatch(setGptIncomingText(newWord));
             }
             setResponseMessage((prev) => prev + newWord);
           }

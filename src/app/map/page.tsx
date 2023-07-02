@@ -13,12 +13,13 @@ import { DisplayFormatNumber } from "../types/displayFormatSliceTypes";
 import { ClearCanvas } from "../types/canvasTypes";
 import Images from "./tools/Images";
 import "allotment/dist/style.css";
+import GptResponse from "./main/GptResponse";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState("#42f0ed");
-  const formatValue = useAppSelector((state) => state.dataFotmatReducer.value);
+  const formatValue = useAppSelector((state) => state.dataFormat.value);
 
   const clearCanvas: ClearCanvas = () => {
     const canvas = canvasRef.current;
@@ -35,7 +36,8 @@ export default function Page() {
       <Allotment className="h-full w-full">
         <Allotment.Pane snap className="relative h-full">
           <FormatConverter />
-          <ChatGPT />
+          {/* <ChatGPT /> */}
+          <GptResponse />
           <Images />
           {formatValue === DisplayFormatNumber.MIND_MAP ? (
             <Flow />

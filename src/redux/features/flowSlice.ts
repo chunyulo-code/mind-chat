@@ -14,12 +14,14 @@ type FlowState = {
   nodes: Node[];
   edges: Edge[];
   selectedNode: Node | undefined;
+  isAllowAsked: boolean;
 };
 
 const initialState: FlowState = {
   nodes: [],
   edges: [],
-  selectedNode: undefined
+  selectedNode: undefined,
+  isAllowAsked: true
 };
 
 export const flow = createSlice({
@@ -52,6 +54,12 @@ export const flow = createSlice({
     },
     setSelectedNode: (state, action) => {
       state.selectedNode = action.payload;
+    },
+    showQuestionBar: (state) => {
+      state.isAllowAsked = true;
+    },
+    hideQuestionBar: (state) => {
+      state.isAllowAsked = false;
     }
   }
 });
@@ -65,7 +73,9 @@ export const {
   onNodesChange,
   onEdgesChange,
   onConnect,
-  setSelectedNode
+  setSelectedNode,
+  showQuestionBar,
+  hideQuestionBar
 } = flow.actions;
 
 export default flow.reducer;

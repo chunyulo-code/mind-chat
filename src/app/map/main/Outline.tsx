@@ -108,9 +108,7 @@ export default function Outline() {
 
   // const formattedData = formatString(gptResponse);
 
-  const gptResponse = useAppSelector(
-    (state) => state.gptResponseReducer.allResponse
-  );
+  const gptResponse = useAppSelector((state) => state.gptResponse.allResponse);
 
   return (
     <div className="relative h-screen w-screen overflow-y-scroll bg-mindchat-bg-dark text-white">

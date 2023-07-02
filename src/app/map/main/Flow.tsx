@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import useContextMenu from "@/app/hooks/useContextMenu";
 import ContextMenu from "@/app/map/tools/ContextMenu";
 import { nanoid } from "nanoid";
+import QuestionBar from "./QuestionBar";
 import {
   setNodes,
   setEdges,
@@ -27,7 +28,9 @@ import {
   onNodesChange,
   onEdgesChange,
   onConnect,
-  setSelectedNode
+  setSelectedNode,
+  showQuestionBar,
+  hideQuestionBar
 } from "@/redux/features/flowSlice";
 import { getLayoutedElements } from "./autoLayout";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
@@ -39,14 +42,11 @@ const nodeTypes = {
 
 export default function Flow() {
   const dispatch = useAppDispatch();
-  const nodes = useAppSelector((state) => state.flowReducer.nodes);
-  const edges = useAppSelector((state) => state.flowReducer.edges);
-  const allResponse = useAppSelector(
-    (state) => state.gptResponseReducer.allResponse
-  );
-  const gptStatus = useAppSelector(
-    (state) => state.gptResponseReducer.gptStatus
-  );
+  const nodes = useAppSelector((state) => state.flow.nodes);
+  const edges = useAppSelector((state) => state.flow.edges);
+  const allResponse = useAppSelector((state) => state.gptResponse.allResponse);
+  const gptStatus = useAppSelector((state) => state.gptResponse.gptStatus);
+  const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
   const { clicked, setClicked, points, setPoints } = useContextMenu();
 
   const onNodeContextMenu: (e: React.MouseEvent, node: Node) => void = (
@@ -59,12 +59,6 @@ export default function Flow() {
       x: e.pageX,
       y: e.pageY
     });
-    console.log("Right Click", e.pageX, e.pageY);
-  };
-
-  const menuClickHandler = (e: React.MouseEvent) => {
-    const targetId = (e.target as HTMLDivElement).id;
-    console.log(`${targetId} is clicked`);
   };
 
   function generateNewNode(id: string, label: string) {
@@ -193,7 +187,10 @@ export default function Flow() {
   }, [allResponse]);
 
   useEffect(() => {
-    if (gptStatus === GptStatus.DONE) onLayout("LR");
+    if (gptStatus === GptStatus.DONE) {
+      dispatch(hideQuestionBar());
+      onLayout("LR");
+    }
   }, [gptStatus]);
 
   function nodesChangeHandler(changes: NodeChange[]) {
@@ -215,6 +212,7 @@ export default function Flow() {
   return (
     <ReactFlowProvider>
       <div className="absolute left-0 top-0 h-full w-full">
+        {isAllowAsked && <QuestionBar />}
         <ReactFlow
           nodeTypes={nodeTypes}
           className="bg-mindchat-bg-dark"

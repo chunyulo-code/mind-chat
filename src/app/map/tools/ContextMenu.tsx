@@ -23,9 +23,9 @@ type MenuList = {
 export default function ContextMenu({ points }: ContextMenuProps) {
   const dispatch = useAppDispatch();
   const { project } = useReactFlow();
-  const nodes = useAppSelector((state) => state.flowReducer.nodes);
+  const nodes = useAppSelector((state) => state.flow.nodes);
   const selectedNode: Node | undefined = useAppSelector<Node | undefined>(
-    (state) => state.flowReducer.selectedNode
+    (state) => state.flow.selectedNode
   );
   const textToCopy = selectedNode?.data.label;
 
