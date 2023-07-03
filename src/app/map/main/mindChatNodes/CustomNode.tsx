@@ -2,7 +2,7 @@
 import React, { memo } from "react";
 import { Handle, Position, NodeToolbar } from "reactflow";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setNodes } from "@/redux/features/flowSlice";
+import { setNodes, setPositionToGenetate } from "@/redux/features/flowSlice";
 import callChatGPT from "@/app/utils/callChatGPT";
 
 type dataProps = {
@@ -11,10 +11,12 @@ type dataProps = {
     label: string;
     toolbarVisible: boolean;
   };
+  xPos: number;
+  yPos: number;
   selected: boolean;
 };
 
-function CustomNode({ id, data, selected }: dataProps) {
+function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
   const dispatch = useAppDispatch();
   const nodes = useAppSelector((state) => state.flow.nodes);
   const selectedStyle = `border-4 border-mindchat-focus`;
@@ -34,6 +36,7 @@ function CustomNode({ id, data, selected }: dataProps) {
   }
 
   function brainstorm(keyword: string) {
+    dispatch(setPositionToGenetate({ x: xPos + 250, y: yPos }));
     callChatGPT(keyword);
   }
 

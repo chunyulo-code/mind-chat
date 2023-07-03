@@ -17,6 +17,7 @@ type FlowState = {
   bufferEdges: Edge[];
   prevNodes: Node[];
   prevEdges: Edge[];
+  positionToGenerate: { x: number; y: number };
   selectedNode: Node | undefined;
   isAllowAsked: boolean;
 };
@@ -28,6 +29,7 @@ const initialState: FlowState = {
   bufferEdges: [],
   prevNodes: [],
   prevEdges: [],
+  positionToGenerate: { x: 0, y: 0 },
   selectedNode: undefined,
   isAllowAsked: true
 };
@@ -90,6 +92,9 @@ export const flow = createSlice({
     },
     hideQuestionBar: (state) => {
       state.isAllowAsked = false;
+    },
+    setPositionToGenetate: (state, action) => {
+      state.positionToGenerate = action.payload;
     }
   }
 });
@@ -111,7 +116,8 @@ export const {
   onConnect,
   setSelectedNode,
   showQuestionBar,
-  hideQuestionBar
+  hideQuestionBar,
+  setPositionToGenetate
 } = flow.actions;
 
 export default flow.reducer;
