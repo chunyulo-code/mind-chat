@@ -1,10 +1,12 @@
 "use client";
-const keywords: string[] = ["React.js", "ES6+", "Redux", "TypeScript"];
+import { useAppSelector } from "@/redux/hooks";
+// const keywords: string[] = ["React.js", "ES6+", "Redux", "TypeScript"];
 
 export default function Library() {
+  const keywords = useAppSelector((state) => state.library.value);
   return (
     <div className="flex h-full flex-col justify-between p-2">
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap overflow-y-scroll">
         {keywords.map((keyword) => (
           <span
             key={keyword}

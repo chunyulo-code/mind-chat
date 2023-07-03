@@ -12,9 +12,7 @@ const dispatch = store.dispatch;
 const nodes = store.getState().flow.nodes;
 
 export function nodesChangeHandler(changes: NodeChange[]) {
-  const selectedNode = nodes.filter((node: Node) => node.selected === true)[0];
   dispatch(onNodesChange(changes));
-  dispatch(setSelectedNode(selectedNode));
 }
 
 export function edgesChangeHandler(changes: EdgeChange[]) {

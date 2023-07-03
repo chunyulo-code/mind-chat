@@ -4,6 +4,7 @@ import { addNode, setNodes } from "@/redux/features/flowSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nanoid } from "nanoid";
 import { useReactFlow, Node } from "reactflow";
+import { addToLibrary } from "@/redux/features/librarySlice";
 
 type Points = {
   x: number;
@@ -28,6 +29,7 @@ export default function NodeContextMenu({ points }: NodeContextMenuProps) {
     (state) => state.flow.selectedNode
   );
   const textToCopy = selectedNode?.data.label;
+  const textToAdd = selectedNode?.data.label;
 
   function deleteSelectedNode(selectedNode: Node | null) {
     if (selectedNode) {
@@ -78,7 +80,10 @@ export default function NodeContextMenu({ points }: NodeContextMenuProps) {
       text: "Add to library",
       id: "AddToLibrary",
       clickHandler: () => {
-        console.log("Add to library clicked");
+        console.log(textToAdd);
+        if (textToAdd) {
+          dispatch(addToLibrary(textToAdd));
+        }
       }
     }
   ];

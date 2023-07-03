@@ -7,6 +7,7 @@ import {
   setPositionToGenetate,
   setNewTopicParentNodeId
 } from "@/redux/features/flowSlice";
+import { addToLibrary } from "@/redux/features/librarySlice";
 import callChatGPT from "@/app/utils/callChatGPT";
 
 type dataProps = {
@@ -71,7 +72,7 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
       text: "Add to library",
       id: "AddToLibrary",
       clickHandler: () => {
-        console.log("Add to library clicked");
+        dispatch(addToLibrary(data.label));
       }
     }
   ];

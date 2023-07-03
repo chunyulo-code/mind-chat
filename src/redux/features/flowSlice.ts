@@ -79,6 +79,9 @@ export const flow = createSlice({
     },
     onNodesChange: (state, action) => {
       state.nodes = applyNodeChanges(action.payload, state.nodes);
+      state.selectedNode = state.nodes.filter(
+        (node) => node.selected === true
+      )[0];
     },
     onEdgesChange: (state, action) => {
       state.edges = applyEdgeChanges(action.payload, state.edges);
