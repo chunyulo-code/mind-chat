@@ -18,6 +18,7 @@ type FlowState = {
   prevNodes: Node[];
   prevEdges: Edge[];
   positionToGenerate: { x: number; y: number };
+  newTopicParentNodeId: string | null;
   selectedNode: Node | undefined;
   isAllowAsked: boolean;
 };
@@ -30,6 +31,7 @@ const initialState: FlowState = {
   prevNodes: [],
   prevEdges: [],
   positionToGenerate: { x: 0, y: 0 },
+  newTopicParentNodeId: null,
   selectedNode: undefined,
   isAllowAsked: true
 };
@@ -95,6 +97,9 @@ export const flow = createSlice({
     },
     setPositionToGenetate: (state, action) => {
       state.positionToGenerate = action.payload;
+    },
+    setNewTopicParentNodeId: (state, action) => {
+      state.newTopicParentNodeId = action.payload;
     }
   }
 });
@@ -117,7 +122,8 @@ export const {
   setSelectedNode,
   showQuestionBar,
   hideQuestionBar,
-  setPositionToGenetate
+  setPositionToGenetate,
+  setNewTopicParentNodeId
 } = flow.actions;
 
 export default flow.reducer;

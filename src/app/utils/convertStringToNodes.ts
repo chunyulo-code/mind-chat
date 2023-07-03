@@ -2,8 +2,6 @@ import { nanoid } from "nanoid";
 import { store } from "@/redux/store";
 import { Node, Edge } from "reactflow";
 
-const positionToGenerate = store.getState().flow.positionToGenerate;
-
 type EdgeProps = {
   id: string;
   source: string;
@@ -18,6 +16,7 @@ type CurrentNodeId = {
 };
 
 function generateNewNode(id: string, label: string) {
+  const positionToGenerate = store.getState().flow.positionToGenerate;
   return {
     id,
     type: "custom",
@@ -36,6 +35,7 @@ function generateNewEdge(edgeProps: EdgeProps) {
 }
 
 export function convertStringToNodes(str: string) {
+  const newTopicParentNodeId = store.getState().flow.newTopicParentNodeId;
   const lines = str.trim().split("\n");
   const nodes = [];
   const edges = [];
@@ -52,6 +52,14 @@ export function convertStringToNodes(str: string) {
       const id = nanoid();
       const newNode: Node = generateNewNode(id, label);
       nodes.push(newNode);
+      if (newTopicParentNodeId) {
+        const newEdge: Edge = generateNewEdge({
+          id: `e${newTopicParentNodeId}-${id}`,
+          source: newTopicParentNodeId,
+          target: id
+        });
+        edges.push(newEdge);
+      }
       currentNodeIds.h1 = id;
       currentNodeIds.currentNodeId = id;
     } else if (line.startsWith("## ")) {

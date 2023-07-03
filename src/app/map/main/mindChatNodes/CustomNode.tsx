@@ -2,7 +2,11 @@
 import React, { memo } from "react";
 import { Handle, Position, NodeToolbar } from "reactflow";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setNodes, setPositionToGenetate } from "@/redux/features/flowSlice";
+import {
+  setNodes,
+  setPositionToGenetate,
+  setNewTopicParentNodeId
+} from "@/redux/features/flowSlice";
 import callChatGPT from "@/app/utils/callChatGPT";
 
 type dataProps = {
@@ -37,6 +41,7 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
 
   function brainstorm(keyword: string) {
     dispatch(setPositionToGenetate({ x: xPos + 250, y: yPos }));
+    dispatch(setNewTopicParentNodeId(id));
     callChatGPT(keyword);
   }
 
