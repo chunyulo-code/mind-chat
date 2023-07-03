@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   Background,
@@ -14,7 +14,8 @@ import CustomNode from "@/app/map/main/mindChatNodes/CustomNode";
 import CustomInputNode from "./mindChatNodes/CustomInputNode";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import useContextMenu from "@/app/hooks/useContextMenu";
-import ContextMenu from "@/app/map/tools/ContextMenu";
+import NodeContextMenu from "@/app/map/tools/NodeContextMenu";
+import PaneContextMenu from "../tools/PaneContextMenu";
 import QuestionBar from "./QuestionBar";
 import {
   setNodes,
@@ -56,15 +57,32 @@ export default function Flow() {
   const allResponse = useAppSelector((state) => state.gptResponse.allResponse);
   const gptStatus = useAppSelector((state) => state.gptResponse.gptStatus);
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
-  const { clicked, setClicked, points, setPoints } = useContextMenu();
+  const {
+    clicked: nodeClicked,
+    setClicked: setNodeClicked,
+    points: nodePoints,
+    setPoints: setNodePoints
+  } = useContextMenu();
+  const {
+    clicked: paneClicked,
+    setClicked: setPaneClicked,
+    points: panePoints,
+    setPoints: setPanePoints
+  } = useContextMenu();
 
-  const onNodeContextMenu: (e: React.MouseEvent, node: Node) => void = (
-    e,
-    node
-  ) => {
+  const onNodeContextMenu: (e: React.MouseEvent) => void = (e) => {
     e.preventDefault();
-    setClicked(true);
-    setPoints({
+    setNodeClicked(true);
+    setNodePoints({
+      x: e.pageX,
+      y: e.pageY
+    });
+  };
+
+  const onPaneContextMenu: (e: React.MouseEvent) => void = (e) => {
+    e.preventDefault();
+    setPaneClicked(true);
+    setPanePoints({
       x: e.pageX,
       y: e.pageY
     });
@@ -105,13 +123,15 @@ export default function Flow() {
           onEdgesChange={edgesChangeHandler}
           onConnect={onConnectHandler}
           onNodeContextMenu={onNodeContextMenu}
+          onPaneContextMenu={onPaneContextMenu}
           fitView
         >
           <Controls />
           <MiniMap />
           <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
         </ReactFlow>
-        {clicked && <ContextMenu points={points} />}
+        {nodeClicked && <NodeContextMenu points={nodePoints} />}
+        {paneClicked && <PaneContextMenu points={panePoints} />}
       </div>
     </ReactFlowProvider>
   );

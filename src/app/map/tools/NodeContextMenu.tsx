@@ -10,7 +10,7 @@ type Points = {
   y: number;
 };
 
-type ContextMenuProps = {
+type NodeContextMenuProps = {
   points: Points;
 };
 
@@ -20,7 +20,7 @@ type MenuList = {
   clickHandler: () => void;
 };
 
-export default function ContextMenu({ points }: ContextMenuProps) {
+export default function NodeContextMenu({ points }: NodeContextMenuProps) {
   const dispatch = useAppDispatch();
   const { project } = useReactFlow();
   const nodes = useAppSelector((state) => state.flow.nodes);
