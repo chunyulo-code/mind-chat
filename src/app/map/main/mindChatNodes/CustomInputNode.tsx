@@ -48,8 +48,12 @@ function CustomInputNode({ id, data, selected }: CustomInputNodeProps) {
         <button className={toolbarButtonStyle}>Add to library</button>
       </NodeToolbar>
       <div className="text-lg font-bold text-[#ffffff]">{data.label}</div>
+      <label htmlFor="nodeInputArea" className="hidden">
+        Type here
+      </label>
       <input
         type="text"
+        id="nodeInputArea"
         className={`mt-1 w-full rounded-sm bg-transparent px-2 py-1 text-xs text-mindchat-secondary ${
           selected ? selectedInputStyle : normalInputStyle
         }`}
