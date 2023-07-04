@@ -1,5 +1,5 @@
 "use client";
-import { systemResponseRules } from "../map/main/gptRules";
+import { systemResponseRules } from "./askTopicRules";
 import {
   clearGptResponse,
   insertChunkToGptResponse,
@@ -9,7 +9,7 @@ import { GptStatus } from "../types/gptResponseSliceTypes";
 import { store } from "@/redux/store";
 const API_URL = "https://api.openai.com/v1/chat/completions";
 
-export default async function callChatGPT(question: string) {
+export default async function askTopic(question: string) {
   const dispatch = store.dispatch;
   const controller = new AbortController();
   const requestBody = {

@@ -1,7 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
 import { Allotment } from "allotment";
-import ChatGPT from "./main/ChatGPT";
 import Outline from "./main/Outline";
 import Flow from "./main/Flow";
 import Canvas from "./main/Canvas";
@@ -36,7 +35,6 @@ export default function Page() {
       <Allotment className="h-full w-full">
         <Allotment.Pane snap className="relative h-full">
           <FormatConverter />
-          {/* <ChatGPT /> */}
           <GptResponse />
           <Images />
           {formatValue === DisplayFormatNumber.MIND_MAP ? (

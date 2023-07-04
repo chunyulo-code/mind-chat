@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import callChatGPT from "@/app/utils/callChatGPT";
+import askTopic from "@/app/utils/askTopic";
 
 export default function QuestionBar() {
   const [inputMsg, setInputMsg] = useState("");
 
   function submitHandler(e: React.FormEvent, question: string) {
     e.preventDefault();
-    callChatGPT(question);
+    askTopic(question);
   }
 
   return (

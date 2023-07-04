@@ -8,7 +8,7 @@ import {
   setNewTopicParentNodeId
 } from "@/redux/features/flowSlice";
 import { addToLibrary } from "@/redux/features/librarySlice";
-import callChatGPT from "@/app/utils/callChatGPT";
+import askTopic from "@/app/utils/askTopic";
 
 type dataProps = {
   id: string;
@@ -43,7 +43,7 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
   function brainstorm(keyword: string) {
     dispatch(setPositionToGenetate({ x: xPos + 250, y: yPos }));
     dispatch(setNewTopicParentNodeId(id));
-    callChatGPT(keyword);
+    askTopic(keyword);
   }
 
   const buttonLists = [

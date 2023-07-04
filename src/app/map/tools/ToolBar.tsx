@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 import { ClearCanvas } from "../../types/canvasTypes";
 import { useAppDispatch } from "@/redux/hooks";
 import { toMindMapMode, toDrawingMode } from "@/redux/features/userModeSlice";
 import { addImageUrls } from "@/redux/features/imageUrlsSlice";
+import { RiMindMap } from "react-icons/ri";
+import { MdCreate } from "react-icons/md";
+import { BsEraser } from "react-icons/bs";
+import { MdAttachFile } from "react-icons/md";
 
 type ToolBarProps = {
   clearCanvas: ClearCanvas;
@@ -11,7 +15,8 @@ type ToolBarProps = {
 
 type Tool = {
   clickHandler: () => void;
-  text: string;
+  id: string;
+  icon: ReactElement;
 };
 
 export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
@@ -33,11 +38,10 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
       dispatch(addImageUrls(newImageUrls));
     }
   };
-
   const tools: Tool[] = [
-    { clickHandler: toMindMapModeHandler, text: "P" },
-    { clickHandler: toDrawingModeHandler, text: "D" },
-    { clickHandler: clearCanvasHandler, text: "C" }
+    { clickHandler: toMindMapModeHandler, id: "mindMap", icon: <RiMindMap /> },
+    { clickHandler: toDrawingModeHandler, id: "pen", icon: <MdCreate /> },
+    { clickHandler: clearCanvasHandler, id: "eraser", icon: <BsEraser /> }
   ];
 
   const primaryClickHandler = () => {
@@ -76,19 +80,20 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
     <div className="absolute bottom-8 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-mindchat-secondary px-3 py-2">
       {tools.map((tool) => (
         <div
-          key={tool.text}
+          key={tool.id}
           onClick={tool.clickHandler}
           className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-mindchat-primary text-white"
         >
-          {tool.text}
+          {tool.icon}
         </div>
       ))}
-      <div>
+      <form>
         <label
           htmlFor="inputFiles"
           className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-mindchat-primary text-white"
         >
-          F
+          <MdAttachFile />
+          <span className="hidden">Upload</span>
         </label>
         <input
           id="inputFiles"
@@ -98,7 +103,7 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
           multiple
           onChange={handleFileChange}
         />
-      </div>
+      </form>
 
       <div className="text-mindchat-secondary">|</div>
       {colors.map((color) => (

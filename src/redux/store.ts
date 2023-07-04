@@ -6,6 +6,7 @@ import userModeReducer from "@/redux/features/userModeSlice";
 import imageUrlsReducer from "@/redux/features/imageUrlsSlice";
 import flowReducer from "@/redux/features/flowSlice";
 import libraryReducer from "@/redux/features/librarySlice";
+import outputReducer from "@/redux/features/outputSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
     userMode: userModeReducer,
     imageUrls: imageUrlsReducer,
     flow: flowReducer,
-    library: libraryReducer
+    library: libraryReducer,
+    output: outputReducer
   },
   devTools: process.env.NODE_ENV !== "production"
 });
