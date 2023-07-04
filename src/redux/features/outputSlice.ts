@@ -21,12 +21,15 @@ export const output = createSlice({
     emptyOutput: (state) => {
       state.output = "";
     },
+    setOutput: (state, action) => {
+      state.output = action.payload;
+    },
     setGptStatus: (state, action) => {
       state.gptStatus = action.payload;
     }
   }
 });
 
-export const { insertChunkToOutput, emptyOutput, setGptStatus } =
+export const { insertChunkToOutput, emptyOutput, setOutput, setGptStatus } =
   output.actions;
 export default output.reducer;

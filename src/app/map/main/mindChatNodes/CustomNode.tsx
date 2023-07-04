@@ -1,5 +1,5 @@
 "use client";
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { Handle, Position, NodeToolbar } from "reactflow";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
@@ -8,7 +8,13 @@ import {
   setNewTopicParentNodeId
 } from "@/redux/features/flowSlice";
 import { addToLibrary } from "@/redux/features/librarySlice";
-import askTopic from "@/app/utils/askTopic";
+import { useChat } from "ai/react";
+import { systemResponseRules } from "@/app/utils/askTopicRules";
+import { nanoid } from "nanoid";
+import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
+import { setGptStatus } from "@/redux/features/gptResponseSlice";
+import { GptStatus } from "@/app/types/gptResponseSliceTypes";
+import { setGptResponse } from "@/redux/features/gptResponseSlice";
 
 type dataProps = {
   id: string;
@@ -23,6 +29,25 @@ type dataProps = {
 
 function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
   const dispatch = useAppDispatch();
+
+  const { messages, handleSubmit, setInput } = useChat({
+    api: "/api/gpt",
+    initialMessages: [
+      {
+        id: nanoid(),
+        role: ChatCompletionResponseMessageRoleEnum.System,
+        content: systemResponseRules
+      }
+    ],
+    onResponse: () => {
+      console.log("DOING");
+      dispatch(setGptStatus(GptStatus.DOING));
+    },
+    onFinish: () => {
+      console.log("DONE");
+      dispatch(setGptStatus(GptStatus.DONE));
+    }
+  });
   const nodes = useAppSelector((state) => state.flow.nodes);
   const selectedStyle = `border-4 border-mindchat-focus`;
   const normalStyle = "border-2 border-mindchat-primary";
@@ -43,39 +68,49 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
   function brainstorm(keyword: string) {
     dispatch(setPositionToGenetate({ x: xPos + 250, y: yPos }));
     dispatch(setNewTopicParentNodeId(id));
-    askTopic(keyword);
+    setInput(keyword);
+    console.log(`keyword: ${keyword}`);
   }
 
   const buttonLists = [
     {
       text: "Brainstorm",
       id: "brainstorm",
-      clickHandler: () => {
-        brainstorm(data.label);
-      }
+      clickHandler: () => brainstorm(data.label),
+      submitHandler: (e: React.FormEvent<HTMLFormElement>) => handleSubmit(e)
     },
     {
       text: "Copy",
       id: "copy",
       clickHandler: () => {
         copyTextToClipboard(data.label);
-      }
+      },
+      submitHandler: (e: React.FormEvent<HTMLFormElement>) => e.preventDefault()
     },
     {
       text: "Delete",
       id: "delete",
       clickHandler: () => {
         deleteSelectedNode();
-      }
+      },
+      submitHandler: (e: React.FormEvent<HTMLFormElement>) => e.preventDefault()
     },
     {
       text: "Add to library",
       id: "AddToLibrary",
       clickHandler: () => {
         dispatch(addToLibrary(data.label));
-      }
+      },
+      submitHandler: (e: React.FormEvent<HTMLFormElement>) => e.preventDefault()
     }
   ];
+
+  useEffect(() => {
+    if (messages && messages.length !== 1) {
+      console.log(messages.slice(-1)[0].content);
+      dispatch(setGptResponse(messages.slice(-1)[0].content));
+    }
+  }, [messages]);
 
   return (
     <div
@@ -90,13 +125,15 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
         className="flex gap-2 rounded-xl bg-mindchat-bg-dark-darker p-2"
       >
         {buttonLists.map((buttonList) => (
-          <button
-            key={buttonList.id}
-            className={toolbarButtonStyle}
-            onClick={buttonList.clickHandler}
-          >
-            {buttonList.text}
-          </button>
+          <form key={buttonList.id} onSubmit={buttonList.submitHandler}>
+            <button
+              type="submit"
+              className={toolbarButtonStyle}
+              onClick={buttonList.clickHandler}
+            >
+              {buttonList.text}
+            </button>
+          </form>
         ))}
       </NodeToolbar>
       <div className="text-lg font-bold text-[#ffffff]">{data.label}</div>

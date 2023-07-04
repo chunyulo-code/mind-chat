@@ -1,7 +1,5 @@
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { Configuration, OpenAIApi } from "openai-edge";
-import { ChatCompletionRequestMessageRoleEnum } from "openai-edge";
-import { systemResponseRules } from "@/app/utils/askTopicRules";
 
 // Config based on your key
 const config = new Configuration({
@@ -19,17 +17,13 @@ export async function POST(req: Request) {
   console.log(messages);
   console.log("post request received");
 
-  const systemRule = [
-    {
-      role: ChatCompletionRequestMessageRoleEnum.System,
-      content: systemResponseRules
-    }
-  ];
   // Ask OpenAI for a streaming chat completion given the prompt
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     stream: true,
-    messages: systemRule.concat(messages)
+    max_tokens: 100,
+    messages
+    // messages: systemRule.concat(messages)
   });
 
   // Convert the response into a friendly text-stream

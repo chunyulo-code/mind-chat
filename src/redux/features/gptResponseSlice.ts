@@ -18,6 +18,9 @@ export const gptResponse = createSlice({
     clearGptResponse: (state) => {
       state.allResponse = "";
     },
+    setGptResponse: (state, action) => {
+      state.allResponse = action.payload;
+    },
     insertChunkToGptResponse: (state, action: PayloadAction<string>) => {
       state.allResponse += action.payload;
     },
@@ -27,6 +30,10 @@ export const gptResponse = createSlice({
   }
 });
 
-export const { clearGptResponse, insertChunkToGptResponse, setGptStatus } =
-  gptResponse.actions;
+export const {
+  clearGptResponse,
+  setGptResponse,
+  insertChunkToGptResponse,
+  setGptStatus
+} = gptResponse.actions;
 export default gptResponse.reducer;
