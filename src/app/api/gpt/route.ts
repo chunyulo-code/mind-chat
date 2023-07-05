@@ -14,6 +14,7 @@ export const runtime = "edge";
 export async function POST(req: Request) {
   // Your prompt
   const { messages } = await req.json();
+  console.log("Received");
   console.log(messages);
   console.log("post request received");
 
