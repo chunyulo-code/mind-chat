@@ -1,56 +1,39 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 
 type GptResponseState = {
   allResponse: string;
-  incomingText: string;
-  tempResponse: string;
-  isResponseDone: boolean;
-  shouldGenerateNode: boolean;
+  gptStatus: number;
 };
 
 const initialState: GptResponseState = {
   allResponse: "",
-  incomingText: "",
-  tempResponse: "",
-  isResponseDone: true,
-  shouldGenerateNode: false
+  gptStatus: GptStatus.STAND_BY
 };
 
 export const gptResponse = createSlice({
   name: "gptResponse",
   initialState,
   reducers: {
-    setGptResponse: (state, action: PayloadAction<string>) => {
+    clearGptResponse: (state) => {
+      state.allResponse = "";
+    },
+    setGptResponse: (state, action) => {
+      state.allResponse = action.payload;
+    },
+    insertChunkToGptResponse: (state, action: PayloadAction<string>) => {
       state.allResponse += action.payload;
     },
-    setGptIncomingText: (state, action: PayloadAction<string>) => {
-      state.incomingText = action.payload;
-    },
-    setTempResponse: (state, action: PayloadAction<string>) => {
-      state.tempResponse += action.payload;
-    },
-    emptyTempResponse: (state) => {
-      state.tempResponse = "";
-    },
-    setIsResponseDone: (state, action: PayloadAction<boolean>) => {
-      state.isResponseDone = action.payload;
-    },
-    setShouldGenerateNode: (state, action: PayloadAction<boolean>) => {
-      state.shouldGenerateNode = action.payload;
-    },
-    resetAndAddWord: (state, action: PayloadAction<string>) => {
-      state.tempResponse = action.payload;
+    setGptStatus: (state, action: PayloadAction<number>) => {
+      state.gptStatus = action.payload;
     }
   }
 });
 
 export const {
+  clearGptResponse,
   setGptResponse,
-  setGptIncomingText,
-  setTempResponse,
-  emptyTempResponse,
-  setIsResponseDone,
-  setShouldGenerateNode,
-  resetAndAddWord
+  insertChunkToGptResponse,
+  setGptStatus
 } = gptResponse.actions;
 export default gptResponse.reducer;

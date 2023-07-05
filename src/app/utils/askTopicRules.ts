@@ -1,5 +1,6 @@
 export const systemResponseRules = `
-I would like to create a mind map, please provide me with some text in Markdown format, for example:
+I would like to create a mind map, please provide me with some text in Markdown format, 
+(1) for example:
 # FrontEnd Roadmap 
 ## HTML 
 - Semantic Markup 
@@ -52,4 +53,10 @@ I would like to create a mind map, please provide me with some text in Markdown 
 ## Testing 
 - Unit Testing 
 - Integration Testing 
+
+(2)Your answer must start with "#" level, for example:
+# React
+## props
+## useState
+## useEffect
 `;

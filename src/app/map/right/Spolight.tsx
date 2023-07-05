@@ -27,17 +27,7 @@ export default function Spotlight() {
     width: 0,
     height: 0
   });
-  const gptResponse = useAppSelector(
-    (state) => state.gptResponseReducer.allResponse
-  );
-
-  const handleResize = useCallback(() => {
-    if (wordCloudRef.current) {
-      const width = wordCloudRef.current.clientWidth;
-      const height = wordCloudRef.current.clientHeight;
-      setWordCloudSize({ width, height });
-    }
-  }, []);
+  const gptResponse = useAppSelector((state) => state.gptResponse.allResponse);
 
   function sortByFrequency(text: string): WordData[] {
     const filteredData = text

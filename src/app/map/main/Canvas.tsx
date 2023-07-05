@@ -7,7 +7,7 @@ import { UserMode } from "@/app/types/userModeSliceTypes";
 
 const Canvas = ({ canvasRef, ctx, color }: CanvasProps) => {
   const [isDrawing, setIsDrawing] = useState(false);
-  const userMode = useAppSelector((state) => state.userModeReducer.value);
+  const userMode = useAppSelector((state) => state.userMode.value);
 
   useEffect(() => {
     if (canvasRef) {

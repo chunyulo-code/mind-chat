@@ -4,16 +4,22 @@ import gptResponseReducer from "@/redux/features/gptResponseSlice";
 import dataFotmatReducer from "@/redux/features/displayFormatSlice";
 import userModeReducer from "@/redux/features/userModeSlice";
 import imageUrlsReducer from "@/redux/features/imageUrlsSlice";
+import flowReducer from "@/redux/features/flowSlice";
+import libraryReducer from "@/redux/features/librarySlice";
+import outputReducer from "@/redux/features/outputSlice";
 
 export const store = configureStore({
   reducer: {
-    counterReducer,
-    gptResponseReducer,
-    dataFotmatReducer,
-    userModeReducer,
-    imageUrlsReducer
-  }
-  // devTools: process.env.NODE_ENV !== "production"
+    counter: counterReducer,
+    gptResponse: gptResponseReducer,
+    dataFormat: dataFotmatReducer,
+    userMode: userModeReducer,
+    imageUrls: imageUrlsReducer,
+    flow: flowReducer,
+    library: libraryReducer,
+    output: outputReducer
+  },
+  devTools: process.env.NODE_ENV !== "production"
 });
 
 export type RootState = ReturnType<typeof store.getState>;

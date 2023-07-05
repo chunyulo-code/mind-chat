@@ -3,8 +3,8 @@ import Image from "next/image";
 export default function Home() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-mindchat-bg-dark p-24">
-      <div className="flex w-1/2 flex-col items-center justify-center text-center">
-        <h1 className="text-9xl text-mindchat-primary">Mind Chat</h1>
+      <div className="flex w-3/5 flex-col items-center justify-center text-center">
+        <h1 className="text-9xl font-black text-mindchat-primary">Mind Chat</h1>
         <p className=" mt-8 leading-7 text-mindchat-secondary">
           MIND CHAT is a web application that facilitates visual thinking for
           users by combining mind maps and ChatGPT. Users can brainstorm
