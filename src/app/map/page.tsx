@@ -35,7 +35,7 @@ export default function Page() {
       <Allotment className="h-full w-full">
         <Allotment.Pane snap className="relative h-full">
           <FormatConverter />
-          <GptResponse />
+          {/* <GptResponse /> */}
           <Images />
           {formatValue === DisplayFormatNumber.MIND_MAP ? (
             <Flow />
