@@ -15,7 +15,7 @@ export default function Home() {
         </p>
         <a href="/map">
           <button className="mt-12 rounded-lg border border-mindchat-primary px-8 py-2 text-mindchat-secondary hover:bg-mindchat-primary hover:text-mindchat-bg-dark">
-            Try it
+            Get started
           </button>
         </a>
       </div>

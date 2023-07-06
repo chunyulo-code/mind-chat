@@ -11,10 +11,19 @@ import {
 import { nanoid } from "nanoid";
 import { systemResponseRules } from "@/app/utils/summarizeLibraryRules";
 import { useEffect } from "react";
+import { setLibrary } from "@/redux/features/librarySlice";
+import { TiDeleteOutline } from "react-icons/ti";
 
 export default function Library() {
   const dispatch = useAppDispatch();
   const keywords = useAppSelector((state) => state.library.value);
+
+  function deleteKeywordHandler(keywordToDelete: string) {
+    const newKeywords = keywords.filter(
+      (keyword) => keyword !== keywordToDelete
+    );
+    dispatch(setLibrary(newKeywords));
+  }
 
   const { messages, setInput, handleSubmit } = useChat({
     api: "/api/gpt",
@@ -37,6 +46,15 @@ export default function Library() {
   });
 
   useEffect(() => {
+    async function fetchLibrary() {
+      const res = await fetch("/api/library/getKeywords");
+      const fetchedKeywords = await res.json();
+      dispatch(setLibrary(fetchedKeywords));
+    }
+    fetchLibrary();
+  }, []);
+
+  useEffect(() => {
     if (messages && messages.length !== 1) {
       console.log(messages.slice(-1)[0].content);
       dispatch(setOutput(messages.slice(-1)[0].content));
@@ -48,10 +66,16 @@ export default function Library() {
       <div className="flex flex-wrap">
         {keywords.map((keyword) => (
           <span
-            key={keyword}
-            className="m-1 rounded-full border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
+            key={nanoid()}
+            className="group m-1 flex items-center rounded-xl border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
           >
-            {keyword}
+            <span>{keyword}</span>
+            <span
+              className="ml-2 hidden cursor-pointer text-lg group-hover:block hover:text-mindchat-primary active:text-mindchat-focus"
+              onClick={() => deleteKeywordHandler(keyword)}
+            >
+              <TiDeleteOutline />
+            </span>
           </span>
         ))}
       </div>
