@@ -98,8 +98,16 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
     {
       text: "Add to library",
       id: "AddToLibrary",
-      clickHandler: () => {
-        dispatch(addToLibrary(data.label));
+      clickHandler: async () => {
+        const response = await fetch(`/api/library/addKeyword`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ keywordToAdd: data.label })
+        });
+
+        if (response.ok) dispatch(addToLibrary(data.label));
       },
       submitHandler: (e: React.FormEvent<HTMLFormElement>) => e.preventDefault()
     }

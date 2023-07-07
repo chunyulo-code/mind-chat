@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-  RefObject
-} from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import WordCloud from "react-d3-cloud";
 import { scaleLinear } from "d3-scale";
 import { useAppSelector } from "@/redux/hooks";

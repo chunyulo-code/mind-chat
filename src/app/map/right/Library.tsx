@@ -18,11 +18,20 @@ export default function Library() {
   const dispatch = useAppDispatch();
   const keywords = useAppSelector((state) => state.library.value);
 
-  function deleteKeywordHandler(keywordToDelete: string) {
+  async function deleteKeywordHandler(keywordToDelete: string) {
     const newKeywords = keywords.filter(
       (keyword) => keyword !== keywordToDelete
     );
-    dispatch(setLibrary(newKeywords));
+
+    const response = await fetch(`/api/library/deleteKeyword`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ keywordToDelete: keywordToDelete })
+    });
+
+    if (response.ok) dispatch(setLibrary(newKeywords));
   }
 
   const { messages, setInput, handleSubmit } = useChat({
@@ -62,7 +71,7 @@ export default function Library() {
   }, [messages]);
 
   return (
-    <div className="flex h-full flex-col justify-between overflow-y-scroll p-2  scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-mindchat-secondary scrollbar-thumb-rounded-lg">
+    <div className="flex h-full flex-col justify-between overflow-y-scroll p-2  scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-mindchat-secondary scrollbar-thumb-rounded-lg font-normal">
       <div className="flex flex-wrap">
         {keywords.map((keyword) => (
           <span

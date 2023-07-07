@@ -8,9 +8,9 @@ export async function GET(req: Request, res: Response) {
   const docRef = doc(db, "users", userUID, "maps", selectedMap);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    console.log(docSnap.data().keywords);
+    console.log(docSnap.data().library);
   } else {
     console.log("Doc is not existed");
   }
-  return NextResponse.json(docSnap.data()?.keywords);
+  return NextResponse.json(docSnap.data()?.library);
 }
