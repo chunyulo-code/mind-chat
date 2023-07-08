@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { store } from "@/redux/store";
+import { setCurrentUid, setIsLogIn } from "@/redux/features/userInfoSlice";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbCc_FxEcg9jnqvASCREn1VAjlCrasdus",
@@ -13,4 +15,31 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export const auth = getAuth();
+export const auth = getAuth(app);
+
+export async function nativeLogIn(email: string, password: string) {
+  await signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential: any) => {
+      const uid = userCredential.user.uid;
+      window.localStorage.setItem("uid", uid);
+      store.dispatch(setCurrentUid(uid));
+      store.dispatch(setIsLogIn(true));
+      console.log(`Log in successfully`);
+      console.log(uid);
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(`Error Code: ${errorCode}, Error Msg: ${errorMessage}`);
+    });
+}
+
+export async function nativeSignOut() {
+  signOut(auth)
+    .then(() => {
+      console.log("Sign out successfully!");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}

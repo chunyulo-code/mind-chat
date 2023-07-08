@@ -6,9 +6,9 @@ export async function POST(req: Request) {
   const requestBody = await req.json(); // 解析請求內容為 JSON
   const { keywordToAdd } = requestBody;
   console.log(`keywordToAdd: ${keywordToAdd}`);
-  const userUID = "r3NKJ1L8I0THTH91WuFq";
+  const userUid = "r3NKJ1L8I0THTH91WuFq";
   const selectedMap = "map1";
-  const docRef = doc(db, "users", userUID, "maps", selectedMap);
+  const docRef = doc(db, "users", userUid, "maps", selectedMap);
   const docSnap = await getDoc(docRef);
   const keywords = docSnap.data()?.library;
   const newKeywords = [...keywords, keywordToAdd];

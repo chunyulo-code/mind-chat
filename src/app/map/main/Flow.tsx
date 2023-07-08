@@ -44,6 +44,14 @@ import {
   onConnectHandler
 } from "@/app/utils/reactFlowProps";
 import onLayout from "@/app/utils/onLayout";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  serverTimestamp
+} from "firebase/firestore";
+import { db } from "@/app/utils/firebase";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -57,6 +65,8 @@ export default function Flow() {
   const allResponse = useAppSelector((state) => state.gptResponse.allResponse);
   const gptStatus = useAppSelector((state) => state.gptResponse.gptStatus);
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
+  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+
   const {
     clicked: nodeClicked,
     setClicked: setNodeClicked,
@@ -88,6 +98,41 @@ export default function Flow() {
     });
   };
 
+  async function updateFireStore(
+    selectedMap: string,
+    nodes: Node[],
+    edges: Edge[]
+  ) {
+    const userUid = window.localStorage.getItem("uid");
+    if (userUid) {
+      const userRef = doc(db, "users", userUid);
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const docRef = doc(db, "users", userUid, "maps", selectedMap);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          await updateDoc(docRef, {
+            nodes: nodes,
+            edges: edges,
+            updatedTime: serverTimestamp()
+          });
+          console.log("Updated!!!");
+        }
+        return;
+      }
+      await setDoc(doc(db, "users", userUid, "maps", selectedMap), {
+        nodes: nodes,
+        edges: edges,
+        updatedTime: serverTimestamp()
+      });
+    }
+  }
+  // await setDoc(doc(db, "cities", "LA"), {
+  //   name: "Los Angeles",
+  //   state: "CA",
+  //   country: "USA"
+  // });
+
   useEffect(() => {
     if (gptStatus === GptStatus.DOING) {
       if (allResponse) {
@@ -102,11 +147,15 @@ export default function Flow() {
   }, [allResponse]);
 
   useEffect(() => {
-    if (gptStatus === GptStatus.DONE) {
+    async function handleResult() {
       dispatch(hideQuestionBar());
       dispatch(mergeNodes());
       dispatch(mergeEdges());
-      onLayout("LR");
+      await onLayout("LR");
+      await updateFireStore(selectedMap, nodes, edges);
+    }
+    if (gptStatus === GptStatus.DONE) {
+      handleResult();
     }
   }, [gptStatus]);
 

@@ -9,11 +9,11 @@ export default function RightBar() {
       <div className="z-50 h-1/6 rounded-xl border border-mindchat-secondary shadow-md shadow-slate-700">
         <Spolight />
       </div>
-      <div>Library</div>
+      <div className="mt-4">Library</div>
       <div className="z-50 h-3/6 rounded-xl border border-mindchat-secondary shadow-md shadow-slate-700">
         <Library />
       </div>
-      <div>Output</div>
+      <div className="mt-4">Output</div>
       <div className="z-50 h-2/6 rounded-xl border border-mindchat-secondary shadow-md shadow-slate-700">
         <Output />
       </div>
