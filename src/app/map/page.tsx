@@ -13,6 +13,7 @@ import { ClearCanvas } from "../types/canvasTypes";
 import Images from "./tools/Images";
 import "allotment/dist/style.css";
 import { auth } from "../utils/firebase";
+import HeaderBar from "../components/HeaderBar";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -32,14 +33,17 @@ export default function Page() {
   };
 
   if (user) {
-    console.log(`User is: ${user}`);
+    console.log(`From auth.currentUser: User is: ${user.uid}`);
   } else {
     console.log("No user now");
   }
 
   return (
     <div className="h-screen w-screen">
-      <Allotment className="h-full w-full">
+      <div className="absolute top-0 z-50 h-[70px] w-full ">
+        <HeaderBar />
+      </div>
+      <Allotment className="h-full w-full pt-[70px]">
         <Allotment.Pane snap className="relative h-full">
           <FormatConverter />
           {/* <GptResponse /> */}

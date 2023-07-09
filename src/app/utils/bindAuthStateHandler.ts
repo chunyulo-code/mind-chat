@@ -3,7 +3,7 @@ import { setCurrentUid, setIsLogIn } from "@/redux/features/userInfoSlice";
 import { auth } from "./firebase";
 import { store } from "@/redux/store";
 
-export default function BindAuthHandler() {
+export default function bindAuthStateHandler() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       const uid = user.uid;

@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setGptStatus } from "@/redux/features/outputSlice";
 import { GptStatus } from "@/app/types/outputSliceTypes";
 import { RiMindMap } from "react-icons/ri";
+import { RiArrowLeftSFill } from "react-icons/ri";
 import { AiOutlineMenu } from "react-icons/ai";
 import { MdOutlineOutput } from "react-icons/md";
 import { nanoid } from "nanoid";
@@ -16,6 +17,9 @@ export default function FormatConverter() {
   const dispatch = useAppDispatch();
   const nodes = useAppSelector((state) => state.flow.nodes);
   const edges = useAppSelector((state) => state.flow.edges);
+
+  function toggleLeftBar() {}
+
   function toMindMapHandler() {
     dispatch(toMindMap());
   }
@@ -64,25 +68,44 @@ export default function FormatConverter() {
     }
   }, [messages]);
 
+  const buttonStyle = `flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-mindchat-primary text-white hover:text-mindchat-primary`;
+  const buttons = [
+    {
+      id: "toggleLeftMenu",
+      icon: <RiArrowLeftSFill />,
+      style: `${buttonStyle} border-0 text-2xl`,
+      clickHandler: () => toggleLeftBar()
+    },
+    {
+      id: "toMindMap",
+      icon: <RiMindMap />,
+      style: buttonStyle,
+      clickHandler: () => toMindMapHandler()
+    },
+    {
+      id: "toOutline",
+      icon: <AiOutlineMenu />,
+      style: buttonStyle,
+      clickHandler: () => toOutlineHandler()
+    }
+  ];
+
   return (
     <div className="absolute left-5 top-5 z-50 flex gap-2">
-      <div
-        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-mindchat-primary text-white"
-        onClick={toMindMapHandler}
-      >
-        <RiMindMap />
-      </div>
-      <div
-        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-mindchat-primary text-white"
-        onClick={toOutlineHandler}
-      >
-        <AiOutlineMenu />
-      </div>
+      {buttons.map((button) => (
+        <div
+          key={button.id}
+          className={button.style}
+          onClick={button.clickHandler}
+        >
+          {button.icon}
+        </div>
+      ))}
       <form onSubmit={handleSubmit}>
         <button
           title="Summarize pane"
           type="submit"
-          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-mindchat-primary text-white"
+          className={buttonStyle}
           onClick={summarizePane}
         >
           <MdOutlineOutput />

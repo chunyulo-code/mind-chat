@@ -29,6 +29,7 @@ type dataProps = {
 
 function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
   const dispatch = useAppDispatch();
+  const userUid = window.localStorage.getItem("uid");
 
   const { messages, handleSubmit, setInput } = useChat({
     api: "/api/gpt",
@@ -49,6 +50,7 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
     }
   });
   const nodes = useAppSelector((state) => state.flow.nodes);
+  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const selectedStyle = `border-4 border-mindchat-focus`;
   const normalStyle = "border-2 border-mindchat-primary";
   const toolbarButtonStyle =
@@ -98,16 +100,8 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
     {
       text: "Add to library",
       id: "AddToLibrary",
-      clickHandler: async () => {
-        const response = await fetch(`/api/library/addKeyword`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ keywordToAdd: data.label })
-        });
-
-        if (response.ok) dispatch(addToLibrary(data.label));
+      clickHandler: () => {
+        dispatch(addToLibrary(data.label));
       },
       submitHandler: (e: React.FormEvent<HTMLFormElement>) => e.preventDefault()
     }

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { GoPerson } from "react-icons/go";
 import mindChat from "@/img/mindChat.png";
 import Header from "./components/Header";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -12,7 +13,7 @@ export default function Home() {
           src={mindChat}
           width={1500}
           alt="mindChatBackgroundImage"
-          className="absolute right-[-470px] top-[50px]"
+          className="absolute right-[-470px] top-[70px]"
         />
         <div className="container relative mx-auto h-full">
           <Header />
@@ -25,11 +26,15 @@ export default function Home() {
                 &#8220;Immerse in Visual Thinking: MIND CHAT, Your
                 Gateway&#8221;
               </p>
-              <a href="/map">
-                <button className="mt-[72px] rounded-full border border-mindchat-bg-dark-darker bg-gradient-to-r from-mindchat-primary to-cyan-500 px-10 py-3 text-xl font-semibold text-mindchat-bg-dark hover:from-cyan-300  hover:to-cyan-500  hover:text-white">
-                  Get started
-                </button>
-              </a>
+              <Link href="/map">
+                <div className="mt-[100px] w-[250px] rounded-full bg-gradient-to-r from-mindchat-primary to-cyan-700 p-[2px] text-xl font-normal text-mindchat-bg-dark">
+                  <div className="rounded-full bg-mindchat-bg-dark hover:bg-transparent">
+                    <div className="py-4 text-center text-white">
+                      Get started
+                    </div>
+                  </div>
+                </div>
+              </Link>
             </div>
           </main>
         </div>

@@ -42,7 +42,7 @@ export default function QuestionBar() {
   }, [messages]);
 
   return (
-    <div className="flexitems-center absolute left-1/2 top-1/2 z-50">
+    <div className="absolute left-1/2 top-1/2 z-50 flex items-center">
       <form onSubmit={handleSubmit}>
         <label>
           <input

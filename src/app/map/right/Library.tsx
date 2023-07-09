@@ -13,25 +13,20 @@ import { systemResponseRules } from "@/app/utils/summarizeLibraryRules";
 import { useEffect } from "react";
 import { setLibrary } from "@/redux/features/librarySlice";
 import { TiDeleteOutline } from "react-icons/ti";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/app/utils/firebase";
+import { updateFSLibrary } from "@/app/utils/firestoreUpdater";
 
 export default function Library() {
   const dispatch = useAppDispatch();
   const keywords = useAppSelector((state) => state.library.value);
+  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
 
   async function deleteKeywordHandler(keywordToDelete: string) {
     const newKeywords = keywords.filter(
       (keyword) => keyword !== keywordToDelete
     );
-
-    const response = await fetch(`/api/library/deleteKeyword`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ keywordToDelete: keywordToDelete })
-    });
-
-    if (response.ok) dispatch(setLibrary(newKeywords));
+    dispatch(setLibrary(newKeywords));
   }
 
   const { messages, setInput, handleSubmit } = useChat({
@@ -55,12 +50,19 @@ export default function Library() {
   });
 
   useEffect(() => {
-    async function fetchLibrary() {
-      const res = await fetch("/api/library/getKeywords");
-      const fetchedKeywords = await res.json();
-      dispatch(setLibrary(fetchedKeywords));
+    async function fetchMapLibrary() {
+      const userUid = window.localStorage.getItem("uid");
+      if (userUid) {
+        const docRef = doc(db, "users", userUid, "maps", selectedMap);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          dispatch(setLibrary(docSnap.data().library));
+        } else {
+          console.log("Doc is not existed");
+        }
+      }
     }
-    fetchLibrary();
+    fetchMapLibrary();
   }, []);
 
   useEffect(() => {
@@ -70,23 +72,31 @@ export default function Library() {
     }
   }, [messages]);
 
+  useEffect(() => {
+    console.log(keywords.length);
+    if (keywords.length) {
+      updateFSLibrary();
+    }
+  }, [keywords]);
+
   return (
-    <div className="flex h-full flex-col justify-between overflow-y-scroll p-2  scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-mindchat-secondary scrollbar-thumb-rounded-lg font-normal">
+    <div className="flex h-full flex-col justify-between overflow-y-scroll p-2  font-normal scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-mindchat-secondary scrollbar-thumb-rounded-lg">
       <div className="flex flex-wrap">
-        {keywords.map((keyword) => (
-          <span
-            key={nanoid()}
-            className="group m-1 flex items-center rounded-xl border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
-          >
-            <span>{keyword}</span>
+        {keywords?.length > 0 &&
+          keywords.map((keyword) => (
             <span
-              className="ml-2 hidden cursor-pointer text-lg group-hover:block hover:text-mindchat-primary active:text-mindchat-focus"
-              onClick={() => deleteKeywordHandler(keyword)}
+              key={nanoid()}
+              className="group m-1 flex items-center rounded-xl border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
             >
-              <TiDeleteOutline />
+              <span>{keyword}</span>
+              <span
+                className="ml-2 hidden cursor-pointer text-lg group-hover:block hover:text-mindchat-primary active:text-mindchat-focus"
+                onClick={() => deleteKeywordHandler(keyword)}
+              >
+                <TiDeleteOutline />
+              </span>
             </span>
-          </span>
-        ))}
+          ))}
       </div>
       <div>
         <form onSubmit={handleSubmit}>

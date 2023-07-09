@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { BiSolidUserBadge } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb";
+import { nativeCreateAccount } from "../utils/firebase";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type AccountData = {
   userName: string;
@@ -12,6 +15,8 @@ type AccountData = {
 };
 
 export default function Login() {
+  const router = useRouter();
+
   const [accountData, setAccountData] = useState<AccountData>({
     userName: "",
     email: "",
@@ -19,27 +24,25 @@ export default function Login() {
   });
 
   const labels = [
-    { text: "User name", icon: <BiSolidUserBadge />, id: "userName" },
-    { text: "Email", icon: <MdEmail />, id: "email" },
-    { text: "Password", icon: <TbPassword />, id: "password" }
+    {
+      text: "User name",
+      icon: <BiSolidUserBadge />,
+      id: "userName",
+      type: "text"
+    },
+    { text: "Email", icon: <MdEmail />, id: "email", type: "email" },
+    { text: "Password", icon: <TbPassword />, id: "password", type: "password" }
   ];
 
-  async function createAccount(email: string, password: string) {
-    const response = await fetch(`/api/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email: email, password: password })
-    });
-
-    const data = await response.json();
-    console.log(data);
-  }
-
-  function clickHandler() {
+  async function clickHandler() {
     console.log("clicked");
-    createAccount(accountData.email, accountData.password);
+    await nativeCreateAccount(
+      accountData.userName,
+      accountData.email,
+      accountData.password
+    );
+    window.alert("Signed up successfully");
+    router.push("/map");
   }
 
   return (
@@ -51,17 +54,17 @@ export default function Login() {
       </div>
       <div className="mt-6 text-sm text-mindchat-secondary">
         Alright A Member?
-        <a href="/login">
+        <Link href="/signin">
           <span className="ml-2 cursor-pointer font-medium text-mindchat-primary">
-            Log In
+            Sign In
           </span>
-        </a>
+        </Link>
       </div>
       <div className="mt-12 flex flex-col gap-6">
         {labels.map((label) => (
           <div key={label.text} className="relative ">
             <input
-              type="text"
+              type={label.type}
               id={label.text}
               className="peer block w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-mindchat-primary focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-mindchat-primary"
               value={accountData[label.id]}

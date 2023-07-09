@@ -25,6 +25,8 @@ import {
   addEdges,
   setBufferNodes,
   setBufferEdges,
+  setPrevNodes,
+  setPrevEdges,
   updateNodes,
   updateEdges,
   mergeNodes,
@@ -34,7 +36,9 @@ import {
   onConnect,
   setSelectedNode,
   showQuestionBar,
-  hideQuestionBar
+  hideQuestionBar,
+  setPositionToGenetate,
+  setNewTopicParentNodeId
 } from "@/redux/features/flowSlice";
 import { convertStringToNodes } from "@/app/utils/convertStringToNodes";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
@@ -52,11 +56,19 @@ import {
   serverTimestamp
 } from "firebase/firestore";
 import { db } from "@/app/utils/firebase";
+import {
+  updateFSNodesNEdges,
+  updateFSNodes,
+  updateFSEdges,
+  updateFSDraggedNodes
+} from "@/app/utils/firestoreUpdater";
 
 const nodeTypes = {
   custom: CustomNode,
   customInput: CustomInputNode
 };
+
+const HEADER_BAR_HEIGHT = 70;
 
 export default function Flow() {
   const dispatch = useAppDispatch();
@@ -85,7 +97,7 @@ export default function Flow() {
     setNodeClicked(true);
     setNodePoints({
       x: e.pageX,
-      y: e.pageY
+      y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
 
@@ -94,44 +106,33 @@ export default function Flow() {
     setPaneClicked(true);
     setPanePoints({
       x: e.pageX,
-      y: e.pageY
+      y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
 
-  async function updateFireStore(
-    selectedMap: string,
-    nodes: Node[],
-    edges: Edge[]
-  ) {
-    const userUid = window.localStorage.getItem("uid");
-    if (userUid) {
-      const userRef = doc(db, "users", userUid);
-      const userDoc = await getDoc(userRef);
-      if (userDoc.exists()) {
+  useEffect(() => {
+    async function fetchMapNodesNEdges() {
+      const userUid = window.localStorage.getItem("uid");
+      if (userUid) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          await updateDoc(docRef, {
-            nodes: nodes,
-            edges: edges,
-            updatedTime: serverTimestamp()
-          });
-          console.log("Updated!!!");
+          const fetchedNodes = docSnap.data().nodes;
+          const fetchedEdges = docSnap.data().edges;
+          dispatch(setNodes(fetchedNodes));
+          dispatch(setPrevNodes(fetchedNodes));
+          dispatch(setPrevEdges(fetchedEdges));
+          dispatch(setEdges(fetchedEdges));
+          if (fetchedNodes.length) {
+            dispatch(hideQuestionBar());
+          }
+        } else {
+          console.log("Doc is not existed");
         }
-        return;
       }
-      await setDoc(doc(db, "users", userUid, "maps", selectedMap), {
-        nodes: nodes,
-        edges: edges,
-        updatedTime: serverTimestamp()
-      });
     }
-  }
-  // await setDoc(doc(db, "cities", "LA"), {
-  //   name: "Los Angeles",
-  //   state: "CA",
-  //   country: "USA"
-  // });
+    fetchMapNodesNEdges();
+  }, []);
 
   useEffect(() => {
     if (gptStatus === GptStatus.DOING) {
@@ -147,15 +148,12 @@ export default function Flow() {
   }, [allResponse]);
 
   useEffect(() => {
-    async function handleResult() {
+    if (gptStatus === GptStatus.DONE) {
       dispatch(hideQuestionBar());
       dispatch(mergeNodes());
       dispatch(mergeEdges());
-      await onLayout("LR");
-      await updateFireStore(selectedMap, nodes, edges);
-    }
-    if (gptStatus === GptStatus.DONE) {
-      handleResult();
+      onLayout("LR");
+      updateFSNodesNEdges();
     }
   }, [gptStatus]);
 
@@ -173,6 +171,9 @@ export default function Flow() {
           onConnect={onConnectHandler}
           onNodeContextMenu={onNodeContextMenu}
           onPaneContextMenu={onPaneContextMenu}
+          onNodesDelete={(deletedNodes) => updateFSNodes(deletedNodes)}
+          onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
+          onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
           fitView
         >
           <Controls />

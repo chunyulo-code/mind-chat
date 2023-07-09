@@ -3,19 +3,22 @@ import Image from "next/image";
 import Header from "../components/Header";
 import SignUp from "./SignUp";
 import pad from "@/img/pad.png";
+import Link from "next/link";
 
 export default function page() {
   return (
     <div className="flex h-screen  overflow-hidden bg-gradient-to-tr from-mindchat-bg-dark to-mindchat-bg-dark-darker p-[20px] pr-0 text-white">
       <div className="flex w-1/2 flex-col justify-center px-10">
         <div className="flex flex-col items-center">
-          <Image
-            src="/mindChat.svg"
-            alt="Mind Chat Logo"
-            width={100}
-            height={100}
-            style={{ cursor: "pointer" }}
-          />
+          <Link href="/">
+            <Image
+              src="/mindChat.svg"
+              alt="Mind Chat Logo"
+              width={100}
+              height={100}
+              style={{ cursor: "pointer" }}
+            />
+          </Link>
         </div>
         <SignUp />
       </div>

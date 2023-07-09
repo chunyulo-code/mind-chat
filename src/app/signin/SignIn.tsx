@@ -4,7 +4,9 @@ import { MdEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
 import { ImGithub } from "react-icons/im";
-import { nativeLogIn } from "../utils/firebase";
+import { nativeSignIn } from "../utils/firebase";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type AccountData = {
   email: string;
@@ -12,7 +14,8 @@ type AccountData = {
   [key: string]: string; // Specify other keys if needed
 };
 
-export default function Login() {
+export default function SignIn() {
+  const router = useRouter();
   const [accountData, setAccountData] = useState<AccountData>({
     email: "",
     password: ""
@@ -23,38 +26,28 @@ export default function Login() {
     { text: "Password", icon: <TbPassword />, id: "password", type: "password" }
   ];
 
-  // async function logIn(email: string, password: string) {
-  //   const response = await fetch(`/api/auth/login`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify({ email: email, password: password })
-  //   });
-
-  //   const data = await response.json();
-  //   console.log(data);
-  // }
-
-  function clickHandler() {
+  async function clickHandler() {
     console.log("clicked");
-    nativeLogIn(accountData.email, accountData.password);
+    await nativeSignIn(accountData.email, accountData.password);
+    console.log(`Ready redirect to /map`);
+    window.alert("Signed in successfully");
+    router.push("/map");
   }
 
   return (
     <div className="rounded-2xl px-[80px] py-[30px] text-white">
       <div className="font-medium text-mindchat-secondary">START FOR FREE</div>
       <div className="mt-7 text-5xl font-black">
-        LOG IN
+        SIGN IN
         <span className="ml-2 text-5xl text-mindchat-primary">.</span>
       </div>
       <div className="mt-6 text-sm text-mindchat-secondary">
         Not A Member Yet?
-        <a href="/signup">
+        <Link href="/signup">
           <span className="ml-2 cursor-pointer font-medium text-mindchat-primary">
             Sign Up
           </span>
-        </a>
+        </Link>
       </div>
       <div className="mt-8 flex flex-col gap-8">
         <div className="flex items-center justify-between">
@@ -65,13 +58,13 @@ export default function Login() {
           <div className="h-[1px] w-2/5 bg-gray-700"></div>
         </div>
         <div className="flex gap-2">
-          <button className="flex w-full items-center justify-center gap-4 rounded-lg border border-gray-600 py-3 hover:bg-red-400">
+          <button className="flex w-full items-center justify-center gap-5 rounded-lg border border-gray-600 py-3 hover:bg-red-400">
             <span>
               <FcGoogle />
             </span>
             <span className="text-sm">Google</span>
           </button>
-          <button className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-600 py-3 hover:bg-black">
+          <button className="flex w-full items-center justify-center gap-5 rounded-lg border border-gray-600 py-3 hover:bg-black">
             <span>
               <ImGithub />
             </span>
@@ -116,7 +109,7 @@ export default function Login() {
               className="rounded-full bg-mindchat-primary px-10 py-3 text-sm font-medium text-mindchat-bg-dark"
               onClick={clickHandler}
             >
-              LOG IN
+              SIGN IN
             </button>
           </div>
         </div>
