@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect, ReactElement } from "react";
 import { ClearCanvas } from "../../types/canvasTypes";
 import { useAppDispatch } from "@/redux/hooks";

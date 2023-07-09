@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect } from "react";
 import { toMindMap, toOutline } from "@/redux/features/displayFormatSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -91,7 +92,7 @@ export default function FormatConverter() {
   ];
 
   return (
-    <div className="absolute left-5 top-5 z-50 flex gap-2">
+    <div className="absolute left-5 top-5 z-50 flex gap-2 rounded-lg bg-mindchat-bg-dark-darker px-5 py-2 shadow-sm shadow-gray-900">
       {buttons.map((button) => (
         <div
           key={button.id}

@@ -63,7 +63,7 @@ export default function Library() {
       }
     }
     fetchMapLibrary();
-  }, []);
+  }, [selectedMap]);
 
   useEffect(() => {
     if (messages && messages.length !== 1) {

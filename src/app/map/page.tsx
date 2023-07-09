@@ -4,6 +4,7 @@ import { Allotment } from "allotment";
 import Outline from "./main/Outline";
 import Flow from "./main/Flow";
 import Canvas from "./main/Canvas";
+import LeftBar from "./left/LeftBar";
 import RightBar from "./right/RightBar";
 import ToolBar from "./tools/ToolBar";
 import FormatConverter from "./tools/FormatConverter";
@@ -44,6 +45,9 @@ export default function Page() {
         <HeaderBar />
       </div>
       <Allotment className="h-full w-full pt-[70px]">
+        <Allotment.Pane preferredSize={180} minSize={0}>
+          <LeftBar />
+        </Allotment.Pane>
         <Allotment.Pane snap className="relative h-full">
           <FormatConverter />
           {/* <GptResponse /> */}

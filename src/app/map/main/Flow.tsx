@@ -123,7 +123,7 @@ export default function Flow() {
           dispatch(setPrevNodes(fetchedNodes));
           dispatch(setPrevEdges(fetchedEdges));
           dispatch(setEdges(fetchedEdges));
-          if (fetchedNodes.length) {
+          if (fetchedNodes?.length) {
             dispatch(hideQuestionBar());
           }
         } else {
@@ -132,7 +132,7 @@ export default function Flow() {
       }
     }
     fetchMapNodesNEdges();
-  }, []);
+  }, [selectedMap]);
 
   useEffect(() => {
     if (gptStatus === GptStatus.DOING) {
@@ -159,7 +159,7 @@ export default function Flow() {
 
   return (
     <ReactFlowProvider>
-      <div className="absolute left-0 top-0 h-full w-full">
+      <div className="absolute left-0 top-0 flex h-full w-full">
         {isAllowAsked && <QuestionBar />}
         <ReactFlow
           nodeTypes={nodeTypes}
