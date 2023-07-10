@@ -50,7 +50,7 @@ export default function Login() {
   return (
     <div className="rounded-2xl px-[80px] py-[40px] text-white">
       <div className="font-medium text-mindchat-secondary">START FOR FREE</div>
-      <div className="mt-7 text-5xl font-black">
+      <div className="mt-7 text-[52px] font-black leading-[60px]">
         Create new account
         <span className="ml-2 text-5xl text-mindchat-primary">.</span>
       </div>
@@ -62,7 +62,7 @@ export default function Login() {
           </span>
         </Link>
       </div>
-      <div className="mt-12 flex flex-col gap-6">
+      <div className="mt-[56px] flex flex-col gap-6">
         {labels.map((label) => (
           <div key={label.text} className="relative ">
             <input
