@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Montserrat } from "next/font/google";
 import { Providers } from "@/redux/provider";
-import BindAuthStateHandler from "./utils/bindAuthStateHandler";
+import BindAuthStateHandler from "./utils/BindAuthStateHandler";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
