@@ -107,6 +107,9 @@ export const flow = createSlice({
     setPositionToGenetate: (state, action) => {
       state.positionToGenerate = action.payload;
     },
+    updatePositionToGenetate: (state) => {
+      state.positionToGenerate.y = state.positionToGenerate.y + 10;
+    },
     setNewTopicParentNodeId: (state, action) => {
       state.newTopicParentNodeId = action.payload;
     }
@@ -134,6 +137,7 @@ export const {
   showQuestionBar,
   hideQuestionBar,
   setPositionToGenetate,
+  updatePositionToGenetate,
   setNewTopicParentNodeId
 } = flow.actions;
 

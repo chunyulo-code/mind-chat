@@ -29,7 +29,6 @@ type dataProps = {
 
 function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
   const dispatch = useAppDispatch();
-  const userUid = window.localStorage.getItem("uid");
 
   const { messages, handleSubmit, setInput } = useChat({
     api: "/api/gpt",

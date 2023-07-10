@@ -38,6 +38,7 @@ import {
   showQuestionBar,
   hideQuestionBar,
   setPositionToGenetate,
+  updatePositionToGenetate,
   setNewTopicParentNodeId
 } from "@/redux/features/flowSlice";
 import { convertStringToNodes } from "@/app/utils/convertStringToNodes";
@@ -47,7 +48,7 @@ import {
   edgesChangeHandler,
   onConnectHandler
 } from "@/app/utils/reactFlowProps";
-import onLayout from "@/app/utils/onLayout";
+import { layoutNodes, layoutBufferNodes } from "@/app/utils/onLayout";
 import {
   doc,
   getDoc,
@@ -74,6 +75,8 @@ export default function Flow() {
   const dispatch = useAppDispatch();
   const nodes = useAppSelector((state) => state.flow.nodes);
   const edges = useAppSelector((state) => state.flow.edges);
+  const bufferNodes = useAppSelector((state) => state.flow.bufferNodes);
+  const bufferEdges = useAppSelector((state) => state.flow.bufferEdges);
   const allResponse = useAppSelector((state) => state.gptResponse.allResponse);
   const gptStatus = useAppSelector((state) => state.gptResponse.gptStatus);
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
@@ -152,7 +155,7 @@ export default function Flow() {
       dispatch(hideQuestionBar());
       dispatch(mergeNodes());
       dispatch(mergeEdges());
-      onLayout("LR");
+      layoutNodes("LR");
       updateFSNodesNEdges();
     }
   }, [gptStatus]);
@@ -174,7 +177,12 @@ export default function Flow() {
           onNodesDelete={(deletedNodes) => updateFSNodes(deletedNodes)}
           onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
           onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
+          onNodeDoubleClick={(e, Node) => {
+            console.log(e);
+            console.log(Node);
+          }}
           fitView
+          minZoom={0.1}
         >
           <Controls />
           <MiniMap />

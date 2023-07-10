@@ -8,11 +8,14 @@ import { RiMindMap } from "react-icons/ri";
 import { RiArrowLeftSFill } from "react-icons/ri";
 import { AiOutlineMenu } from "react-icons/ai";
 import { MdOutlineOutput } from "react-icons/md";
+import { TbLayout2 } from "react-icons/tb";
 import { nanoid } from "nanoid";
 import { useChat } from "ai/react";
 import { systemResponseRules } from "@/app/utils/summarizePaneRules";
 import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
 import { emptyOutput, setOutput } from "@/redux/features/outputSlice";
+import { layoutNodes } from "@/app/utils/onLayout";
+import { updateFSNodesNEdges } from "@/app/utils/firestoreUpdater";
 
 export default function FormatConverter() {
   const dispatch = useAppDispatch();
@@ -88,6 +91,15 @@ export default function FormatConverter() {
       icon: <AiOutlineMenu />,
       style: buttonStyle,
       clickHandler: () => toOutlineHandler()
+    },
+    {
+      id: "reLayout",
+      icon: <TbLayout2 />,
+      style: buttonStyle,
+      clickHandler: () => {
+        layoutNodes("LR");
+        updateFSNodesNEdges();
+      }
     }
   ];
 

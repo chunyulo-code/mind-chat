@@ -9,15 +9,11 @@ export async function POST(req: Request) {
   console.log("=====!!!=====");
   const userUID = "9TjkIyfzR6VmZyrBLX9f9348nni1";
   const selectedMap = "map3";
+  const docRef = doc(db, "users", userUID, "maps", selectedMap);
   // try {
-  //   const docRef = doc(db, "users", userUID, "maps", selectedMap);
   //   const docSnap = await getDoc(docRef);
   //   if (docSnap.exists()) {
   //     console.log(`docData: ${docSnap.data()}`);
-  //     const keywords = docSnap.data()?.keywords;
-  //     const newKeywords = [...keywords, keywordToAdd];
-  //     await updateDoc(docRef, { library: newKeywords });
-  //     console.log("Updated!!!");
   //   } else {
   //     console.log("DocSnap doesn't exist");
   //   }
@@ -25,5 +21,5 @@ export async function POST(req: Request) {
   //   console.error(error);
   // }
 
-  return new NextResponse("Keyword is added");
+  return new NextResponse(`Keyword is added: ${keywordToAdd}`);
 }
