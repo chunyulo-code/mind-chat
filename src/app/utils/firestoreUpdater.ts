@@ -20,7 +20,6 @@ export async function updateFSNodesNEdges() {
     const selectedMap = store.getState().userInfo.selectedMap;
     const userDocRef = doc(db, "users", userUid);
     const userDocSnap = await getDoc(userDocRef);
-    console.log(userDocSnap.exists());
     if (userDocSnap.exists()) {
       const mapDocRef = doc(db, "users", userUid, "maps", selectedMap);
       const mapDocSnap = await getDoc(mapDocRef);
@@ -32,7 +31,7 @@ export async function updateFSNodesNEdges() {
           edges: edges,
           updatedTime: serverTimestamp()
         });
-        console.log("Updated!!!");
+        console.log("updateFSNodesNEdges Updated!!!");
       }
       return;
     }
@@ -41,7 +40,6 @@ export async function updateFSNodesNEdges() {
       email: auth.currentUser?.email,
       userName: auth.currentUser?.displayName
     });
-    console.log(db, "users", userUid, "maps", selectedMap);
     const nodes = store.getState().flow.nodes;
     const edges = store.getState().flow.edges;
     await setDoc(doc(db, "users", userUid, "maps", selectedMap), {
@@ -68,9 +66,6 @@ export async function updateFSNodes(deletedNodes: Node[]) {
         const updatedNodes = nodes.filter(
           (node) => !deletedNodes.includes(node)
         );
-        console.log(
-          `nodes: ${nodes.length}, updatedNodes: ${updatedNodes.length}`
-        );
         await updateDoc(mapDocRef, {
           nodes: updatedNodes,
           updatedTime: serverTimestamp()
@@ -95,9 +90,6 @@ export async function updateFSEdges(deletedEdges: Edge[]) {
         const edges = store.getState().flow.edges;
         const updatedEdges = edges.filter(
           (edge) => !deletedEdges.includes(edge)
-        );
-        console.log(
-          `edges: ${edges.length}, updatedEdges: ${updatedEdges.length}`
         );
         await updateDoc(mapDocRef, {
           edges: updatedEdges,
@@ -127,9 +119,6 @@ export async function updateFSDraggedNodes(draggedNodes: Node[]) {
           );
           return matchedNode ? matchedNode : node;
         });
-        console.log(
-          `nodes: ${nodes.length}, updatedNodes: ${updatedNodes.length}`
-        );
         await updateDoc(mapDocRef, {
           nodes: updatedNodes,
           updatedTime: serverTimestamp()
@@ -144,15 +133,13 @@ export async function updateFSDraggedNodes(draggedNodes: Node[]) {
 
 export async function updateFSLibrary() {
   if (userUid) {
-    console.log("updateFSLibrary");
     const selectedMap = store.getState().userInfo.selectedMap;
     const mapDocRef = doc(db, "users", userUid, "maps", selectedMap);
-    console.log(userUid);
     const mapDocSnap = await getDoc(mapDocRef);
     if (mapDocSnap.exists()) {
       const keywords = store.getState().library.value;
       await updateDoc(mapDocRef, { library: keywords });
-      console.log(mapDocSnap.data());
+      console.log("updateFSLibrary updated");
     }
   }
 }

@@ -58,7 +58,6 @@ export default function Library() {
           const data = doc.data();
           if (data) {
             dispatch(setLibrary(data.library));
-            console.log(data.library);
           }
         }
       );
@@ -89,7 +88,6 @@ export default function Library() {
   }, [messages]);
 
   useEffect(() => {
-    console.log(keywords.length);
     if (keywords.length) {
       updateFSLibrary();
     }

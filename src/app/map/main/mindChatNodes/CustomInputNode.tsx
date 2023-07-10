@@ -35,7 +35,6 @@ function CustomInputNode({ id, data, selected }: CustomInputNodeProps) {
         selected ? selectedStyle : normalStyle
       }`}
     >
-      {" "}
       <NodeToolbar
         isVisible={data.toolbarVisible}
         position={Position.Top}
