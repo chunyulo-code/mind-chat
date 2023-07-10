@@ -7,19 +7,16 @@ export async function POST(req: Request) {
   const { keywordToAdd } = requestBody;
   console.log(`myKeyWord: ${keywordToAdd}`);
   console.log("=====!!!=====");
-  const userUID = "9TjkIyfzR6VmZyrBLX9f9348nni1";
+  const userUid = "9TjkIyfzR6VmZyrBLX9f9348nni1";
   const selectedMap = "map3";
-  const docRef = doc(db, "users", userUID, "maps", selectedMap);
-  // try {
-  //   const docSnap = await getDoc(docRef);
-  //   if (docSnap.exists()) {
-  //     console.log(`docData: ${docSnap.data()}`);
-  //   } else {
-  //     console.log("DocSnap doesn't exist");
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  // }
-
+  const docRef = doc(db, "users", userUid, "maps", selectedMap);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const keywords = docSnap.data().library;
+    const newKeywords = [...keywords, keywordToAdd];
+    await updateDoc(docRef, { library: newKeywords });
+  } else {
+    console.log("DocSnap doesn't exist");
+  }
   return new NextResponse(`Keyword is added: ${keywordToAdd}`);
 }

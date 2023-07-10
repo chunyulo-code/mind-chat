@@ -4,7 +4,7 @@ import { MdEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
 import { ImGithub } from "react-icons/im";
-import { nativeSignIn } from "../utils/firebase";
+import { nativeSignIn } from "../utils/firebaseAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

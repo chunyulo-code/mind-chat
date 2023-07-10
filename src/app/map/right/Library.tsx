@@ -13,9 +13,11 @@ import { systemResponseRules } from "@/app/utils/summarizeLibraryRules";
 import { useEffect } from "react";
 import { setLibrary } from "@/redux/features/librarySlice";
 import { TiDeleteOutline } from "react-icons/ti";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/app/utils/firebase";
 import { updateFSLibrary } from "@/app/utils/firestoreUpdater";
+
+const userUid = window.localStorage.getItem("uid");
 
 export default function Library() {
   const dispatch = useAppDispatch();
@@ -48,6 +50,22 @@ export default function Library() {
       dispatch(setGptStatus(GptStatus.DONE));
     }
   });
+
+  useEffect(() => {
+    if (userUid) {
+      const unsub = onSnapshot(
+        doc(db, "users", userUid, "maps", selectedMap),
+        (doc) => {
+          const data = doc.data();
+          if (data) {
+            dispatch(setLibrary(data.library));
+            console.log(data.library);
+          }
+        }
+      );
+      return () => unsub();
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchMapLibrary() {

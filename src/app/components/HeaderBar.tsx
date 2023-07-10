@@ -3,7 +3,7 @@ import Image from "next/image";
 import { GoPerson } from "react-icons/go";
 import { FiLogOut } from "react-icons/fi";
 import Link from "next/link";
-import { nativeSignOut } from "../utils/firebase";
+import { nativeSignOut } from "../utils/firebaseAuth";
 
 export default function HeaderBar() {
   const listItems = [

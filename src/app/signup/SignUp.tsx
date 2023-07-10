@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { BiSolidUserBadge } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb";
-import { nativeCreateAccount } from "../utils/firebase";
+import { nativeCreateAccount } from "../utils/firebaseAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
