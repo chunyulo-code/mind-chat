@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Montserrat } from "next/font/google";
 import { Providers } from "@/redux/provider";
+import BindAuthStateHandler from "./utils/bindAuthStateHandler";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -22,7 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <BindAuthStateHandler />
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -41,7 +41,9 @@ export default function Login() {
       accountData.email,
       accountData.password
     );
-    window.alert("Signed up successfully");
+    if (typeof window !== "undefined") {
+      window.alert("Signed up successfully");
+    }
     router.push("/map");
   }
 

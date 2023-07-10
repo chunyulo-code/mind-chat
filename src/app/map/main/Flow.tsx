@@ -56,7 +56,7 @@ import {
   setDoc,
   serverTimestamp
 } from "firebase/firestore";
-import { db } from "@/app/utils/firebase";
+import { db, auth } from "@/app/utils/firebase";
 import {
   updateFSNodesNEdges,
   updateFSNodes,
@@ -115,7 +115,7 @@ export default function Flow() {
 
   useEffect(() => {
     async function fetchMapNodesNEdges() {
-      const userUid = window.localStorage.getItem("uid");
+      const userUid = auth.currentUser?.uid;
       if (userUid) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);

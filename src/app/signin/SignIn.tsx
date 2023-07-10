@@ -30,7 +30,9 @@ export default function SignIn() {
     console.log("clicked");
     await nativeSignIn(accountData.email, accountData.password);
     console.log(`Ready redirect to /map`);
-    window.alert("Signed in successfully");
+    if (typeof window !== "undefined") {
+      window.alert("Signed in successfully");
+    }
     router.push("/map");
   }
 

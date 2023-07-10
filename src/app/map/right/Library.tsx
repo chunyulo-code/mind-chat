@@ -14,15 +14,14 @@ import { useEffect } from "react";
 import { setLibrary } from "@/redux/features/librarySlice";
 import { TiDeleteOutline } from "react-icons/ti";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import { db } from "@/app/utils/firebase";
+import { db, auth } from "@/app/utils/firebase";
 import { updateFSLibrary } from "@/app/utils/firestoreUpdater";
-
-const userUid = window.localStorage.getItem("uid");
 
 export default function Library() {
   const dispatch = useAppDispatch();
   const keywords = useAppSelector((state) => state.library.value);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+  const userUid = auth.currentUser?.uid;
 
   async function deleteKeywordHandler(keywordToDelete: string) {
     const newKeywords = keywords.filter(
@@ -69,7 +68,6 @@ export default function Library() {
 
   useEffect(() => {
     async function fetchMapLibrary() {
-      const userUid = window.localStorage.getItem("uid");
       if (userUid) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);

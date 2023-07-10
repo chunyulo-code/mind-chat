@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setAllMaps, setSelectedMap } from "@/redux/features/userInfoSlice";
 import { nanoid } from "nanoid";
 import { FSAddNewMap } from "@/app/utils/firestoreUpdater";
+import { auth } from "@/app/utils/firebase";
 
 export default function LeftBar() {
   const dispatch = useAppDispatch();
@@ -15,7 +16,7 @@ export default function LeftBar() {
 
   useEffect(() => {
     async function fetchUserMaps() {
-      const userUid = window.localStorage.getItem("uid");
+      const userUid = auth.currentUser?.uid;
       if (userUid) {
         const querySnapshot = await getDocs(
           collection(db, "users", userUid, "maps")
