@@ -25,6 +25,8 @@ import {
   addEdges,
   setBufferNodes,
   setBufferEdges,
+  setPrevNodes,
+  setPrevEdges,
   updateNodes,
   updateEdges,
   mergeNodes,
@@ -34,7 +36,10 @@ import {
   onConnect,
   setSelectedNode,
   showQuestionBar,
-  hideQuestionBar
+  hideQuestionBar,
+  setPositionToGenetate,
+  updatePositionToGenetate,
+  setNewTopicParentNodeId
 } from "@/redux/features/flowSlice";
 import { convertStringToNodes } from "@/app/utils/convertStringToNodes";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
@@ -43,20 +48,40 @@ import {
   edgesChangeHandler,
   onConnectHandler
 } from "@/app/utils/reactFlowProps";
-import onLayout from "@/app/utils/onLayout";
+import { layoutNodes, layoutBufferNodes } from "@/app/utils/onLayout";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  serverTimestamp
+} from "firebase/firestore";
+import { db, auth } from "@/app/utils/firebase";
+import {
+  updateFSNodesNEdges,
+  updateFSNodes,
+  updateFSEdges,
+  updateFSDraggedNodes
+} from "@/app/utils/firestoreUpdater";
 
 const nodeTypes = {
   custom: CustomNode,
   customInput: CustomInputNode
 };
 
+const HEADER_BAR_HEIGHT = 70;
+
 export default function Flow() {
   const dispatch = useAppDispatch();
   const nodes = useAppSelector((state) => state.flow.nodes);
   const edges = useAppSelector((state) => state.flow.edges);
+  const bufferNodes = useAppSelector((state) => state.flow.bufferNodes);
+  const bufferEdges = useAppSelector((state) => state.flow.bufferEdges);
   const allResponse = useAppSelector((state) => state.gptResponse.allResponse);
   const gptStatus = useAppSelector((state) => state.gptResponse.gptStatus);
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
+  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+
   const {
     clicked: nodeClicked,
     setClicked: setNodeClicked,
@@ -75,7 +100,7 @@ export default function Flow() {
     setNodeClicked(true);
     setNodePoints({
       x: e.pageX,
-      y: e.pageY
+      y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
 
@@ -84,9 +109,33 @@ export default function Flow() {
     setPaneClicked(true);
     setPanePoints({
       x: e.pageX,
-      y: e.pageY
+      y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
+
+  useEffect(() => {
+    async function fetchMapNodesNEdges() {
+      const userUid = auth.currentUser?.uid;
+      if (userUid) {
+        const docRef = doc(db, "users", userUid, "maps", selectedMap);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const fetchedNodes = docSnap.data().nodes;
+          const fetchedEdges = docSnap.data().edges;
+          dispatch(setNodes(fetchedNodes));
+          dispatch(setPrevNodes(fetchedNodes));
+          dispatch(setPrevEdges(fetchedEdges));
+          dispatch(setEdges(fetchedEdges));
+          if (fetchedNodes?.length) {
+            dispatch(hideQuestionBar());
+          }
+        } else {
+          console.log("Doc is not existed");
+        }
+      }
+    }
+    fetchMapNodesNEdges();
+  }, [selectedMap]);
 
   useEffect(() => {
     if (gptStatus === GptStatus.DOING) {
@@ -106,13 +155,14 @@ export default function Flow() {
       dispatch(hideQuestionBar());
       dispatch(mergeNodes());
       dispatch(mergeEdges());
-      onLayout("LR");
+      layoutNodes("LR");
+      updateFSNodesNEdges();
     }
   }, [gptStatus]);
 
   return (
     <ReactFlowProvider>
-      <div className="absolute left-0 top-0 h-full w-full">
+      <div className="absolute left-0 top-0 flex h-full w-full">
         {isAllowAsked && <QuestionBar />}
         <ReactFlow
           nodeTypes={nodeTypes}
@@ -124,7 +174,15 @@ export default function Flow() {
           onConnect={onConnectHandler}
           onNodeContextMenu={onNodeContextMenu}
           onPaneContextMenu={onPaneContextMenu}
+          onNodesDelete={(deletedNodes) => updateFSNodes(deletedNodes)}
+          onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
+          onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
+          onNodeDoubleClick={(e, Node) => {
+            console.log(e);
+            console.log(Node);
+          }}
           fitView
+          minZoom={0.1}
         >
           <Controls />
           <MiniMap />

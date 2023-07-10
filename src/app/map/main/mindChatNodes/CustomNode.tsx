@@ -49,6 +49,7 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
     }
   });
   const nodes = useAppSelector((state) => state.flow.nodes);
+  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const selectedStyle = `border-4 border-mindchat-focus`;
   const normalStyle = "border-2 border-mindchat-primary";
   const toolbarButtonStyle =

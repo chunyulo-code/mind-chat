@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nanoid } from "nanoid";
 import { useReactFlow, Node } from "reactflow";
 import { addToLibrary } from "@/redux/features/librarySlice";
+import { updateFSNodesNEdges } from "@/app/utils/firestoreUpdater";
 
 type Points = {
   x: number;
@@ -37,6 +38,7 @@ export default function NodeContextMenu({ points }: NodeContextMenuProps) {
         (node: Node) => node.id !== selectedNode.id
       );
       dispatch(setNodes(filteredNodes));
+      updateFSNodesNEdges();
     }
   }
 

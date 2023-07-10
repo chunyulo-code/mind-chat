@@ -4,7 +4,7 @@ import { Node, Edge, Position } from "reactflow";
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-const nodeWidth = 200;
+const nodeWidth = 300;
 const nodeHeight = 35;
 
 export const getLayoutedElements = (

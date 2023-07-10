@@ -61,6 +61,12 @@ export const flow = createSlice({
     setBufferEdges: (state, action) => {
       state.bufferEdges = action.payload;
     },
+    setPrevNodes: (state, action) => {
+      state.prevNodes = action.payload;
+    },
+    setPrevEdges: (state, action) => {
+      state.prevEdges = action.payload;
+    },
     updateNodes: (state) => {
       state.nodes = state.prevNodes.concat(state.bufferNodes);
     },
@@ -101,6 +107,9 @@ export const flow = createSlice({
     setPositionToGenetate: (state, action) => {
       state.positionToGenerate = action.payload;
     },
+    updatePositionToGenetate: (state) => {
+      state.positionToGenerate.y = state.positionToGenerate.y + 10;
+    },
     setNewTopicParentNodeId: (state, action) => {
       state.newTopicParentNodeId = action.payload;
     }
@@ -115,6 +124,8 @@ export const {
   addEdges,
   setBufferNodes,
   setBufferEdges,
+  setPrevNodes,
+  setPrevEdges,
   updateNodes,
   updateEdges,
   mergeNodes,
@@ -126,6 +137,7 @@ export const {
   showQuestionBar,
   hideQuestionBar,
   setPositionToGenetate,
+  updatePositionToGenetate,
   setNewTopicParentNodeId
 } = flow.actions;
 

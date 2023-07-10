@@ -11,10 +11,24 @@ import {
 import { nanoid } from "nanoid";
 import { systemResponseRules } from "@/app/utils/summarizeLibraryRules";
 import { useEffect } from "react";
+import { setLibrary } from "@/redux/features/librarySlice";
+import { TiDeleteOutline } from "react-icons/ti";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db, auth } from "@/app/utils/firebase";
+import { updateFSLibrary } from "@/app/utils/firestoreUpdater";
 
 export default function Library() {
   const dispatch = useAppDispatch();
   const keywords = useAppSelector((state) => state.library.value);
+  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+  const userUid = auth.currentUser?.uid;
+
+  async function deleteKeywordHandler(keywordToDelete: string) {
+    const newKeywords = keywords.filter(
+      (keyword) => keyword !== keywordToDelete
+    );
+    dispatch(setLibrary(newKeywords));
+  }
 
   const { messages, setInput, handleSubmit } = useChat({
     api: "/api/gpt",
@@ -37,23 +51,68 @@ export default function Library() {
   });
 
   useEffect(() => {
+    if (userUid) {
+      const unsub = onSnapshot(
+        doc(db, "users", userUid, "maps", selectedMap),
+        (doc) => {
+          const data = doc.data();
+          if (data) {
+            dispatch(setLibrary(data.library));
+            console.log(data.library);
+          }
+        }
+      );
+      return () => unsub();
+    }
+  }, []);
+
+  useEffect(() => {
+    async function fetchMapLibrary() {
+      if (userUid) {
+        const docRef = doc(db, "users", userUid, "maps", selectedMap);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          dispatch(setLibrary(docSnap.data().library));
+        } else {
+          console.log("Doc is not existed");
+        }
+      }
+    }
+    fetchMapLibrary();
+  }, [selectedMap]);
+
+  useEffect(() => {
     if (messages && messages.length !== 1) {
       console.log(messages.slice(-1)[0].content);
       dispatch(setOutput(messages.slice(-1)[0].content));
     }
   }, [messages]);
 
+  useEffect(() => {
+    console.log(keywords.length);
+    if (keywords.length) {
+      updateFSLibrary();
+    }
+  }, [keywords]);
+
   return (
-    <div className="flex h-full flex-col justify-between overflow-y-scroll p-2  scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-mindchat-secondary scrollbar-thumb-rounded-lg">
+    <div className="flex h-full flex-col justify-between overflow-y-scroll p-2  font-normal scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-mindchat-secondary scrollbar-thumb-rounded-lg">
       <div className="flex flex-wrap">
-        {keywords.map((keyword) => (
-          <span
-            key={keyword}
-            className="m-1 rounded-full border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
-          >
-            {keyword}
-          </span>
-        ))}
+        {keywords?.length > 0 &&
+          keywords.map((keyword) => (
+            <span
+              key={nanoid()}
+              className="group m-1 flex items-center rounded-xl border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
+            >
+              <span>{keyword}</span>
+              <span
+                className="ml-2 hidden cursor-pointer text-lg group-hover:block hover:text-mindchat-primary active:text-mindchat-focus"
+                onClick={() => deleteKeywordHandler(keyword)}
+              >
+                <TiDeleteOutline />
+              </span>
+            </span>
+          ))}
       </div>
       <div>
         <form onSubmit={handleSubmit}>

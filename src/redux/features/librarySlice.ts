@@ -14,9 +14,12 @@ export const library = createSlice({
   reducers: {
     addToLibrary: (state, action: PayloadAction<string>) => {
       state.value.push(action.payload);
+    },
+    setLibrary: (state, action) => {
+      state.value = action.payload;
     }
   }
 });
 
-export const { addToLibrary } = library.actions;
+export const { addToLibrary, setLibrary } = library.actions;
 export default library.reducer;

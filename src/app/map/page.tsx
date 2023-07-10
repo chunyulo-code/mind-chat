@@ -1,9 +1,10 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Allotment } from "allotment";
 import Outline from "./main/Outline";
 import Flow from "./main/Flow";
 import Canvas from "./main/Canvas";
+import LeftBar from "./left/LeftBar";
 import RightBar from "./right/RightBar";
 import ToolBar from "./tools/ToolBar";
 import FormatConverter from "./tools/FormatConverter";
@@ -12,13 +13,15 @@ import { DisplayFormatNumber } from "../types/displayFormatSliceTypes";
 import { ClearCanvas } from "../types/canvasTypes";
 import Images from "./tools/Images";
 import "allotment/dist/style.css";
-import GptResponse from "./main/GptResponse";
+import { auth } from "../utils/firebase";
+import HeaderBar from "../components/HeaderBar";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState("#42f0ed");
   const formatValue = useAppSelector((state) => state.dataFormat.value);
+  const user = auth.currentUser;
 
   const clearCanvas: ClearCanvas = () => {
     const canvas = canvasRef.current;
@@ -30,9 +33,21 @@ export default function Page() {
     }
   };
 
+  if (user) {
+    console.log(`From auth.currentUser: User is: ${user.uid}`);
+  } else {
+    console.log("No user now");
+  }
+
   return (
     <div className="h-screen w-screen">
-      <Allotment className="h-full w-full">
+      <div className="absolute top-0 z-50 h-[70px] w-full ">
+        <HeaderBar />
+      </div>
+      <Allotment className="h-full w-full pt-[70px]">
+        <Allotment.Pane preferredSize={180} minSize={0}>
+          <LeftBar />
+        </Allotment.Pane>
         <Allotment.Pane snap className="relative h-full">
           <FormatConverter />
           {/* <GptResponse /> */}

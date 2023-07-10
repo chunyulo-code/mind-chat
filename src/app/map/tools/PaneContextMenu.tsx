@@ -2,6 +2,7 @@
 
 import {
   addNode,
+  hideQuestionBar,
   setNewTopicParentNodeId,
   showQuestionBar
 } from "@/redux/features/flowSlice";
@@ -55,12 +56,19 @@ export default function PaneContextMenu({ points }: PaneContextMenuProps) {
         dispatch(setNewTopicParentNodeId(null));
         dispatch(showQuestionBar());
       }
+    },
+    {
+      text: "Hide bar",
+      id: "HideQuestionBar",
+      clickHandler: () => {
+        dispatch(hideQuestionBar());
+      }
     }
   ];
 
   return (
     <div
-      className="absolute w-[160px] rounded-md bg-mindchat-bg-dark shadow-md shadow-gray-900"
+      className="absolute w-[165px] rounded-md bg-mindchat-bg-dark shadow-md shadow-gray-900"
       style={{ top: `${points.y}px`, left: `${points.x}px` }}
     >
       <ul className="list-none p-2">

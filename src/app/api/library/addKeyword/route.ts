@@ -1,18 +1,22 @@
 import { NextResponse } from "next/server";
+import { getDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "@/app/utils/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 export async function POST(req: Request) {
   const requestBody = await req.json(); // 解析請求內容為 JSON
-  const { keyword } = requestBody;
-  console.log(`keywordToAdd: ${keyword}`);
-  const userUID = "r3NKJ1L8I0THTH91WuFq";
-  const selectedMap = "map1";
-  const docRef = doc(db, "users", userUID, "maps", selectedMap);
+  const { keywordToAdd } = requestBody;
+  console.log(`myKeyWord: ${keywordToAdd}`);
+  console.log("=====!!!=====");
+  const userUid = "9TjkIyfzR6VmZyrBLX9f9348nni1";
+  const selectedMap = "map3";
+  const docRef = doc(db, "users", userUid, "maps", selectedMap);
   const docSnap = await getDoc(docRef);
-  const keywords = docSnap.data()?.keywords;
-  const newKeywords = [...keywords, keyword];
-  await updateDoc(docRef, { keywords: newKeywords });
-  console.log("Updated!!!");
-  return new NextResponse("Chun");
+  if (docSnap.exists()) {
+    const keywords = docSnap.data().library;
+    const newKeywords = [...keywords, keywordToAdd];
+    await updateDoc(docRef, { library: newKeywords });
+  } else {
+    console.log("DocSnap doesn't exist");
+  }
+  return new NextResponse(`Keyword is added: ${keywordToAdd}`);
 }
