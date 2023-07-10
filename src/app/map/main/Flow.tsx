@@ -35,6 +35,7 @@ import {
   onEdgesChange,
   onConnect,
   setSelectedNode,
+  setEditableNode,
   showQuestionBar,
   hideQuestionBar,
   setPositionToGenetate,
@@ -177,10 +178,8 @@ export default function Flow() {
           onNodesDelete={(deletedNodes) => updateFSNodes(deletedNodes)}
           onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
           onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
-          onNodeDoubleClick={(e, Node) => {
-            console.log(e);
-            console.log(Node);
-          }}
+          onNodeDoubleClick={(e, Node) => dispatch(setEditableNode(Node))}
+          onPaneClick={() => dispatch(setEditableNode(undefined))}
           fitView
           minZoom={0.1}
         >

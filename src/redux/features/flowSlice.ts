@@ -20,6 +20,7 @@ type FlowState = {
   positionToGenerate: { x: number; y: number };
   newTopicParentNodeId: string | null;
   selectedNode: Node | undefined;
+  editableNode: Node | undefined;
   isAllowAsked: boolean;
 };
 
@@ -33,6 +34,7 @@ const initialState: FlowState = {
   positionToGenerate: { x: 0, y: 0 },
   newTopicParentNodeId: null,
   selectedNode: undefined,
+  editableNode: undefined,
   isAllowAsked: true
 };
 
@@ -98,6 +100,9 @@ export const flow = createSlice({
     setSelectedNode: (state, action) => {
       state.selectedNode = action.payload;
     },
+    setEditableNode: (state, action) => {
+      state.editableNode = action.payload;
+    },
     showQuestionBar: (state) => {
       state.isAllowAsked = true;
     },
@@ -134,6 +139,7 @@ export const {
   onEdgesChange,
   onConnect,
   setSelectedNode,
+  setEditableNode,
   showQuestionBar,
   hideQuestionBar,
   setPositionToGenetate,

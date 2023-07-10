@@ -15,6 +15,7 @@ import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
 import { setGptStatus } from "@/redux/features/gptResponseSlice";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 import { setGptResponse } from "@/redux/features/gptResponseSlice";
+import { Node } from "reactflow";
 
 type dataProps = {
   id: string;
@@ -29,6 +30,7 @@ type dataProps = {
 
 function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
   const dispatch = useAppDispatch();
+  const editableNode = useAppSelector((state) => state.flow.editableNode);
 
   const { messages, handleSubmit, setInput } = useChat({
     api: "/api/gpt",
@@ -71,6 +73,13 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
     dispatch(setNewTopicParentNodeId(id));
     setInput(keyword);
     console.log(`keyword: ${keyword}`);
+  }
+
+  function updateText(inputText: string) {
+    return nodes.map((node: Node) => {
+      if (node.id === id) return { ...node, data: { label: inputText } };
+      else return node;
+    });
   }
 
   const buttonLists = [
@@ -137,7 +146,25 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
           </form>
         ))}
       </NodeToolbar>
-      <div className="text-lg font-bold text-[#ffffff]">{data.label}</div>
+      <div
+        className={`text-lg font-bold text-[#ffffff] ${
+          editableNode?.id === id ? "hidden" : "block"
+        }`}
+      >
+        {data.label}
+      </div>
+      <label htmlFor="nodeLabelInput" className="hidden">
+        label:
+      </label>
+      <input
+        type="text"
+        id="nodeLabelInput"
+        className={`w-full bg-transparent px-2 py-1 text-white ${
+          editableNode?.id === id ? "block" : "hidden"
+        }`}
+        value={data.label}
+        onChange={(e) => dispatch(setNodes(updateText(e.target.value)))}
+      />
       <Handle
         type="source"
         position={Position.Right}
