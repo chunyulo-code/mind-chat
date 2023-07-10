@@ -13,11 +13,11 @@ export default function Home() {
           src={mindChat}
           width={1350}
           alt="mindChatBackgroundImage"
-          className="absolute right-[-370px] top-[190px]"
+          className="absolute right-[-370px] top-[210px]"
         />
         <div className="container relative mx-auto h-full w-full">
           <Header />
-          <main className="flex h-full w-1/2 items-center justify-start pt-[60px] text-start">
+          <main className="flex h-full w-1/2 items-center justify-start pt-[50px] text-start">
             <div className="flex flex-col gap-[60px] pr-[46px]">
               <p className="text-[50px] font-bold leading-[80px] text-white">
                 Immerse in Visual Thinking:
