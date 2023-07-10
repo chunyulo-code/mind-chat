@@ -11,18 +11,18 @@ export default function Home() {
       <div className="relative mx-auto h-full w-full overflow-hidden">
         <Image
           src={mindChat}
-          width={1350}
+          width={1300}
           alt="mindChatBackgroundImage"
-          className="absolute right-[-370px] top-[210px]"
+          className="absolute right-[-410px] top-[220px]"
         />
         <div className="container relative mx-auto h-full w-full">
           <Header />
           <main className="flex h-full w-1/2 items-center justify-start pt-[50px] text-start">
             <div className="flex flex-col gap-[60px] pr-[46px]">
-              <p className="text-[50px] font-bold leading-[80px] text-white">
-                Immerse in Visual Thinking:
+              <p className="text-[35px] font-bold leading-[80px] text-white">
+                Immerse in Visual Thinking
                 <br />
-                <span className="text-[85px] font-black leading-[120px]  text-mindchat-primary">
+                <span className="text-[110px] font-black leading-[120px]  text-mindchat-primary">
                   MIND CHAT
                 </span>
                 , <br />
