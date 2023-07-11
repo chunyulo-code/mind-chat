@@ -94,8 +94,8 @@ export default function Library() {
   }, [keywords]);
 
   return (
-    <div className="flex h-full flex-col justify-between overflow-y-scroll p-2  font-normal scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-mindchat-secondary scrollbar-thumb-rounded-lg">
-      <div className="flex flex-wrap">
+    <div className="z-50 flex h-[calc(100%-30px)] w-full flex-col justify-between overflow-hidden rounded-xl border border-mindchat-secondary p-2 font-normal shadow-md shadow-slate-700">
+      <div className="flex h-5/6 flex-wrap overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
         {keywords?.length > 0 &&
           keywords.map((keyword) => (
             <span
@@ -112,11 +112,10 @@ export default function Library() {
             </span>
           ))}
       </div>
-      <div>
+      <div className="flex flex-col gap-1">
         <form onSubmit={handleSubmit}>
           <button
             onClick={() => {
-              console.log(keywords.toString());
               setInput(keywords.toString());
             }}
             type="submit"
@@ -128,7 +127,7 @@ export default function Library() {
         <form onSubmit={(e) => e.preventDefault()}>
           <button
             type="submit"
-            className="mt-1 w-full rounded-full bg-mindchat-primary px-2 py-1 text-xs text-mindchat-bg-dark"
+            className="w-full rounded-full bg-mindchat-primary px-2 py-1 text-xs text-mindchat-bg-dark"
           >
             Generate structure
           </button>

@@ -49,7 +49,7 @@ export default function LeftBar() {
         <span className="ml-3">New map</span>
       </div>
       <div className="h-[2px] w-full bg-gray-700"></div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-y-scroll scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
         {allMaps.length > 0 &&
           allMaps.map((mapName) => (
             <div
@@ -59,7 +59,7 @@ export default function LeftBar() {
               }`}
               onClick={() => dispatch(setSelectedMap(mapName))}
             >
-              {`${mapName.substring(0, 7)} ...`}
+              <span className="overflow-hidden truncate">{mapName}</span>
             </div>
           ))}
       </div>
