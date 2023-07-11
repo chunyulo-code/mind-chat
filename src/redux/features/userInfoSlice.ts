@@ -1,17 +1,19 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
+type Map = { mapId: string; mapName: string };
+
 type UserInfoState = {
   isLogIn: boolean;
   uid: string | null;
-  allMaps: string[];
-  selectedMap: string;
+  allMaps: Map[];
+  selectedMap: string | undefined;
 };
 
 const initialState: UserInfoState = {
   isLogIn: false,
   uid: null,
   allMaps: [],
-  selectedMap: "map3"
+  selectedMap: undefined
 };
 
 export const userInfoSlice = createSlice({
@@ -24,7 +26,7 @@ export const userInfoSlice = createSlice({
     setCurrentUid: (state, action: PayloadAction<string | null>) => {
       state.uid = action.payload;
     },
-    setAllMaps: (state, action: PayloadAction<string[]>) => {
+    setAllMaps: (state, action: PayloadAction<Map[]>) => {
       state.allMaps = action.payload;
     },
     setSelectedMap: (state, action: PayloadAction<string>) => {

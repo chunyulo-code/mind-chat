@@ -85,7 +85,10 @@ export default function Spotlight() {
   }, []);
 
   return (
-    <div className="h-full w-full overflow-hidden" ref={wordCloudRef}>
+    <div
+      className="z-50 h-[calc(100%-30px)] w-full overflow-hidden rounded-xl border border-mindchat-secondary shadow-md shadow-slate-700"
+      ref={wordCloudRef}
+    >
       {wordCloudRendered && (
         <WordCloud
           data={sortedData}

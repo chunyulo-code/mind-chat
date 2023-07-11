@@ -69,6 +69,10 @@ export const flow = createSlice({
     setPrevEdges: (state, action) => {
       state.prevEdges = action.payload;
     },
+    syncPrevNodesNEdges: (state) => {
+      state.prevNodes = state.nodes;
+      state.prevEdges = state.edges;
+    },
     updateNodes: (state) => {
       state.nodes = state.prevNodes.concat(state.bufferNodes);
     },
@@ -131,6 +135,7 @@ export const {
   setBufferEdges,
   setPrevNodes,
   setPrevEdges,
+  syncPrevNodesNEdges,
   updateNodes,
   updateEdges,
   mergeNodes,

@@ -7,7 +7,8 @@ import ReactFlow, {
   MiniMap,
   BackgroundVariant,
   Node,
-  Edge
+  Edge,
+  useReactFlow
 } from "reactflow";
 import "reactflow/dist/style.css";
 import CustomNode from "@/app/map/main/mindChatNodes/CustomNode";
@@ -27,6 +28,7 @@ import {
   setBufferEdges,
   setPrevNodes,
   setPrevEdges,
+  syncPrevNodesNEdges,
   updateNodes,
   updateEdges,
   mergeNodes,
@@ -82,6 +84,7 @@ export default function Flow() {
   const gptStatus = useAppSelector((state) => state.gptResponse.gptStatus);
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+  const { fitView } = useReactFlow();
 
   const {
     clicked: nodeClicked,
@@ -117,7 +120,7 @@ export default function Flow() {
   useEffect(() => {
     async function fetchMapNodesNEdges() {
       const userUid = auth.currentUser?.uid;
-      if (userUid) {
+      if (userUid && selectedMap) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -147,6 +150,7 @@ export default function Flow() {
         dispatch(setBufferEdges(convertedData.edges));
         dispatch(updateNodes());
         dispatch(updateEdges());
+        fitView();
       }
     }
   }, [allResponse]);
@@ -158,38 +162,37 @@ export default function Flow() {
       dispatch(mergeEdges());
       layoutNodes("LR");
       updateFSNodesNEdges();
+      fitView();
     }
   }, [gptStatus]);
 
   return (
-    <ReactFlowProvider>
-      <div className="absolute left-0 top-0 flex h-full w-full">
-        {isAllowAsked && <QuestionBar />}
-        <ReactFlow
-          nodeTypes={nodeTypes}
-          className="bg-mindchat-bg-dark"
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={nodesChangeHandler}
-          onEdgesChange={edgesChangeHandler}
-          onConnect={onConnectHandler}
-          onNodeContextMenu={onNodeContextMenu}
-          onPaneContextMenu={onPaneContextMenu}
-          onNodesDelete={(deletedNodes) => updateFSNodes(deletedNodes)}
-          onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
-          onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
-          onNodeDoubleClick={(e, Node) => dispatch(setEditableNode(Node))}
-          onPaneClick={() => dispatch(setEditableNode(undefined))}
-          fitView
-          minZoom={0.1}
-        >
-          <Controls />
-          <MiniMap />
-          <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
-        </ReactFlow>
-        {nodeClicked && <NodeContextMenu points={nodePoints} />}
-        {paneClicked && <PaneContextMenu points={panePoints} />}
-      </div>
-    </ReactFlowProvider>
+    <div className="absolute left-0 top-0 flex h-full w-full">
+      {isAllowAsked && <QuestionBar />}
+      <ReactFlow
+        nodeTypes={nodeTypes}
+        className="bg-mindchat-bg-dark"
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={nodesChangeHandler}
+        onEdgesChange={edgesChangeHandler}
+        onConnect={onConnectHandler}
+        onNodeContextMenu={onNodeContextMenu}
+        onPaneContextMenu={onPaneContextMenu}
+        onNodesDelete={(deletedNodes) => updateFSNodes(deletedNodes)}
+        onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
+        onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
+        onNodeDoubleClick={(e, Node) => dispatch(setEditableNode(Node))}
+        onPaneClick={() => dispatch(setEditableNode(undefined))}
+        fitView
+        minZoom={0.1}
+      >
+        <Controls />
+        <MiniMap />
+        <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
+      </ReactFlow>
+      {nodeClicked && <NodeContextMenu points={nodePoints} />}
+      {paneClicked && <PaneContextMenu points={panePoints} />}
+    </div>
   );
 }

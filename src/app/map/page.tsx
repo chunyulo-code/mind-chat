@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { ReactFlowProvider } from "reactflow";
 import { Allotment } from "allotment";
 import Outline from "./main/Outline";
 import Flow from "./main/Flow";
@@ -49,16 +50,18 @@ export default function Page() {
           <LeftBar />
         </Allotment.Pane>
         <Allotment.Pane snap className="relative h-full">
-          <FormatConverter />
-          {/* <GptResponse /> */}
-          <Images />
-          {formatValue === DisplayFormatNumber.MIND_MAP ? (
-            <Flow />
-          ) : (
-            <Outline />
-          )}
-          <Canvas canvasRef={canvasRef} ctx={ctx} color={color} />
-          <ToolBar clearCanvas={clearCanvas} setColor={setColor} />
+          <ReactFlowProvider>
+            <FormatConverter />
+            {/* <GptResponse /> */}
+            <Images />
+            {formatValue === DisplayFormatNumber.MIND_MAP ? (
+              <Flow />
+            ) : (
+              <Outline />
+            )}
+            <Canvas canvasRef={canvasRef} ctx={ctx} color={color} />
+            <ToolBar clearCanvas={clearCanvas} setColor={setColor} />
+          </ReactFlowProvider>
         </Allotment.Pane>
         <Allotment.Pane preferredSize={200} minSize={150}>
           <RightBar />

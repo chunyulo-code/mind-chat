@@ -5,7 +5,8 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   setNodes,
   setPositionToGenetate,
-  setNewTopicParentNodeId
+  setNewTopicParentNodeId,
+  syncPrevNodesNEdges
 } from "@/redux/features/flowSlice";
 import { addToLibrary } from "@/redux/features/librarySlice";
 import { useChat } from "ai/react";
@@ -51,7 +52,6 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
     }
   });
   const nodes = useAppSelector((state) => state.flow.nodes);
-  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const selectedStyle = `border-4 border-mindchat-focus`;
   const normalStyle = "border-2 border-mindchat-primary";
   const toolbarButtonStyle =
@@ -69,6 +69,7 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
   }
 
   function brainstorm(keyword: string) {
+    dispatch(syncPrevNodesNEdges());
     dispatch(setPositionToGenetate({ x: xPos + 250, y: yPos }));
     dispatch(setNewTopicParentNodeId(id));
     setInput(keyword);

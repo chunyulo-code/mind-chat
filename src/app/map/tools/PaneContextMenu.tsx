@@ -28,10 +28,6 @@ type MenuList = {
 export default function PaneContextMenu({ points }: PaneContextMenuProps) {
   const dispatch = useAppDispatch();
   const { project } = useReactFlow();
-  const nodes = useAppSelector((state) => state.flow.nodes);
-  const selectedNode: Node | undefined = useAppSelector<Node | undefined>(
-    (state) => state.flow.selectedNode
-  );
 
   const menuLists: MenuList[] = [
     {

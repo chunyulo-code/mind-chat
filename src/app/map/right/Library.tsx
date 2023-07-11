@@ -51,7 +51,7 @@ export default function Library() {
   });
 
   useEffect(() => {
-    if (userUid) {
+    if (userUid && selectedMap) {
       const unsub = onSnapshot(
         doc(db, "users", userUid, "maps", selectedMap),
         (doc) => {
@@ -63,11 +63,11 @@ export default function Library() {
       );
       return () => unsub();
     }
-  }, []);
+  }, [selectedMap]);
 
   useEffect(() => {
     async function fetchMapLibrary() {
-      if (userUid) {
+      if (userUid && selectedMap) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -88,23 +88,23 @@ export default function Library() {
   }, [messages]);
 
   useEffect(() => {
-    if (keywords.length) {
+    if (keywords.length > 0) {
       updateFSLibrary();
     }
   }, [keywords]);
 
   return (
-    <div className="flex h-full flex-col justify-between overflow-y-scroll p-2  font-normal scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-mindchat-secondary scrollbar-thumb-rounded-lg">
-      <div className="flex flex-wrap">
+    <div className="z-50 flex h-[calc(100%-30px)] w-full flex-col justify-between overflow-hidden rounded-xl border border-mindchat-secondary p-2 font-normal shadow-md shadow-slate-700">
+      <div className="flex flex-wrap gap-2 overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
         {keywords?.length > 0 &&
           keywords.map((keyword) => (
             <span
               key={nanoid()}
-              className="group m-1 flex items-center rounded-xl border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
+              className="flex items-center rounded-xl border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
             >
               <span>{keyword}</span>
               <span
-                className="ml-2 hidden cursor-pointer text-lg group-hover:block hover:text-mindchat-primary active:text-mindchat-focus"
+                className="ml-2 cursor-pointer text-lg hover:text-mindchat-primary active:text-mindchat-focus"
                 onClick={() => deleteKeywordHandler(keyword)}
               >
                 <TiDeleteOutline />
@@ -112,11 +112,10 @@ export default function Library() {
             </span>
           ))}
       </div>
-      <div>
+      <div className="flex h-[62px] flex-col gap-1">
         <form onSubmit={handleSubmit}>
           <button
             onClick={() => {
-              console.log(keywords.toString());
               setInput(keywords.toString());
             }}
             type="submit"
@@ -128,7 +127,7 @@ export default function Library() {
         <form onSubmit={(e) => e.preventDefault()}>
           <button
             type="submit"
-            className="mt-1 w-full rounded-full bg-mindchat-primary px-2 py-1 text-xs text-mindchat-bg-dark"
+            className="w-full rounded-full bg-mindchat-primary px-2 py-1 text-xs text-mindchat-bg-dark"
           >
             Generate structure
           </button>
