@@ -33,7 +33,7 @@ export default function LeftBar() {
   }, []);
 
   function addNewMap() {
-    const newMapName = `map${nanoid()}`;
+    const newMapName = `map-${nanoid()}`;
     const newAllMaps = [newMapName, ...allMaps];
     dispatch(setAllMaps(newAllMaps));
     FSAddNewMap(newMapName);

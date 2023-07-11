@@ -4,14 +4,14 @@ type UserInfoState = {
   isLogIn: boolean;
   uid: string | null;
   allMaps: string[];
-  selectedMap: string;
+  selectedMap: string | undefined;
 };
 
 const initialState: UserInfoState = {
   isLogIn: false,
   uid: null,
   allMaps: [],
-  selectedMap: "map3"
+  selectedMap: undefined
 };
 
 export const userInfoSlice = createSlice({

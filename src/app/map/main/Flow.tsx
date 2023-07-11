@@ -117,7 +117,7 @@ export default function Flow() {
   useEffect(() => {
     async function fetchMapNodesNEdges() {
       const userUid = auth.currentUser?.uid;
-      if (userUid) {
+      if (userUid && selectedMap) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {

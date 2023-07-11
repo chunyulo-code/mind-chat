@@ -51,7 +51,7 @@ export default function Library() {
   });
 
   useEffect(() => {
-    if (userUid) {
+    if (userUid && selectedMap) {
       const unsub = onSnapshot(
         doc(db, "users", userUid, "maps", selectedMap),
         (doc) => {
@@ -63,11 +63,11 @@ export default function Library() {
       );
       return () => unsub();
     }
-  }, []);
+  }, [selectedMap]);
 
   useEffect(() => {
     async function fetchMapLibrary() {
-      if (userUid) {
+      if (userUid && selectedMap) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -95,7 +95,11 @@ export default function Library() {
 
   return (
     <div className="z-50 flex h-[calc(100%-30px)] w-full flex-col justify-between overflow-hidden rounded-xl border border-mindchat-secondary p-2 font-normal shadow-md shadow-slate-700">
+<<<<<<< HEAD
       <div className="flex flex-wrap gap-2 overflow-y-scroll scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
+=======
+      <div className="flex flex-wrap overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
+>>>>>>> c49d8a5 (chore: add selectedMap condition before use it)
         {keywords?.length > 0 &&
           keywords.map((keyword) => (
             <span
