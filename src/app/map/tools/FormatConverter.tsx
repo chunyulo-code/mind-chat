@@ -11,7 +11,7 @@ import { MdOutlineOutput } from "react-icons/md";
 import { TbLayout2 } from "react-icons/tb";
 import { nanoid } from "nanoid";
 import { useChat } from "ai/react";
-import { systemResponseRules } from "@/app/utils/summarizePaneRules";
+import { systemResponseRules } from "@/app/utils/summarizeSelectedDataRules";
 import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
 import { emptyOutput, setOutput } from "@/redux/features/outputSlice";
 import { layoutNodes } from "@/app/utils/onLayout";
@@ -52,16 +52,20 @@ export default function FormatConverter() {
     }
   });
 
-  function summarizePane() {
-    const simplifiedNodes = nodes.map((node) => ({
+  function summarizeSelectedData() {
+    const selectedNodes = nodes.filter((node) => node.selected === true);
+    const selectedEdges = edges.filter((edge) => edge.selected === true);
+
+    const simplifiedNodes = selectedNodes.map((node) => ({
       id: node.id,
       data: {
         label: node.data.label
       }
     }));
+
     const question = `nodes: ${JSON.stringify(
       simplifiedNodes
-    )}, edges: ${JSON.stringify(edges)}`;
+    )}, edges: ${JSON.stringify(selectedEdges)}`;
     setInput(question);
   }
 
@@ -119,7 +123,7 @@ export default function FormatConverter() {
           title="Summarize pane"
           type="submit"
           className={buttonStyle}
-          onClick={summarizePane}
+          onClick={summarizeSelectedData}
         >
           <MdOutlineOutput />
         </button>
