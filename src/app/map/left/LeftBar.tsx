@@ -20,10 +20,11 @@ export default function LeftBar() {
   const allMaps = useAppSelector((state) => state.userInfo.allMaps);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const editableMapId = useAppSelector((state) => state.userInfo.editableMapId);
-  const userUid = auth.currentUser?.uid;
+  const userUid = useAppSelector((state) => state.userInfo.uid);
 
   async function fetchUserMaps() {
     if (userUid) {
+      console.log("UserUid exists");
       const querySnapshot = await getDocs(
         collection(db, "users", userUid, "maps")
       );
@@ -33,6 +34,7 @@ export default function LeftBar() {
       });
       dispatch(setAllMaps(fetchedMaps));
     }
+    console.log("No userUid");
   }
 
   function addNewMap() {
@@ -58,6 +60,7 @@ export default function LeftBar() {
   }
 
   useEffect(() => {
+    console.log("Ready to fetch");
     fetchUserMaps();
 
     if (userUid) {
@@ -66,7 +69,7 @@ export default function LeftBar() {
       });
       return () => unsub();
     }
-  }, []);
+  }, [userUid]);
 
   return (
     <div className=" flex h-full flex-col gap-3 bg-mindchat-bg-dark p-4 text-white">

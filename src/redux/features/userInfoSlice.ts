@@ -5,6 +5,8 @@ type Map = { mapId: string; mapName: string };
 type UserInfoState = {
   isLogIn: boolean;
   uid: string | null;
+  email: string | null;
+  displayName: string | null;
   allMaps: Map[];
   selectedMap: string | undefined;
   editableMapId: string | undefined;
@@ -13,6 +15,8 @@ type UserInfoState = {
 const initialState: UserInfoState = {
   isLogIn: false,
   uid: null,
+  email: null,
+  displayName: null,
   allMaps: [],
   selectedMap: undefined,
   editableMapId: undefined
@@ -25,8 +29,14 @@ export const userInfoSlice = createSlice({
     setIsLogIn: (state, action: PayloadAction<boolean>) => {
       state.isLogIn = action.payload;
     },
-    setCurrentUid: (state, action: PayloadAction<string | null>) => {
+    setUserUid: (state, action: PayloadAction<string | null>) => {
       state.uid = action.payload;
+    },
+    setUserEmail: (state, action: PayloadAction<string | null>) => {
+      state.email = action.payload;
+    },
+    setUserDisplayName: (state, action: PayloadAction<string | null>) => {
+      state.displayName = action.payload;
     },
     setAllMaps: (state, action: PayloadAction<Map[]>) => {
       state.allMaps = action.payload;
@@ -41,8 +51,10 @@ export const userInfoSlice = createSlice({
 });
 
 export const {
-  setCurrentUid,
   setIsLogIn,
+  setUserUid,
+  setUserEmail,
+  setUserDisplayName,
   setAllMaps,
   setSelectedMap,
   setEditableMapId

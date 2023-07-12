@@ -5,7 +5,7 @@ import {
   signOut
 } from "firebase/auth";
 import { store } from "@/redux/store";
-import { setCurrentUid, setIsLogIn } from "@/redux/features/userInfoSlice";
+import { setUserUid, setIsLogIn } from "@/redux/features/userInfoSlice";
 import { db, auth } from "./firebase";
 
 export async function nativeCreateAccount(
@@ -18,18 +18,13 @@ export async function nativeCreateAccount(
       // Signed in
       const uid = userCredential.user.uid;
       window.localStorage.setItem("uid", uid);
-      store.dispatch(setCurrentUid(uid));
+      store.dispatch(setUserUid(uid));
       store.dispatch(setIsLogIn(true));
-      console.log("===========================");
-      console.log(`uid: ${uid}`);
-      console.log("===========================");
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log("===========================");
-      console.log(errorMessage);
-      console.log("===========================");
+      console.error(`${errorCode}: ${errorMessage}`);
     });
   if (auth.currentUser) {
     await updateProfile(auth.currentUser, { displayName: userName }).catch(
@@ -44,7 +39,7 @@ export async function nativeSignIn(email: string, password: string) {
       const uid = userCredential.user.uid;
       console.log(uid);
       window.localStorage.setItem("uid", uid);
-      store.dispatch(setCurrentUid(uid));
+      store.dispatch(setUserUid(uid));
       store.dispatch(setIsLogIn(true));
       console.log(`Log in successfully`);
     })
