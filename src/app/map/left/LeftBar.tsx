@@ -59,6 +59,7 @@ export default function LeftBar() {
 
   useEffect(() => {
     fetchUserMaps();
+    console.log("Fethc all maps");
 
     if (userUid) {
       const unsub = onSnapshot(collection(db, "users", userUid, "maps"), () => {
