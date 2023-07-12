@@ -8,6 +8,7 @@ import {
   setGptResponse,
   setGptStatus
 } from "@/redux/features/gptResponseSlice";
+import { syncPrevNodesNEdges } from "@/redux/features/flowSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 import { systemResponseRules } from "@/app/utils/askTopicRules";
@@ -43,7 +44,12 @@ export default function QuestionBar() {
 
   return (
     <div className="absolute left-1/2 top-1/2 z-50 flex items-center">
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) => {
+          dispatch(syncPrevNodesNEdges());
+          handleSubmit(e);
+        }}
+      >
         <label>
           <input
             type="text"
