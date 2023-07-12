@@ -12,7 +12,10 @@ export const metadata = {
           creative ideas related to a topic and engage in follow-up questions
           based on selected keywords of interest. Additionally, they have the
           option to add interesting keywords to the database, which can be used
-          to generate articles, diagrams, and more.`
+          to generate articles, diagrams, and more.`,
+  icons: {
+    icon: "/mindChat.svg"
+  }
 };
 
 export default function RootLayout({

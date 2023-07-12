@@ -162,7 +162,9 @@ export default function Flow() {
       dispatch(mergeEdges());
       layoutNodes("LR");
       updateFSNodesNEdges();
-      fitView();
+      setTimeout(() => {
+        fitView();
+      }, 300);
     }
   }, [gptStatus]);
 
