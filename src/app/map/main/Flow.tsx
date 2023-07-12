@@ -44,6 +44,7 @@ import {
   updatePositionToGenetate,
   setNewTopicParentNodeId
 } from "@/redux/features/flowSlice";
+import { setEditableMapId } from "@/redux/features/userInfoSlice";
 import { convertStringToNodes } from "@/app/utils/convertStringToNodes";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 import {
@@ -72,6 +73,10 @@ const nodeTypes = {
   customInput: CustomInputNode
 };
 
+const edgeOptions = {
+  animated: true
+};
+
 const HEADER_BAR_HEIGHT = 70;
 
 export default function Flow() {
@@ -92,6 +97,7 @@ export default function Flow() {
     points: nodePoints,
     setPoints: setNodePoints
   } = useContextMenu();
+
   const {
     clicked: paneClicked,
     setClicked: setPaneClicked,
@@ -139,6 +145,7 @@ export default function Flow() {
       }
     }
     fetchMapNodesNEdges();
+    setTimeout(() => fitView(), 300);
   }, [selectedMap]);
 
   useEffect(() => {
@@ -172,7 +179,9 @@ export default function Flow() {
     <div className="absolute left-0 top-0 flex h-full w-full">
       {isAllowAsked && <QuestionBar />}
       <ReactFlow
+        onInit={() => fitView()}
         nodeTypes={nodeTypes}
+        defaultEdgeOptions={edgeOptions}
         className="bg-mindchat-bg-dark"
         nodes={nodes}
         edges={edges}
@@ -185,7 +194,10 @@ export default function Flow() {
         onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
         onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
         onNodeDoubleClick={(e, Node) => dispatch(setEditableNode(Node))}
-        onPaneClick={() => dispatch(setEditableNode(undefined))}
+        onPaneClick={() => {
+          dispatch(setEditableNode(undefined));
+          dispatch(setEditableMapId(undefined));
+        }}
         fitView
         minZoom={0.1}
       >

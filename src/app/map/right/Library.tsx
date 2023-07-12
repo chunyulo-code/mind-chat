@@ -88,13 +88,13 @@ export default function Library() {
   }, [messages]);
 
   useEffect(() => {
-    if (keywords.length > 0) {
+    if (keywords.length) {
       updateFSLibrary();
     }
   }, [keywords]);
 
   return (
-    <div className="z-50 flex h-[calc(100%-30px)] w-full flex-col justify-between overflow-hidden rounded-xl border border-mindchat-secondary p-2 font-normal shadow-md shadow-slate-700">
+    <div className="z-50 flex h-[calc(100%-30px)] w-full flex-col justify-between gap-3 overflow-hidden rounded-xl border border-mindchat-secondary p-2 font-normal shadow-md shadow-slate-700">
       <div className="flex flex-wrap gap-2 overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
         {keywords?.length > 0 &&
           keywords.map((keyword) => (

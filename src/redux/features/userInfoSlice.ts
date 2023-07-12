@@ -7,13 +7,15 @@ type UserInfoState = {
   uid: string | null;
   allMaps: Map[];
   selectedMap: string | undefined;
+  editableMapId: string | undefined;
 };
 
 const initialState: UserInfoState = {
   isLogIn: false,
   uid: null,
   allMaps: [],
-  selectedMap: undefined
+  selectedMap: undefined,
+  editableMapId: undefined
 };
 
 export const userInfoSlice = createSlice({
@@ -31,10 +33,18 @@ export const userInfoSlice = createSlice({
     },
     setSelectedMap: (state, action: PayloadAction<string>) => {
       state.selectedMap = action.payload;
+    },
+    setEditableMapId: (state, action: PayloadAction<string | undefined>) => {
+      state.editableMapId = action.payload;
     }
   }
 });
 
-export const { setCurrentUid, setIsLogIn, setAllMaps, setSelectedMap } =
-  userInfoSlice.actions;
+export const {
+  setCurrentUid,
+  setIsLogIn,
+  setAllMaps,
+  setSelectedMap,
+  setEditableMapId
+} = userInfoSlice.actions;
 export default userInfoSlice.reducer;

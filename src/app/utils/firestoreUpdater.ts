@@ -145,6 +145,23 @@ export async function updateFSLibrary() {
   }
 }
 
+export async function updateFSMapName(
+  editableMapId: string,
+  newMapName: string
+) {
+  if (userUid) {
+    const mapDocRef = doc(db, "users", userUid, "maps", editableMapId);
+    const mapDocSnap = await getDoc(mapDocRef);
+    if (mapDocSnap.exists()) {
+      await updateDoc(mapDocRef, {
+        mapName: newMapName,
+        updatedTime: serverTimestamp()
+      });
+      console.log("updateFSMapName: Updated!!!");
+    }
+  }
+}
+
 export async function FSAddNewMap(newMapName: string) {
   if (userUid) {
     await addDoc(collection(db, "users", userUid, "maps"), {

@@ -4,9 +4,13 @@ import { MdOutlineAdd } from "react-icons/md";
 import { db } from "@/app/utils/firebase";
 import { getDocs, collection, onSnapshot } from "firebase/firestore";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setAllMaps, setSelectedMap } from "@/redux/features/userInfoSlice";
+import {
+  setAllMaps,
+  setSelectedMap,
+  setEditableMapId
+} from "@/redux/features/userInfoSlice";
 import { nanoid } from "nanoid";
-import { FSAddNewMap } from "@/app/utils/firestoreUpdater";
+import { FSAddNewMap, updateFSMapName } from "@/app/utils/firestoreUpdater";
 import { auth } from "@/app/utils/firebase";
 import { Map } from "@/app/types/userInfoSliceTypes";
 
@@ -14,6 +18,7 @@ export default function LeftBar() {
   const dispatch = useAppDispatch();
   const allMaps = useAppSelector((state) => state.userInfo.allMaps);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+  const editableMapId = useAppSelector((state) => state.userInfo.editableMapId);
   const userUid = auth.currentUser?.uid;
 
   async function fetchUserMaps() {
@@ -29,11 +34,25 @@ export default function LeftBar() {
     }
   }
 
-  useEffect(() => {
-    fetchUserMaps();
-  }, []);
+  function addNewMap() {
+    const newMapName = `New map - ${nanoid()}`;
+    const newAllMaps = [{ mapId: newMapName, mapName: newMapName }, ...allMaps];
+    dispatch(setAllMaps(newAllMaps));
+    FSAddNewMap(newMapName);
+  }
+
+  function updateMapNames(newMapName: string) {
+    const newAllMaps = allMaps.map((map) => {
+      if (map.mapId === editableMapId) return { ...map, mapName: newMapName };
+      else return map;
+    });
+    console.log(newAllMaps);
+    return newAllMaps;
+  }
 
   useEffect(() => {
+    fetchUserMaps();
+
     if (userUid) {
       const unsub = onSnapshot(collection(db, "users", userUid, "maps"), () => {
         fetchUserMaps();
@@ -41,13 +60,6 @@ export default function LeftBar() {
       return () => unsub();
     }
   }, []);
-
-  function addNewMap() {
-    const newMapName = `map-${nanoid()}`;
-    const newAllMaps = [{ mapId: newMapName, mapName: newMapName }, ...allMaps];
-    dispatch(setAllMaps(newAllMaps));
-    FSAddNewMap(newMapName);
-  }
 
   return (
     <div className=" flex h-full flex-col gap-3 bg-mindchat-bg-dark p-4 text-white">
@@ -64,12 +76,39 @@ export default function LeftBar() {
           allMaps.map((map) => (
             <div
               key={map.mapId}
+              id={map.mapId}
               className={`flex cursor-pointer items-center rounded-lg px-5 py-3 hover:bg-gray-700 ${
                 selectedMap === map.mapId ? "bg-gray-700" : "bg-transparent"
               }`}
-              onClick={() => dispatch(setSelectedMap(map.mapId))}
+              onClick={() => {
+                dispatch(setSelectedMap(map.mapId));
+                if (map.mapId !== editableMapId)
+                  dispatch(setEditableMapId(undefined));
+              }}
+              onDoubleClick={() => dispatch(setEditableMapId(map.mapId))}
             >
-              <span className="overflow-hidden truncate">{map.mapName}</span>
+              <span
+                className={`overflow-hidden truncate ${
+                  editableMapId === map.mapId ? "hidden" : "block"
+                }`}
+              >
+                {map.mapName}
+              </span>
+              <label htmlFor="mapNameEditor" className="hidden">
+                Map Name Editor
+              </label>
+              <input
+                className={`w-full rounded-lg border-2 border-gray-500 bg-transparent px-2 py-1 ${
+                  editableMapId === map.mapId ? "block" : "hidden"
+                }`}
+                onChange={(e) => {
+                  dispatch(setAllMaps(updateMapNames(e.target.value)));
+                  updateFSMapName(map.mapId, e.target.value);
+                }}
+                value={map.mapName}
+                id="mapNameEditor"
+                type="text"
+              />
             </div>
           ))}
       </div>
