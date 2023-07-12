@@ -164,7 +164,7 @@ export async function updateFSMapName(
 
 export async function FSAddNewMap(newMapName: string) {
   if (userUid) {
-    await addDoc(collection(db, "users", userUid, "maps"), {
+    const newMapId = await addDoc(collection(db, "users", userUid, "maps"), {
       mapName: newMapName,
       nodes: [],
       edges: [],
@@ -172,5 +172,6 @@ export async function FSAddNewMap(newMapName: string) {
       library: [],
       updatedTime: serverTimestamp()
     });
+    return newMapId;
   }
 }
