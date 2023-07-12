@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 import { Node, Edge } from "reactflow";
 
-const userUid = auth.currentUser?.uid;
+const userUid = store.getState().userInfo.uid;
 
 export async function updateFSNodesNEdges() {
   const selectedMap = store.getState().userInfo.selectedMap;

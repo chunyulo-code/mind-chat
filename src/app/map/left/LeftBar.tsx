@@ -20,7 +20,8 @@ export default function LeftBar() {
   const allMaps = useAppSelector((state) => state.userInfo.allMaps);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const editableMapId = useAppSelector((state) => state.userInfo.editableMapId);
-  const userUid = auth.currentUser?.uid;
+  // const userUid = auth.currentUser?.uid;
+  const userUid = useAppSelector((state) => state.userInfo.uid);
 
   async function fetchUserMaps() {
     if (userUid) {

@@ -89,6 +89,7 @@ export default function Flow() {
   const gptStatus = useAppSelector((state) => state.gptResponse.gptStatus);
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+  const userUid = useAppSelector((state) => state.userInfo.uid);
   const { fitView } = useReactFlow();
 
   const {
@@ -125,7 +126,6 @@ export default function Flow() {
 
   useEffect(() => {
     async function fetchMapNodesNEdges() {
-      const userUid = auth.currentUser?.uid;
       if (userUid && selectedMap) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);

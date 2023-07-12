@@ -22,7 +22,6 @@ export default function Page() {
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState("#42f0ed");
   const formatValue = useAppSelector((state) => state.dataFormat.value);
-  const user = auth.currentUser;
 
   const clearCanvas: ClearCanvas = () => {
     const canvas = canvasRef.current;
@@ -33,12 +32,6 @@ export default function Page() {
       }
     }
   };
-
-  if (user) {
-    console.log(`From auth.currentUser: User is: ${user.uid}`);
-  } else {
-    console.log("No user now");
-  }
 
   return (
     <div className="h-screen w-screen">
