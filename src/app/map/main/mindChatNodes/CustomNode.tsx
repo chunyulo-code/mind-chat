@@ -118,7 +118,6 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
 
   useEffect(() => {
     if (messages && messages.length !== 1) {
-      console.log(messages.slice(-1)[0].content);
       dispatch(setGptResponse(messages.slice(-1)[0].content));
     }
   }, [messages]);
