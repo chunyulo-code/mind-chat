@@ -13,6 +13,7 @@ import { nanoid } from "nanoid";
 import { FSAddNewMap, updateFSMapName } from "@/app/utils/firestoreUpdater";
 import { auth } from "@/app/utils/firebase";
 import { Map } from "@/app/types/userInfoSliceTypes";
+import { showQuestionBar } from "@/redux/features/flowSlice";
 
 export default function LeftBar() {
   const dispatch = useAppDispatch();
@@ -38,7 +39,13 @@ export default function LeftBar() {
     const newMapName = `New map - ${nanoid()}`;
     const newAllMaps = [{ mapId: newMapName, mapName: newMapName }, ...allMaps];
     dispatch(setAllMaps(newAllMaps));
-    FSAddNewMap(newMapName);
+    FSAddNewMap(newMapName).then((newMapId) => {
+      if (newMapId) {
+        const mapId = newMapId.id.toString();
+        dispatch(setSelectedMap(mapId));
+        dispatch(showQuestionBar());
+      }
+    });
   }
 
   function updateMapNames(newMapName: string) {
