@@ -14,17 +14,25 @@ import {
 } from "firebase/firestore";
 import { Node, Edge } from "reactflow";
 import { nanoid } from "nanoid";
-import { setAllMaps } from "@/redux/features/userInfoSlice";
+import { setAllMaps, setSelectedMap } from "@/redux/features/userInfoSlice";
 
 export async function updateFSNodesNEdges() {
   const userUid = store.getState().userInfo.uid;
   const userEmail = store.getState().userInfo.email;
   const userDisplayName = store.getState().userInfo.displayName;
   const selectedMap = store.getState().userInfo.selectedMap;
+  const allMaps = store.getState().userInfo.allMaps;
 
   if (userUid) {
     const userDocRef = doc(db, "users", userUid);
     const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists() && allMaps.length === 0) {
+      await setDoc(doc(db, "users", userUid), {
+        email: userEmail,
+        userName: userDisplayName
+      });
+    }
 
     if (userDocSnap.exists() && selectedMap) {
       const mapDocRef = doc(db, "users", userUid, "maps", selectedMap);
@@ -43,34 +51,14 @@ export async function updateFSNodesNEdges() {
       return;
     }
 
-    console.log("userDocSnap not exist");
-    await setDoc(doc(db, "users", userUid), {
-      email: userEmail,
-      userName: userDisplayName
-    });
-
-    if (selectedMap) {
-      const nodes = store.getState().flow.nodes;
-      const edges = store.getState().flow.edges;
-
-      await setDoc(doc(db, "users", userUid, "maps", selectedMap), {
-        nodes: nodes,
-        edges: edges,
-        photos: [],
-        library: [],
-        updatedTime: serverTimestamp()
-      });
-      console.log("Set Doc successfully");
-      return;
-    }
-
     if (!selectedMap) {
       const nodes = store.getState().flow.nodes;
       const edges = store.getState().flow.edges;
       const allMaps = store.getState().userInfo.allMaps;
       const newMapName = `New map - ${nanoid()}`;
 
-      const newMapId = await addDoc(collection(db, "users", userUid, "maps"), {
+      const newMapRef = doc(collection(db, "users", userUid, "maps"));
+      await setDoc(newMapRef, {
         mapName: newMapName,
         nodes: nodes,
         edges: edges,
@@ -79,15 +67,14 @@ export async function updateFSNodesNEdges() {
         updatedTime: serverTimestamp()
       });
 
-      if (newMapId) {
-        const stringifiedNewMapId = newMapId.toString();
+      const generatedId = newMapRef.id;
+      console.log(generatedId);
 
+      if (generatedId) {
         store.dispatch(
-          setAllMaps([
-            { mapId: stringifiedNewMapId, mapName: newMapName },
-            ...allMaps
-          ])
+          setAllMaps([{ mapId: generatedId, mapName: newMapName }, ...allMaps])
         );
+        store.dispatch(setSelectedMap(generatedId));
       }
     }
   }

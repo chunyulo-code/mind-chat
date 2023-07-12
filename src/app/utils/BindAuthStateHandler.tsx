@@ -19,7 +19,7 @@ export default function BindAuthStateHandler() {
         store.dispatch(setIsLogIn(true));
         store.dispatch(setUserUid(uid));
         store.dispatch(setUserEmail(email));
-        store.dispatch(setUserEmail(displayName));
+        store.dispatch(setUserDisplayName(displayName));
         console.log(`Current user is: ${uid}`);
         console.log(`user: ${JSON.stringify(user)}`);
       } else {
