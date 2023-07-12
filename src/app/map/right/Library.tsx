@@ -21,7 +21,8 @@ export default function Library() {
   const dispatch = useAppDispatch();
   const keywords = useAppSelector((state) => state.library.value);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
-  const userUid = auth.currentUser?.uid;
+  const userUid = useAppSelector((state) => state.userInfo.uid);
+  // const userUid = auth.currentUser?.uid;
 
   async function deleteKeywordHandler(keywordToDelete: string) {
     const newKeywords = keywords.filter(
