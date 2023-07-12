@@ -22,7 +22,6 @@ export default function Library() {
   const keywords = useAppSelector((state) => state.library.value);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const userUid = useAppSelector((state) => state.userInfo.uid);
-  // const userUid = auth.currentUser?.uid;
 
   async function deleteKeywordHandler(keywordToDelete: string) {
     const newKeywords = keywords.filter(
@@ -90,6 +89,7 @@ export default function Library() {
 
   useEffect(() => {
     if (keywords.length) {
+      console.log("add keyword");
       updateFSLibrary();
     }
   }, [keywords]);

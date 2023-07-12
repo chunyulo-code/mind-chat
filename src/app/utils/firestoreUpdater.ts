@@ -13,17 +13,23 @@ import {
   collection
 } from "firebase/firestore";
 import { Node, Edge } from "reactflow";
-
-const userUid = store.getState().userInfo.uid;
+import { nanoid } from "nanoid";
+import { setAllMaps } from "@/redux/features/userInfoSlice";
 
 export async function updateFSNodesNEdges() {
+  const userUid = store.getState().userInfo.uid;
+  const userEmail = store.getState().userInfo.email;
+  const userDisplayName = store.getState().userInfo.displayName;
   const selectedMap = store.getState().userInfo.selectedMap;
-  if (userUid && selectedMap) {
+
+  if (userUid) {
     const userDocRef = doc(db, "users", userUid);
     const userDocSnap = await getDoc(userDocRef);
-    if (userDocSnap.exists()) {
+
+    if (userDocSnap.exists() && selectedMap) {
       const mapDocRef = doc(db, "users", userUid, "maps", selectedMap);
       const mapDocSnap = await getDoc(mapDocRef);
+
       if (mapDocSnap.exists()) {
         const nodes = store.getState().flow.nodes;
         const edges = store.getState().flow.edges;
@@ -36,25 +42,59 @@ export async function updateFSNodesNEdges() {
       }
       return;
     }
+
     console.log("userDocSnap not exist");
     await setDoc(doc(db, "users", userUid), {
-      email: auth.currentUser?.email,
-      userName: auth.currentUser?.displayName
+      email: userEmail,
+      userName: userDisplayName
     });
-    const nodes = store.getState().flow.nodes;
-    const edges = store.getState().flow.edges;
-    await setDoc(doc(db, "users", userUid, "maps", selectedMap), {
-      nodes: nodes,
-      edges: edges,
-      photos: [],
-      library: [],
-      updatedTime: serverTimestamp()
-    });
-    console.log("Set Doc successfully");
+
+    if (selectedMap) {
+      const nodes = store.getState().flow.nodes;
+      const edges = store.getState().flow.edges;
+
+      await setDoc(doc(db, "users", userUid, "maps", selectedMap), {
+        nodes: nodes,
+        edges: edges,
+        photos: [],
+        library: [],
+        updatedTime: serverTimestamp()
+      });
+      console.log("Set Doc successfully");
+      return;
+    }
+
+    if (!selectedMap) {
+      const nodes = store.getState().flow.nodes;
+      const edges = store.getState().flow.edges;
+      const allMaps = store.getState().userInfo.allMaps;
+      const newMapName = `New map - ${nanoid()}`;
+
+      const newMapId = await addDoc(collection(db, "users", userUid, "maps"), {
+        mapName: newMapName,
+        nodes: nodes,
+        edges: edges,
+        photos: [],
+        library: [],
+        updatedTime: serverTimestamp()
+      });
+
+      if (newMapId) {
+        const stringifiedNewMapId = newMapId.toString();
+
+        store.dispatch(
+          setAllMaps([
+            { mapId: stringifiedNewMapId, mapName: newMapName },
+            ...allMaps
+          ])
+        );
+      }
+    }
   }
 }
 
 export async function updateFSNodes(deletedNodes: Node[]) {
+  const userUid = store.getState().userInfo.uid;
   const selectedMap = store.getState().userInfo.selectedMap;
   if (userUid && selectedMap) {
     const userDocRef = doc(db, "users", userUid);
@@ -80,6 +120,7 @@ export async function updateFSNodes(deletedNodes: Node[]) {
 }
 
 export async function updateFSEdges(deletedEdges: Edge[]) {
+  const userUid = store.getState().userInfo.uid;
   const selectedMap = store.getState().userInfo.selectedMap;
   if (userUid && selectedMap) {
     const userDocRef = doc(db, "users", userUid);
@@ -105,6 +146,7 @@ export async function updateFSEdges(deletedEdges: Edge[]) {
 }
 
 export async function updateFSDraggedNodes(draggedNodes: Node[]) {
+  const userUid = store.getState().userInfo.uid;
   const selectedMap = store.getState().userInfo.selectedMap;
   if (userUid && selectedMap) {
     const userDocRef = doc(db, "users", userUid);
@@ -133,7 +175,9 @@ export async function updateFSDraggedNodes(draggedNodes: Node[]) {
 }
 
 export async function updateFSLibrary() {
+  const userUid = store.getState().userInfo.uid;
   const selectedMap = store.getState().userInfo.selectedMap;
+
   if (userUid && selectedMap) {
     const mapDocRef = doc(db, "users", userUid, "maps", selectedMap);
     const mapDocSnap = await getDoc(mapDocRef);
@@ -149,6 +193,8 @@ export async function updateFSMapName(
   editableMapId: string,
   newMapName: string
 ) {
+  const userUid = store.getState().userInfo.uid;
+
   if (userUid) {
     const mapDocRef = doc(db, "users", userUid, "maps", editableMapId);
     const mapDocSnap = await getDoc(mapDocRef);
@@ -163,6 +209,8 @@ export async function updateFSMapName(
 }
 
 export async function FSAddNewMap(newMapName: string) {
+  const userUid = store.getState().userInfo.uid;
+
   if (userUid) {
     const newMapId = await addDoc(collection(db, "users", userUid, "maps"), {
       mapName: newMapName,
@@ -172,6 +220,7 @@ export async function FSAddNewMap(newMapName: string) {
       library: [],
       updatedTime: serverTimestamp()
     });
+
     return newMapId;
   }
 }

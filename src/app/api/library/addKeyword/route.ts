@@ -7,8 +7,8 @@ export async function POST(req: Request) {
   const { keywordToAdd } = requestBody;
   console.log(`myKeyWord: ${keywordToAdd}`);
   console.log("=====!!!=====");
-  const userUid = "9TjkIyfzR6VmZyrBLX9f9348nni1";
-  const selectedMap = "map3";
+  const userUid = "GeOxeeYyYJOfXmqXJMKZkQBzW083";
+  const selectedMap = "W1SKqWnJIVRE5wZqgkie";
   const docRef = doc(db, "users", userUid, "maps", selectedMap);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
