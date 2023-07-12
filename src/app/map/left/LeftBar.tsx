@@ -64,10 +64,12 @@ export default function LeftBar() {
           allMaps.map((map) => (
             <div
               key={map.mapId}
+              id={map.mapId}
               className={`flex cursor-pointer items-center rounded-lg px-5 py-3 hover:bg-gray-700 ${
                 selectedMap === map.mapId ? "bg-gray-700" : "bg-transparent"
               }`}
               onClick={() => dispatch(setSelectedMap(map.mapId))}
+              onDoubleClick={(e) => e.target}
             >
               <span className="overflow-hidden truncate">{map.mapName}</span>
             </div>
