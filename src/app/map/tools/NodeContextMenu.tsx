@@ -71,8 +71,8 @@ export default function NodeContextMenu({ points }: NodeContextMenuProps) {
         dispatch(
           addNode({
             id: nanoid(),
-            type: "customInput",
-            data: { label: "newNode" },
+            type: "custom",
+            data: { label: "New node" },
             position: project({ x: points.x, y: points.y })
           })
         );
