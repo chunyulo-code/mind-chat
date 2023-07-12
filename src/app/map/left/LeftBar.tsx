@@ -24,6 +24,7 @@ export default function LeftBar() {
 
   async function fetchUserMaps() {
     if (userUid) {
+      console.log("UserUid exists");
       const querySnapshot = await getDocs(
         collection(db, "users", userUid, "maps")
       );
@@ -33,6 +34,7 @@ export default function LeftBar() {
       });
       dispatch(setAllMaps(fetchedMaps));
     }
+    console.log("No userUid");
   }
 
   function addNewMap() {
@@ -58,8 +60,8 @@ export default function LeftBar() {
   }
 
   useEffect(() => {
+    console.log("Ready to fetch");
     fetchUserMaps();
-    console.log("Fethc all maps");
 
     if (userUid) {
       const unsub = onSnapshot(collection(db, "users", userUid, "maps"), () => {
