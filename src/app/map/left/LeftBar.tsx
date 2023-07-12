@@ -67,7 +67,7 @@ export default function LeftBar() {
       });
       return () => unsub();
     }
-  }, []);
+  }, [userUid]);
 
   return (
     <div className=" flex h-full flex-col gap-3 bg-mindchat-bg-dark p-4 text-white">
