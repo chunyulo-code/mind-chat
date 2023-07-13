@@ -7,7 +7,7 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata = {
   title: "MindChat",
-  description: ` MIND CHAT is a web application that facilitates visual thinking for
+  description: `MIND CHAT is a web application that facilitates visual thinking for
           users by combining mind maps and ChatGPT. Users can brainstorm
           creative ideas related to a topic and engage in follow-up questions
           based on selected keywords of interest. Additionally, they have the
