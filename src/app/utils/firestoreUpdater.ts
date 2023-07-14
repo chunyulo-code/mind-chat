@@ -27,13 +27,6 @@ export async function updateFSNodesNEdges() {
     const userDocRef = doc(db, "users", userUid);
     const userDocSnap = await getDoc(userDocRef);
 
-    if (userDocSnap.exists() && allMaps.length === 0) {
-      await setDoc(doc(db, "users", userUid), {
-        email: userEmail,
-        userName: userDisplayName
-      });
-    }
-
     if (userDocSnap.exists() && selectedMap) {
       const mapDocRef = doc(db, "users", userUid, "maps", selectedMap);
       const mapDocSnap = await getDoc(mapDocRef);

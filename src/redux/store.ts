@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "@/redux/features/counterSlice";
 import gptResponseReducer from "@/redux/features/gptResponseSlice";
 import dataFotmatReducer from "@/redux/features/displayFormatSlice";
 import userModeReducer from "@/redux/features/userModeSlice";
@@ -11,7 +10,6 @@ import userInfoReducer from "@/redux/features/userInfoSlice";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     gptResponse: gptResponseReducer,
     dataFormat: dataFotmatReducer,
     userMode: userModeReducer,
