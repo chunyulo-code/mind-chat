@@ -90,6 +90,7 @@ export default function Flow() {
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const userUid = useAppSelector((state) => state.userInfo.uid);
+  const leftBarWidth = useAppSelector((state) => state.leftBar.width);
   const { fitView } = useReactFlow();
 
   const {
@@ -110,7 +111,7 @@ export default function Flow() {
     e.preventDefault();
     setNodeClicked(true);
     setNodePoints({
-      x: e.pageX,
+      x: e.pageX - leftBarWidth,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
@@ -119,7 +120,7 @@ export default function Flow() {
     e.preventDefault();
     setPaneClicked(true);
     setPanePoints({
-      x: e.pageX,
+      x: e.pageX - leftBarWidth,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
