@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { MdOutlineAdd } from "react-icons/md";
 import { db } from "@/app/utils/firebase";
 import { getDocs, collection, onSnapshot } from "firebase/firestore";
@@ -14,6 +14,7 @@ import { FSAddNewMap, updateFSMapName } from "@/app/utils/firestoreUpdater";
 import { auth } from "@/app/utils/firebase";
 import { Map } from "@/app/types/userInfoSliceTypes";
 import { showQuestionBar } from "@/redux/features/flowSlice";
+import { setLeftBarWidth } from "@/redux/features/leftBarSlice";
 
 export default function LeftBar() {
   const dispatch = useAppDispatch();
@@ -21,6 +22,7 @@ export default function LeftBar() {
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const editableMapId = useAppSelector((state) => state.userInfo.editableMapId);
   const userUid = useAppSelector((state) => state.userInfo.uid);
+  const leftBarRef = useRef(null);
 
   async function fetchUserMaps() {
     if (userUid) {
@@ -74,8 +76,28 @@ export default function LeftBar() {
     }
   }, [userUid]);
 
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width } = entry.contentRect;
+        dispatch(setLeftBarWidth(width));
+      }
+    });
+
+    if (leftBarRef.current) {
+      observer.observe(leftBarRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <div className=" flex h-full flex-col gap-3 bg-mindchat-bg-dark p-4 text-white">
+    <div
+      className="flex h-full flex-col gap-3 bg-mindchat-bg-dark p-4 text-white"
+      ref={leftBarRef}
+    >
       <div
         className="flex cursor-pointer items-center rounded-lg px-4 py-3 hover:bg-gray-700"
         onClick={() => addNewMap()}
