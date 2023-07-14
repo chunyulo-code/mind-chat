@@ -33,8 +33,11 @@ export default function LeftBar() {
         fetchedMaps.push({ mapId: doc.id, mapName: doc.data().mapName });
       });
       dispatch(setAllMaps(fetchedMaps));
+      return;
     }
+
     console.log("No userUid");
+    dispatch(setAllMaps([]));
   }
 
   function addNewMap() {

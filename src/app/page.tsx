@@ -4,8 +4,11 @@ import { GoPerson } from "react-icons/go";
 import mindChat from "@/img/mindChat.png";
 import Header from "./components/Header";
 import Link from "next/link";
+import { useAppSelector } from "@/redux/hooks";
 
 export default function Home() {
+  const userUid = useAppSelector((state) => state.userInfo.uid);
+
   return (
     <div className="h-screen overflow-hidden  bg-gradient-to-tr from-mindchat-bg-dark to-mindchat-bg-dark-darker">
       <div className="relative mx-auto h-full w-full overflow-hidden">
@@ -36,7 +39,7 @@ export default function Home() {
                 <div className="w-[250px] rounded-full bg-gradient-to-r from-mindchat-primary to-cyan-700 p-[2px] text-xl font-normal text-mindchat-bg-dark">
                   <div className="rounded-full bg-mindchat-bg-dark hover:bg-transparent">
                     <div className="py-4 text-center text-white">
-                      Get started
+                      {userUid ? "Get started" : "Try it"}
                     </div>
                   </div>
                 </div>
