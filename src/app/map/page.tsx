@@ -45,7 +45,6 @@ export default function Page() {
         <Allotment.Pane snap className="relative h-full">
           <ReactFlowProvider>
             <FormatConverter />
-            {/* <GptResponse /> */}
             <Images />
             {formatValue === DisplayFormatNumber.MIND_MAP ? (
               <Flow />

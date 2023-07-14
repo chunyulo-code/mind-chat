@@ -7,6 +7,7 @@ import flowReducer from "@/redux/features/flowSlice";
 import libraryReducer from "@/redux/features/librarySlice";
 import outputReducer from "@/redux/features/outputSlice";
 import userInfoReducer from "@/redux/features/userInfoSlice";
+import leftBarReducer from "@/redux/features/leftBarSlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
     flow: flowReducer,
     library: libraryReducer,
     output: outputReducer,
-    userInfo: userInfoReducer
+    userInfo: userInfoReducer,
+    leftBar: leftBarReducer
   },
   devTools: process.env.NODE_ENV !== "production"
 });
