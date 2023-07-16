@@ -48,7 +48,7 @@ export default function Login() {
   }
 
   return (
-    <div className="rounded-2xl px-[80px] py-[40px] text-white">
+    <div className="rounded-2xl text-white">
       <div className="font-medium text-mindchat-secondary">START FOR FREE</div>
       <div className="mt-7 text-[52px] font-black leading-[60px]">
         Create new account

@@ -15,9 +15,10 @@ import { useEffect } from "react";
 import { doc, setDoc } from "firebase/firestore";
 
 export default function BindAuthStateHandler() {
-  store.dispatch(setIsLoading(true));
-
   useEffect(() => {
+    console.log("BindAuthStateHandler");
+    store.dispatch(setIsLoading(true));
+
     const authStateListner = onAuthStateChanged(auth, (user) => {
       if (user) {
         const { uid, email, displayName, photoURL } = user;
@@ -40,9 +41,9 @@ export default function BindAuthStateHandler() {
         store.dispatch(setUserPhotoURL(null));
         console.log("No user logged in now");
       }
-    });
 
-    store.dispatch(setIsLoading(false));
+      store.dispatch(setIsLoading(false));
+    });
 
     return () => authStateListner();
   }, []);

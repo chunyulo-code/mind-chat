@@ -23,9 +23,9 @@ export default function Page() {
       />
     </div>
   ) : (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-tr from-mindchat-bg-dark to-mindchat-bg-dark-darker p-[20px] pr-0 text-white">
-      <div className="flex w-1/2 flex-col justify-center px-[120px]">
-        <div className="flex flex-col items-center">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-tr from-mindchat-bg-dark to-mindchat-bg-dark-darker p-[20px] pr-0 text-white md:items-center">
+      <div className="flex w-1/2 flex-col justify-center gap-[30px] px-[200px] 2xl:px-[150px] xl:px-[100px] lg:px-[50px] md:w-full">
+        <div className="flex justify-center">
           <Link href="/">
             <Image
               src="/mindChat.svg"
@@ -38,7 +38,7 @@ export default function Page() {
         </div>
         <SignIn />
       </div>
-      <div className="relative w-1/2 overflow-hidden rounded-l-3xl bg-mindchat-login-bg">
+      <div className="relative w-1/2 overflow-hidden rounded-l-3xl bg-mindchat-login-bg md:hidden">
         <Image
           src={pad}
           width={1200}
