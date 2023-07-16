@@ -16,7 +16,7 @@ type UserInfoState = {
 
 const initialState: UserInfoState = {
   isLogIn: false,
-  isLoading: false,
+  isLoading: true,
   uid: null,
   email: null,
   displayName: null,

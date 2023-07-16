@@ -37,7 +37,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="absolute top-0 flex h-[130px] w-full items-center justify-between py-10 text-white">
+    <header className="absolute left-[130px] right-[130px] top-0 flex h-[130px] items-center justify-between py-10 text-white">
       <Link href="/" title="logo" className="flex items-center">
         <Image
           src="/mindChat.svg"

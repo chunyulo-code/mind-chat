@@ -38,7 +38,7 @@ export default function SignIn() {
   }
 
   return (
-    <div className="rounded-2xl px-[80px] py-[30px] text-white">
+    <div className="rounded-2xl text-white">
       <div className="font-medium text-mindchat-secondary">START FOR FREE</div>
       <div className="mt-7 text-5xl font-black">
         SIGN IN
