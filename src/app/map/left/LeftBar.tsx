@@ -54,13 +54,15 @@ export default function LeftBar() {
   }
 
   function addNewMap() {
-    const newMapName = `New map - ${nanoid()}`;
-    const newAllMaps = [{ mapId: newMapName, mapName: newMapName }, ...allMaps];
-    dispatch(setAllMaps(newAllMaps));
-    FSAddNewMap(newMapName).then((newMapId) => {
+    FSAddNewMap().then((newMapId) => {
       if (newMapId) {
-        const mapId = newMapId.id.toString();
-        dispatch(setSelectedMap(mapId));
+        const stringifiedNewMapId = newMapId.toString();
+        const newAllMaps = [
+          { mapId: stringifiedNewMapId, mapName: "New map" },
+          ...allMaps
+        ];
+        dispatch(setAllMaps(newAllMaps));
+        dispatch(setSelectedMap(stringifiedNewMapId));
         dispatch(showQuestionBar());
       }
     });

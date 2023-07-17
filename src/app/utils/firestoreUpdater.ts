@@ -189,12 +189,12 @@ export async function updateFSMapName(
   }
 }
 
-export async function FSAddNewMap(newMapName: string) {
+export async function FSAddNewMap() {
   const userUid = store.getState().userInfo.uid;
 
   if (userUid) {
     const newMapId = await addDoc(collection(db, "users", userUid, "maps"), {
-      mapName: newMapName,
+      mapName: "New map",
       nodes: [],
       edges: [],
       photos: [],
