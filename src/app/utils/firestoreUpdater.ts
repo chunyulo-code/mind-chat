@@ -10,7 +10,8 @@ import {
   setDoc,
   addDoc,
   getDocs,
-  collection
+  collection,
+  deleteDoc
 } from "firebase/firestore";
 import { Node, Edge } from "reactflow";
 import { nanoid } from "nanoid";
@@ -188,12 +189,12 @@ export async function updateFSMapName(
   }
 }
 
-export async function FSAddNewMap(newMapName: string) {
+export async function FSAddNewMap() {
   const userUid = store.getState().userInfo.uid;
 
   if (userUid) {
     const newMapId = await addDoc(collection(db, "users", userUid, "maps"), {
-      mapName: newMapName,
+      mapName: "New map",
       nodes: [],
       edges: [],
       photos: [],
@@ -202,5 +203,15 @@ export async function FSAddNewMap(newMapName: string) {
     });
 
     return newMapId;
+  }
+}
+
+export async function FSDeleteMap(mapIdToDelete: string) {
+  const userUid = store.getState().userInfo.uid;
+
+  if (userUid) {
+    const newMapId = await deleteDoc(
+      doc(db, "users", userUid, "maps", mapIdToDelete)
+    );
   }
 }
