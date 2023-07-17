@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { MdOutlineAdd } from "react-icons/md";
-import { MdDeleteOutline } from "react-icons/md";
 import { db } from "@/app/utils/firebase";
 import {
   getDocs,
@@ -11,26 +10,16 @@ import {
   orderBy
 } from "firebase/firestore";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  setAllMaps,
-  setSelectedMap,
-  setEditableMapId
-} from "@/redux/features/userInfoSlice";
-import { nanoid } from "nanoid";
-import {
-  FSAddNewMap,
-  updateFSMapName,
-  FSDeleteMap
-} from "@/app/utils/firestoreUpdater";
+import { setAllMaps, setSelectedMap } from "@/redux/features/userInfoSlice";
+import { FSAddNewMap } from "@/app/utils/firestoreUpdater";
 import { Map } from "@/app/types/userInfoSliceTypes";
 import { showQuestionBar } from "@/redux/features/flowSlice";
 import { setLeftBarWidth } from "@/redux/features/leftBarSlice";
+import MapItem from "./MapItem";
 
 export default function LeftBar() {
   const dispatch = useAppDispatch();
   const allMaps = useAppSelector((state) => state.userInfo.allMaps);
-  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
-  const editableMapId = useAppSelector((state) => state.userInfo.editableMapId);
   const userUid = useAppSelector((state) => state.userInfo.uid);
   const leftBarRef = useRef(null);
 
@@ -66,21 +55,6 @@ export default function LeftBar() {
         dispatch(showQuestionBar());
       }
     });
-  }
-
-  function updateMapNames(newMapName: string) {
-    const newAllMaps = allMaps.map((map) => {
-      if (map.mapId === editableMapId) return { ...map, mapName: newMapName };
-      else return map;
-    });
-    console.log(newAllMaps);
-    return newAllMaps;
-  }
-
-  function deleteMap(mapIdToDelete: string) {
-    const newAllMaps = allMaps.filter((map) => map.mapId !== mapIdToDelete);
-    dispatch(setAllMaps(newAllMaps));
-    FSDeleteMap(mapIdToDelete);
   }
 
   useEffect(() => {
@@ -127,50 +101,7 @@ export default function LeftBar() {
       <div className="h-[2px] w-full bg-gray-700"></div>
       <div className="flex flex-col gap-2 overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
         {allMaps.length > 0 &&
-          allMaps.map((map) => (
-            <div
-              key={map.mapId}
-              id={map.mapId}
-              className={`group relative flex cursor-pointer items-center rounded-lg px-5 py-3 hover:bg-gray-700 ${
-                selectedMap === map.mapId ? "bg-gray-700" : "bg-transparent"
-              }`}
-              onClick={() => {
-                dispatch(setSelectedMap(map.mapId));
-                if (map.mapId !== editableMapId)
-                  dispatch(setEditableMapId(undefined));
-              }}
-              onDoubleClick={() => dispatch(setEditableMapId(map.mapId))}
-            >
-              <span
-                className={`overflow-hidden truncate ${
-                  editableMapId === map.mapId ? "hidden" : "block"
-                }`}
-              >
-                {map.mapName}
-              </span>
-              <span
-                className="absolute right-5 hidden rounded-lg bg-gray-700 p-2 text-xl group-hover:block hover:text-mindchat-primary"
-                onClick={() => deleteMap(map.mapId)}
-              >
-                <MdDeleteOutline />
-              </span>
-              <label htmlFor="mapNameEditor" className="hidden">
-                Map Name Editor
-              </label>
-              <input
-                className={`w-full rounded-lg border-2 border-gray-500 bg-transparent px-2 py-1 ${
-                  editableMapId === map.mapId ? "block" : "hidden"
-                }`}
-                onChange={(e) => {
-                  dispatch(setAllMaps(updateMapNames(e.target.value)));
-                  updateFSMapName(map.mapId, e.target.value);
-                }}
-                value={map.mapName}
-                id="mapNameEditor"
-                type="text"
-              />
-            </div>
-          ))}
+          allMaps.map((map) => <MapItem key={map.mapId} map={map} />)}
       </div>
     </div>
   );
