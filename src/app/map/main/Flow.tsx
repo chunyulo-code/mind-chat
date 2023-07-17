@@ -67,6 +67,7 @@ import {
   updateFSEdges,
   updateFSDraggedNodes
 } from "@/app/utils/firestoreUpdater";
+import { setSelectedImage } from "@/redux/features/imageUrlsSlice";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -201,6 +202,7 @@ export default function Flow() {
         onPaneClick={() => {
           dispatch(setEditableNode(undefined));
           dispatch(setEditableMapId(undefined));
+          dispatch(setSelectedImage(null));
         }}
         fitView
         minZoom={0.1}

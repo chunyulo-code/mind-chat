@@ -39,6 +39,7 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
       dispatch(addImageUrls(newImageUrls));
     }
   };
+
   const tools: Tool[] = [
     { clickHandler: toMindMapModeHandler, id: "mindMap", icon: <RiMindMap /> },
     { clickHandler: toDrawingModeHandler, id: "pen", icon: <MdCreate /> },
