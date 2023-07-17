@@ -42,7 +42,7 @@ export default function Page() {
         <Allotment.Pane preferredSize={180} minSize={0}>
           <LeftBar />
         </Allotment.Pane>
-        <Allotment.Pane snap className="relative h-full">
+        <Allotment.Pane className="relative h-full">
           <ReactFlowProvider>
             <FormatConverter />
             <Images />
@@ -55,7 +55,7 @@ export default function Page() {
             <ToolBar clearCanvas={clearCanvas} setColor={setColor} />
           </ReactFlowProvider>
         </Allotment.Pane>
-        <Allotment.Pane preferredSize={200} minSize={150}>
+        <Allotment.Pane preferredSize={220} minSize={190}>
           <RightBar />
         </Allotment.Pane>
       </Allotment>

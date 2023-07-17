@@ -86,7 +86,7 @@ export default function Spotlight() {
 
   return (
     <div
-      className="z-50 h-[calc(100%-30px)] w-full overflow-hidden rounded-xl border border-mindchat-secondary shadow-md shadow-slate-700"
+      className="z-50 h-[calc(100%-28px-8px)] w-full overflow-hidden rounded-xl border border-mindchat-secondary shadow-md shadow-slate-700"
       ref={wordCloudRef}
     >
       {wordCloudRendered && (
