@@ -1,8 +1,15 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { MdOutlineAdd } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
 import { db } from "@/app/utils/firebase";
-import { getDocs, collection, onSnapshot } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  onSnapshot,
+  query,
+  orderBy
+} from "firebase/firestore";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   setAllMaps,
@@ -10,8 +17,11 @@ import {
   setEditableMapId
 } from "@/redux/features/userInfoSlice";
 import { nanoid } from "nanoid";
-import { FSAddNewMap, updateFSMapName } from "@/app/utils/firestoreUpdater";
-import { auth } from "@/app/utils/firebase";
+import {
+  FSAddNewMap,
+  updateFSMapName,
+  FSDeleteMap
+} from "@/app/utils/firestoreUpdater";
 import { Map } from "@/app/types/userInfoSliceTypes";
 import { showQuestionBar } from "@/redux/features/flowSlice";
 import { setLeftBarWidth } from "@/redux/features/leftBarSlice";
@@ -27,14 +37,15 @@ export default function LeftBar() {
   async function fetchUserMaps() {
     if (userUid) {
       console.log("UserUid exists");
+      const mapsRef = collection(db, "users", userUid, "maps");
       const querySnapshot = await getDocs(
-        collection(db, "users", userUid, "maps")
+        query(mapsRef, orderBy("updatedTime"))
       );
       let fetchedMaps: Map[] = [];
       querySnapshot.forEach((doc) => {
         fetchedMaps.push({ mapId: doc.id, mapName: doc.data().mapName });
       });
-      dispatch(setAllMaps(fetchedMaps));
+      dispatch(setAllMaps(fetchedMaps.reverse()));
       return;
     }
 
@@ -62,6 +73,12 @@ export default function LeftBar() {
     });
     console.log(newAllMaps);
     return newAllMaps;
+  }
+
+  function deleteMap(mapIdToDelete: string) {
+    const newAllMaps = allMaps.filter((map) => map.mapId !== mapIdToDelete);
+    dispatch(setAllMaps(newAllMaps));
+    FSDeleteMap(mapIdToDelete);
   }
 
   useEffect(() => {
@@ -112,7 +129,7 @@ export default function LeftBar() {
             <div
               key={map.mapId}
               id={map.mapId}
-              className={`flex cursor-pointer items-center rounded-lg px-5 py-3 hover:bg-gray-700 ${
+              className={`group relative flex cursor-pointer items-center rounded-lg px-5 py-3 hover:bg-gray-700 ${
                 selectedMap === map.mapId ? "bg-gray-700" : "bg-transparent"
               }`}
               onClick={() => {
@@ -128,6 +145,12 @@ export default function LeftBar() {
                 }`}
               >
                 {map.mapName}
+              </span>
+              <span
+                className="absolute right-5 hidden rounded-lg bg-gray-700 p-2 text-xl group-hover:block hover:text-mindchat-primary"
+                onClick={() => deleteMap(map.mapId)}
+              >
+                <MdDeleteOutline />
               </span>
               <label htmlFor="mapNameEditor" className="hidden">
                 Map Name Editor
