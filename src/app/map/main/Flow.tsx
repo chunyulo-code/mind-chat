@@ -110,8 +110,11 @@ export default function Flow() {
   const onNodeContextMenu: (e: React.MouseEvent) => void = (e) => {
     e.preventDefault();
     setNodeClicked(true);
+    /**
+     add 30 to leftBarWidth to make the position of context menu displat correctly
+     */
     setNodePoints({
-      x: e.pageX - leftBarWidth,
+      x: e.pageX - leftBarWidth - 30,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
@@ -120,7 +123,7 @@ export default function Flow() {
     e.preventDefault();
     setPaneClicked(true);
     setPanePoints({
-      x: e.pageX - leftBarWidth,
+      x: e.pageX - leftBarWidth - 30,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
