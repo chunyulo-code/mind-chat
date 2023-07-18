@@ -4,12 +4,10 @@ import { db } from "@/app/utils/firebase";
 
 export async function POST(req: Request) {
   const requestBody = await req.json(); // 解析請求內容為 JSON
-  const { keywordToAdd } = requestBody;
+  const { userUid, mapToAdd, keywordToAdd } = requestBody;
   console.log(`myKeyWord: ${keywordToAdd}`);
   console.log("=====!!!=====");
-  const userUid = "GeOxeeYyYJOfXmqXJMKZkQBzW083";
-  const selectedMap = "W1SKqWnJIVRE5wZqgkie";
-  const docRef = doc(db, "users", userUid, "maps", selectedMap);
+  const docRef = doc(db, "users", userUid, "maps", mapToAdd);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     const keywords = docSnap.data().library;
