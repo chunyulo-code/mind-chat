@@ -82,19 +82,22 @@ export default function FormatConverter() {
       id: "toggleLeftMenu",
       icon: <RiArrowLeftSFill />,
       style: `${buttonStyle} border-0 text-2xl`,
-      clickHandler: () => toggleLeftBar()
+      clickHandler: () => toggleLeftBar(),
+      toolTipText: "Toggle left pane"
     },
     {
       id: "toMindMap",
       icon: <RiMindMap />,
       style: buttonStyle,
-      clickHandler: () => toMindMapHandler()
+      clickHandler: () => toMindMapHandler(),
+      toolTipText: "Set to mind map mode"
     },
     {
       id: "toOutline",
       icon: <AiOutlineMenu />,
       style: buttonStyle,
-      clickHandler: () => toOutlineHandler()
+      clickHandler: () => toOutlineHandler(),
+      toolTipText: "Set to outline mode"
     },
     {
       id: "reLayout",
@@ -103,7 +106,8 @@ export default function FormatConverter() {
       clickHandler: () => {
         layoutNodes("LR");
         updateFSNodesNEdges();
-      }
+      },
+      toolTipText: "Re-layout"
     }
   ];
 
@@ -113,6 +117,7 @@ export default function FormatConverter() {
         <div
           key={button.id}
           className={button.style}
+          title={button.toolTipText}
           onClick={button.clickHandler}
         >
           {button.icon}
