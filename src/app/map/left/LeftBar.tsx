@@ -45,13 +45,12 @@ export default function LeftBar() {
   function addNewMap() {
     FSAddNewMap().then((newMapId) => {
       if (newMapId) {
-        const stringifiedNewMapId = newMapId.toString();
         const newAllMaps = [
-          { mapId: stringifiedNewMapId, mapName: "New map" },
+          { mapId: newMapId, mapName: "New map" },
           ...allMaps
         ];
         dispatch(setAllMaps(newAllMaps));
-        dispatch(setSelectedMap(stringifiedNewMapId));
+        dispatch(setSelectedMap(newMapId));
         dispatch(showQuestionBar());
       }
     });

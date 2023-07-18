@@ -1,13 +1,16 @@
 "use client";
 import React, { useState, useEffect, ReactElement } from "react";
 import { ClearCanvas } from "../../types/canvasTypes";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toMindMapMode, toDrawingMode } from "@/redux/features/userModeSlice";
 import { addImageUrls } from "@/redux/features/imageUrlsSlice";
 import { RiMindMap } from "react-icons/ri";
 import { MdCreate } from "react-icons/md";
 import { BsEraser } from "react-icons/bs";
 import { MdAttachFile } from "react-icons/md";
+import { storage } from "@/app/utils/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { updateFSImages } from "@/app/utils/firestoreUpdater";
 
 type ToolBarProps = {
   clearCanvas: ClearCanvas;
@@ -25,20 +28,42 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
   const toMindMapModeHandler = () => dispatch(toMindMapMode());
   const toDrawingModeHandler = () => dispatch(toDrawingMode());
   const clearCanvasHandler = () => clearCanvas();
+  const userUid = useAppSelector((state) => state.userInfo.uid);
+  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+  const allImages = useAppSelector((state) => state.imageUrls.allImages);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("uploaded");
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const fileList = e.target.files;
+
     if (fileList) {
-      const newImages = Array.from(fileList);
-      const newImageUrls: string[] = [];
-      newImages.forEach((image) => {
-        newImageUrls.push(URL.createObjectURL(image));
+      const uploadedImages = Array.from(fileList);
+      const downloadUrls: string[] = [];
+
+      const uploadPromises = uploadedImages.map((image) => {
+        if (userUid) {
+          const ImageToUploadRef = ref(
+            storage,
+            `images/${userUid}/${selectedMap}-${image.name}`
+          );
+
+          return uploadBytes(ImageToUploadRef, image).then(() =>
+            getDownloadURL(ImageToUploadRef).then((url) => {
+              downloadUrls.push(url);
+              console.log(downloadUrls);
+            })
+          );
+        } else {
+          return Promise.resolve();
+        }
       });
-      console.log(newImageUrls);
-      dispatch(addImageUrls(newImageUrls));
+
+      Promise.all(uploadPromises).then(() => {
+        dispatch(addImageUrls(downloadUrls));
+        updateFSImages();
+      });
     }
-  };
+  }
+
   const tools: Tool[] = [
     { clickHandler: toMindMapModeHandler, id: "mindMap", icon: <RiMindMap /> },
     { clickHandler: toDrawingModeHandler, id: "pen", icon: <MdCreate /> },
