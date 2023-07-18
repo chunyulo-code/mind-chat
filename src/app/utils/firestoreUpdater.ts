@@ -50,7 +50,7 @@ export async function updateFSNodesNEdges() {
       const nodes = store.getState().flow.nodes;
       const edges = store.getState().flow.edges;
       const allMaps = store.getState().userInfo.allMaps;
-      const newMapName = `New map - ${nanoid()}`;
+      const newMapName = "New map";
 
       const newMapRef = doc(collection(db, "users", userUid, "maps"));
       await setDoc(newMapRef, {
