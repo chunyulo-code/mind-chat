@@ -26,7 +26,7 @@ export default function DeleteMapModal() {
     <div className="absolute z-[100] h-screen w-screen">
       <div className="h-full w-full bg-gray-700 opacity-80"></div>
       <div className="absolute top-0 flex h-screen w-screen items-center justify-center">
-        <div className="flex flex-col items-center justify-center gap-5 rounded-2xl bg-mindchat-bg-dark-darker px-10 pb-5 pt-8 text-center text-white shadow-lg shadow-gray-800">
+        <div className="flex flex-col items-center justify-center gap-5 rounded-2xl bg-mindchat-bg-dark-darker px-10 pb-5 pt-10 text-center text-white shadow-lg shadow-gray-800">
           <div className="text-4xl text-mindchat-primary">
             <BsFillTrash3Fill />
           </div>
