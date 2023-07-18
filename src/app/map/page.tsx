@@ -14,14 +14,17 @@ import { DisplayFormatNumber } from "../types/displayFormatSliceTypes";
 import { ClearCanvas } from "../types/canvasTypes";
 import Images from "./tools/Images";
 import "allotment/dist/style.css";
-import { auth } from "../utils/firebase";
 import HeaderBar from "../components/HeaderBar";
+import DeleteMapModal from "@/app/components/DeleteMapModal";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState("#42f0ed");
   const formatValue = useAppSelector((state) => state.dataFormat.value);
+  const isDeleteMapClicked = useAppSelector(
+    (state) => state.leftBar.isDeleteMapClicked
+  );
 
   const clearCanvas: ClearCanvas = () => {
     const canvas = canvasRef.current;
@@ -35,6 +38,7 @@ export default function Page() {
 
   return (
     <div className="h-screen w-screen">
+      {isDeleteMapClicked && <DeleteMapModal />}
       <div className="absolute top-0 z-50 h-[70px] w-full ">
         <HeaderBar />
       </div>
