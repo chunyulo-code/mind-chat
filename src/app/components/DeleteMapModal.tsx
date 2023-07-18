@@ -26,15 +26,15 @@ export default function DeleteMapModal() {
     <div className="absolute z-[100] h-screen w-screen">
       <div className="h-full w-full bg-gray-700 opacity-80"></div>
       <div className="absolute top-0 flex h-screen w-screen items-center justify-center">
-        <div className="p flex h-[300px] w-[300px] flex-col items-center justify-center gap-6 rounded-2xl bg-mindchat-bg-dark-darker px-8 pt-5 text-center text-white">
+        <div className="p flex h-[300px] w-[300px] flex-col items-center justify-center gap-6 rounded-2xl bg-mindchat-bg-dark-darker px-8 pt-5 text-center text-white shadow-lg shadow-gray-800">
           <div className="text-5xl text-mindchat-primary">
             <BsFillTrash3Fill />
           </div>
-          <div className="text-xl font-bold">Delete Map</div>
+          <div className="text-2xl font-bold">Delete Map</div>
           <div className="text-sm text-gray-300">
             Are you sure you want to delete this card ?
           </div>
-          <div className="flex gap-5 font-bold">
+          <div className="mt-2 flex gap-5 font-medium">
             <button
               className="rounded-md bg-mindchat-primary px-8 py-2 text-mindchat-bg-dark hover:bg-red-500 hover:text-white"
               onClick={() => {

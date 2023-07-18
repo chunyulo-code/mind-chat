@@ -14,9 +14,9 @@ export default function Home() {
       <div className="relative mx-auto h-full w-full overflow-hidden">
         <Image
           src={mindChat}
-          width={1300}
+          width={1400}
           alt="mindChatBackgroundImage"
-          className="absolute right-[-410px] top-[220px] lg:hidden 2xl:right-[-650px]"
+          className="absolute right-[-490px] top-[200px] 2xl:right-[-650px] lg:hidden"
         />
         <div className="relative mx-auto h-full w-full px-[130px]">
           <Header />
