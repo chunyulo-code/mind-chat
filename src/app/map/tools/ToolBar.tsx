@@ -21,6 +21,7 @@ type Tool = {
   clickHandler: () => void;
   id: string;
   icon: ReactElement;
+  toolTipText: string;
 };
 
 export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
@@ -93,9 +94,24 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
   }
 
   const tools: Tool[] = [
-    { clickHandler: toMindMapModeHandler, id: "mindMap", icon: <RiMindMap /> },
-    { clickHandler: toDrawingModeHandler, id: "pen", icon: <MdCreate /> },
-    { clickHandler: clearCanvasHandler, id: "eraser", icon: <BsEraser /> }
+    {
+      clickHandler: toMindMapModeHandler,
+      id: "mindMap",
+      icon: <RiMindMap />,
+      toolTipText: "Set to mind map mode"
+    },
+    {
+      clickHandler: toDrawingModeHandler,
+      id: "pen",
+      icon: <MdCreate />,
+      toolTipText: "Set to drawing mode"
+    },
+    {
+      clickHandler: clearCanvasHandler,
+      id: "eraser",
+      icon: <BsEraser />,
+      toolTipText: "Clean canvas"
+    }
   ];
 
   const primaryClickHandler = () => {
@@ -136,28 +152,31 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
         <div
           key={tool.id}
           onClick={tool.clickHandler}
+          title={tool.toolTipText}
           className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-mindchat-primary text-white"
         >
           {tool.icon}
         </div>
       ))}
-      <form>
-        <label
-          htmlFor="inputFiles"
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-mindchat-primary text-white"
-        >
-          <MdAttachFile />
-          <span className="hidden">Upload</span>
-        </label>
-        <input
-          id="inputFiles"
-          className="hidden"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleFileChange}
-        />
-      </form>
+      <div title="Upload files">
+        <form>
+          <label
+            htmlFor="inputFiles"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-mindchat-primary text-white"
+          >
+            <MdAttachFile />
+            <span className="hidden">Upload</span>
+          </label>
+          <input
+            id="inputFiles"
+            className="hidden"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+          />
+        </form>
+      </div>
 
       <div className="text-mindchat-secondary">|</div>
       {colors.map((color) => (
