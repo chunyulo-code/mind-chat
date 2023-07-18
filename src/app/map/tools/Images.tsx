@@ -7,24 +7,34 @@ import {
   setSelectedImage
 } from "@/redux/features/imageUrlsSlice";
 import { RiCloseCircleFill } from "react-icons/ri";
+import { updateFSImages } from "@/app/utils/firestoreUpdater";
+import { useEffect } from "react";
+import { getFSImages } from "@/app/utils/firestoreUpdater";
 
 export default function Images() {
-  const imageUrls = useAppSelector((state) => state.imageUrls.allImages);
+  const allImages = useAppSelector((state) => state.imageUrls.allImages);
+  const userUid = useAppSelector((state) => state.userInfo.uid);
+  const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const selectedImage = useAppSelector(
     (state) => state.imageUrls.selectedImage
   );
   const dispatch = useAppDispatch();
 
   function deleteHandler() {
-    const newImageUrls = imageUrls.filter(
+    const newImageUrls = allImages.filter(
       (imageUrl) => imageUrl !== selectedImage
     );
     dispatch(setImageUrls(newImageUrls));
+    updateFSImages();
   }
+
+  useEffect(() => {
+    getFSImages();
+  }, [userUid, selectedMap]);
 
   return (
     <div className="absolute left-0 top-0 z-10">
-      {imageUrls.map((imageUrl, index) => (
+      {allImages.map((imageUrl, index) => (
         <Rnd
           key={index}
           className={`${

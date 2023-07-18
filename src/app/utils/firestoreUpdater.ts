@@ -16,6 +16,7 @@ import {
 import { Node, Edge } from "reactflow";
 import { nanoid } from "nanoid";
 import { setAllMaps, setSelectedMap } from "@/redux/features/userInfoSlice";
+import { setImageUrls } from "@/redux/features/imageUrlsSlice";
 
 export async function updateFSNodesNEdges() {
   const userUid = store.getState().userInfo.uid;
@@ -56,7 +57,7 @@ export async function updateFSNodesNEdges() {
         mapName: newMapName,
         nodes: nodes,
         edges: edges,
-        photos: [],
+        images: [],
         library: [],
         updatedTime: serverTimestamp()
       });
@@ -197,12 +198,12 @@ export async function FSAddNewMap() {
       mapName: "New map",
       nodes: [],
       edges: [],
-      photos: [],
+      images: [],
       library: [],
       updatedTime: serverTimestamp()
     });
 
-    return newMapId;
+    return newMapId.id;
   }
 }
 
@@ -213,5 +214,51 @@ export async function FSDeleteMap(mapIdToDelete: string) {
     const newMapId = await deleteDoc(
       doc(db, "users", userUid, "maps", mapIdToDelete)
     );
+  }
+}
+
+export async function updateFSImages() {
+  const userUid = store.getState().userInfo.uid;
+  const selectedMap = store.getState().userInfo.selectedMap;
+
+  if (userUid && selectedMap) {
+    const userDocRef = doc(db, "users", userUid);
+    const userDocSnap = await getDoc(userDocRef);
+    if (userDocSnap.exists()) {
+      const mapDocRef = doc(db, "users", userUid, "maps", selectedMap);
+      const mapDocSnap = await getDoc(mapDocRef);
+      if (mapDocSnap.exists()) {
+        const allImages = store.getState().imageUrls.allImages;
+
+        await updateDoc(mapDocRef, {
+          images: allImages,
+          updatedTime: serverTimestamp()
+        });
+        console.log("Updated!!!");
+      }
+      return;
+    }
+    console.log("userDoc not existed");
+  }
+}
+
+export async function getFSImages() {
+  const userUid = store.getState().userInfo.uid;
+  const selectedMap = store.getState().userInfo.selectedMap;
+
+  if (userUid && selectedMap) {
+    const userDocRef = doc(db, "users", userUid);
+    const userDocSnap = await getDoc(userDocRef);
+    if (userDocSnap.exists()) {
+      const mapDocRef = doc(db, "users", userUid, "maps", selectedMap);
+      const mapDocSnap = await getDoc(mapDocRef);
+      if (mapDocSnap.exists()) {
+        if (mapDocSnap.data().images) {
+          store.dispatch(setImageUrls(mapDocSnap.data().images));
+        }
+      }
+      return;
+    }
+    console.log("userDoc not existed");
   }
 }
