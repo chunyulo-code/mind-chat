@@ -9,6 +9,10 @@ import {
 } from "@/redux/features/userInfoSlice";
 import { setAllMaps } from "@/redux/features/userInfoSlice";
 import { updateFSMapName, FSDeleteMap } from "@/app/utils/firestoreUpdater";
+import {
+  setIsDeleteMapClicked,
+  setMapIdToDelete
+} from "@/redux/features/leftBarSlice";
 
 type MapItemProps = { map: Map };
 
@@ -27,12 +31,6 @@ export default function MapItem({ map }: MapItemProps) {
     });
     console.log(newAllMaps);
     return newAllMaps;
-  }
-
-  function deleteMap(mapIdToDelete: string) {
-    const newAllMaps = allMaps.filter((map) => map.mapId !== mapIdToDelete);
-    dispatch(setAllMaps(newAllMaps));
-    FSDeleteMap(mapIdToDelete);
   }
 
   function blurInput(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -68,7 +66,10 @@ export default function MapItem({ map }: MapItemProps) {
         className={`absolute right-5 rounded-md bg-gray-700 p-2 text-xl hover:text-mindchat-primary ${
           isHovered && editableMapId !== map.mapId ? "block" : "hidden"
         }`}
-        onClick={() => deleteMap(map.mapId)}
+        onClick={() => {
+          dispatch(setMapIdToDelete(map.mapId));
+          dispatch(setIsDeleteMapClicked(true));
+        }}
       >
         <MdDeleteOutline />
       </span>
