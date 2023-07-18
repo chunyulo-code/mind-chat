@@ -32,35 +32,63 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const allImages = useAppSelector((state) => state.imageUrls.allImages);
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  // function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  //   const fileList = e.target.files;
+
+  //   if (fileList) {
+  //     const uploadedImages = Array.from(fileList);
+  //     const downloadUrls: string[] = [];
+
+  //     const uploadPromises = uploadedImages.map((image) => {
+  //       if (userUid) {
+  //         const ImageToUploadRef = ref(
+  //           storage,
+  //           `images/${userUid}/${selectedMap}-${image.name}`
+  //         );
+
+  //         return uploadBytes(ImageToUploadRef, image).then(() =>
+  //           getDownloadURL(ImageToUploadRef).then((url) => {
+  //             downloadUrls.push(url);
+  //             console.log(downloadUrls);
+  //           })
+  //         );
+  //       } else {
+  //         return Promise.resolve();
+  //       }
+  //     });
+
+  //     Promise.all(uploadPromises).then(() => {
+  //       dispatch(addImageUrls(downloadUrls));
+  //       updateFSImages();
+  //     });
+  //   }
+  // }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const fileList = e.target.files;
 
     if (fileList) {
       const uploadedImages = Array.from(fileList);
       const downloadUrls: string[] = [];
 
-      const uploadPromises = uploadedImages.map((image) => {
+      for (const image of uploadedImages) {
         if (userUid) {
           const ImageToUploadRef = ref(
             storage,
             `images/${userUid}/${selectedMap}-${image.name}`
           );
 
-          return uploadBytes(ImageToUploadRef, image).then(() =>
-            getDownloadURL(ImageToUploadRef).then((url) => {
-              downloadUrls.push(url);
-              console.log(downloadUrls);
-            })
-          );
-        } else {
-          return Promise.resolve();
+          await uploadBytes(ImageToUploadRef, image);
+          const url = await getDownloadURL(ImageToUploadRef);
+          downloadUrls.push(url);
+          console.log(downloadUrls);
         }
-      });
+      }
 
-      Promise.all(uploadPromises).then(() => {
+      if (userUid) {
         dispatch(addImageUrls(downloadUrls));
         updateFSImages();
-      });
+      }
     }
   }
 

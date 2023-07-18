@@ -21,6 +21,7 @@ export default function LeftBar() {
   const dispatch = useAppDispatch();
   const allMaps = useAppSelector((state) => state.userInfo.allMaps);
   const userUid = useAppSelector((state) => state.userInfo.uid);
+
   const leftBarRef = useRef(null);
 
   async function fetchUserMaps() {
