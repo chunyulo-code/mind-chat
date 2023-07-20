@@ -7,6 +7,7 @@ import { ImGithub } from "react-icons/im";
 import { nativeSignIn } from "../utils/firebaseAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { googleSignIn } from "../utils/firebaseAuth";
 
 type AccountData = {
   email: string;
@@ -26,18 +27,18 @@ export default function SignIn() {
     { text: "Password", icon: <TbPassword />, id: "password", type: "password" }
   ];
 
-  async function clickHandler() {
-    console.log("clicked");
+  async function nativeSignInHandler() {
     await nativeSignIn(accountData.email, accountData.password);
-    console.log(`Ready redirect to /map`);
-    if (typeof window !== "undefined") {
-      window.alert("Signed in successfully");
-    }
+    router.push("/map");
+  }
+
+  async function googleSignInHandler() {
+    await googleSignIn();
     router.push("/map");
   }
 
   return (
-    <div className="rounded-2xl px-[80px] py-[30px] text-white">
+    <div className="rounded-2xl text-white">
       <div className="font-medium text-mindchat-secondary">START FOR FREE</div>
       <div className="mt-7 text-5xl font-black">
         SIGN IN
@@ -60,13 +61,16 @@ export default function SignIn() {
           <div className="h-[1px] w-2/5 bg-gray-700"></div>
         </div>
         <div className="flex gap-2">
-          <button className="flex w-full items-center justify-center gap-5 rounded-lg border border-gray-600 py-3 hover:bg-red-400">
+          <button
+            className="flex w-full items-center justify-center gap-5 rounded-lg border border-gray-600 py-3 hover:border-mindchat-primary"
+            onClick={googleSignInHandler}
+          >
             <span>
               <FcGoogle />
             </span>
             <span className="text-sm">Google</span>
           </button>
-          <button className="flex w-full items-center justify-center gap-5 rounded-lg border border-gray-600 py-3 hover:bg-black">
+          <button className="flex w-full items-center justify-center gap-5 rounded-lg border border-gray-600 py-3 hover:border-mindchat-primary">
             <span>
               <ImGithub />
             </span>
@@ -109,7 +113,7 @@ export default function SignIn() {
           <div className="text-right">
             <button
               className="rounded-full bg-mindchat-primary px-10 py-3 text-sm font-medium text-mindchat-bg-dark"
-              onClick={clickHandler}
+              onClick={nativeSignInHandler}
             >
               SIGN IN
             </button>

@@ -67,6 +67,7 @@ import {
   updateFSEdges,
   updateFSDraggedNodes
 } from "@/app/utils/firestoreUpdater";
+import { setSelectedImage } from "@/redux/features/imageUrlsSlice";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -90,6 +91,7 @@ export default function Flow() {
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const userUid = useAppSelector((state) => state.userInfo.uid);
+  const leftBarWidth = useAppSelector((state) => state.leftBar.width);
   const { fitView } = useReactFlow();
 
   const {
@@ -109,8 +111,11 @@ export default function Flow() {
   const onNodeContextMenu: (e: React.MouseEvent) => void = (e) => {
     e.preventDefault();
     setNodeClicked(true);
+    /**
+     add 30 to leftBarWidth to make the position of context menu displat correctly
+     */
     setNodePoints({
-      x: e.pageX,
+      x: e.pageX - leftBarWidth - 30,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
@@ -119,7 +124,7 @@ export default function Flow() {
     e.preventDefault();
     setPaneClicked(true);
     setPanePoints({
-      x: e.pageX,
+      x: e.pageX - leftBarWidth - 30,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
   };
@@ -197,6 +202,7 @@ export default function Flow() {
         onPaneClick={() => {
           dispatch(setEditableNode(undefined));
           dispatch(setEditableMapId(undefined));
+          dispatch(setSelectedImage(null));
         }}
         fitView
         minZoom={0.1}

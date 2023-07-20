@@ -4,21 +4,24 @@ import { GoPerson } from "react-icons/go";
 import mindChat from "@/img/mindChat.png";
 import Header from "./components/Header";
 import Link from "next/link";
+import { useAppSelector } from "@/redux/hooks";
 
 export default function Home() {
+  const userUid = useAppSelector((state) => state.userInfo.uid);
+
   return (
-    <div className="h-screen overflow-hidden  bg-gradient-to-tr from-mindchat-bg-dark to-mindchat-bg-dark-darker">
+    <div className="h-screen overflow-hidden bg-gradient-to-tr from-mindchat-bg-dark to-mindchat-bg-dark-darker">
       <div className="relative mx-auto h-full w-full overflow-hidden">
         <Image
           src={mindChat}
-          width={1300}
+          width={1400}
           alt="mindChatBackgroundImage"
-          className="absolute right-[-410px] top-[220px]"
+          className="absolute right-[-490px] top-[200px] 2xl:right-[-650px] lg:hidden"
         />
-        <div className="container relative mx-auto h-full w-full">
+        <div className="relative mx-auto h-full w-full px-[130px]">
           <Header />
-          <main className="flex h-full w-1/2 items-center justify-start pt-[50px] text-start">
-            <div className="flex flex-col gap-[60px] pr-[46px]">
+          <main className="flex h-full w-1/2 items-center justify-start pt-[50px] text-start lg:w-full">
+            <div className="flex flex-col gap-[60px] pr-[46px] lg:pr-0">
               <p className="text-[35px] font-bold leading-[80px] text-white">
                 Immerse in Visual Thinking
                 <br />
@@ -36,7 +39,7 @@ export default function Home() {
                 <div className="w-[250px] rounded-full bg-gradient-to-r from-mindchat-primary to-cyan-700 p-[2px] text-xl font-normal text-mindchat-bg-dark">
                   <div className="rounded-full bg-mindchat-bg-dark hover:bg-transparent">
                     <div className="py-4 text-center text-white">
-                      Get started
+                      {userUid ? "Get started" : "Try it"}
                     </div>
                   </div>
                 </div>

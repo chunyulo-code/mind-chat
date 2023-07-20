@@ -95,23 +95,25 @@ export default function Library() {
   }, [keywords]);
 
   return (
-    <div className="z-50 flex h-[calc(100%-30px)] w-full flex-col justify-between gap-3 overflow-hidden rounded-xl border border-mindchat-secondary p-2 font-normal shadow-md shadow-slate-700">
-      <div className="flex flex-wrap gap-2 overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
-        {keywords?.length > 0 &&
-          keywords.map((keyword) => (
-            <span
-              key={nanoid()}
-              className="flex items-center rounded-xl border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
-            >
-              <span>{keyword}</span>
+    <div className="z-50 flex h-[calc(100%-28px-8px)] max-h-[calc(100%-28px-8px)] w-full flex-col justify-between gap-3 overflow-hidden rounded-xl border border-mindchat-secondary p-2 font-normal shadow-md shadow-slate-700">
+      <div className="h-[calc(100%-62px-12px)] overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
+        <div className="flex flex-wrap gap-2">
+          {keywords?.length > 0 &&
+            keywords.map((keyword) => (
               <span
-                className="ml-2 cursor-pointer text-lg hover:text-mindchat-primary active:text-mindchat-focus"
-                onClick={() => deleteKeywordHandler(keyword)}
+                key={nanoid()}
+                className="flex items-center rounded-xl border border-mindchat-primary-dark px-3 py-1 text-xs text-white"
               >
-                <TiDeleteOutline />
+                <span>{keyword}</span>
+                <span
+                  className="ml-2 cursor-pointer text-lg hover:text-mindchat-primary active:text-mindchat-focus"
+                  onClick={() => deleteKeywordHandler(keyword)}
+                >
+                  <TiDeleteOutline />
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+        </div>
       </div>
       <div className="flex h-[62px] flex-col gap-1">
         <form onSubmit={handleSubmit}>

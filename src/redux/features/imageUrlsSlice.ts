@@ -2,11 +2,13 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { UserMode, UserModeState } from "@/app/types/userModeSliceTypes";
 
 type ImageUrls = {
-  value: string[];
+  allImages: string[];
+  selectedImage: string | null;
 };
 
 const initialState: ImageUrls = {
-  value: []
+  allImages: [],
+  selectedImage: null
 };
 
 export const imageUrlsSlice = createSlice({
@@ -14,10 +16,17 @@ export const imageUrlsSlice = createSlice({
   initialState,
   reducers: {
     addImageUrls: (state, action: PayloadAction<string[]>) => {
-      state.value = state.value.concat(action.payload);
+      state.allImages = state.allImages.concat(action.payload);
+    },
+    setImageUrls: (state, action: PayloadAction<string[]>) => {
+      state.allImages = action.payload;
+    },
+    setSelectedImage: (state, action: PayloadAction<string | null>) => {
+      state.selectedImage = action.payload;
     }
   }
 });
 
-export const { addImageUrls } = imageUrlsSlice.actions;
+export const { addImageUrls, setImageUrls, setSelectedImage } =
+  imageUrlsSlice.actions;
 export default imageUrlsSlice.reducer;
