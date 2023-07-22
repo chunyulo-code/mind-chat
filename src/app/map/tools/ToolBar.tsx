@@ -31,39 +31,6 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
   const clearCanvasHandler = () => clearCanvas();
   const userUid = useAppSelector((state) => state.userInfo.uid);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
-  const allImages = useAppSelector((state) => state.imageUrls.allImages);
-
-  // function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-  //   const fileList = e.target.files;
-
-  //   if (fileList) {
-  //     const uploadedImages = Array.from(fileList);
-  //     const downloadUrls: string[] = [];
-
-  //     const uploadPromises = uploadedImages.map((image) => {
-  //       if (userUid) {
-  //         const ImageToUploadRef = ref(
-  //           storage,
-  //           `images/${userUid}/${selectedMap}-${image.name}`
-  //         );
-
-  //         return uploadBytes(ImageToUploadRef, image).then(() =>
-  //           getDownloadURL(ImageToUploadRef).then((url) => {
-  //             downloadUrls.push(url);
-  //             console.log(downloadUrls);
-  //           })
-  //         );
-  //       } else {
-  //         return Promise.resolve();
-  //       }
-  //     });
-
-  //     Promise.all(uploadPromises).then(() => {
-  //       dispatch(addImageUrls(downloadUrls));
-  //       updateFSImages();
-  //     });
-  //   }
-  // }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const fileList = e.target.files;

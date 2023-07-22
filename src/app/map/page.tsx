@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { ReactFlowProvider } from "reactflow";
 import { Allotment } from "allotment";
 import Outline from "./main/Outline";
@@ -20,7 +20,8 @@ import DeleteMapModal from "@/app/components/DeleteMapModal";
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
-  const [color, setColor] = useState("#42f0ed");
+  const MINDCHAT_PRIMARY_COLOR = "#42f0ed";
+  const [color, setColor] = useState(MINDCHAT_PRIMARY_COLOR);
   const formatValue = useAppSelector((state) => state.dataFormat.value);
   const isDeleteMapClicked = useAppSelector(
     (state) => state.leftBar.isDeleteMapClicked
@@ -37,7 +38,7 @@ export default function Page() {
   };
 
   return (
-    <div className="h-screen w-screen">
+    <div className="relative h-screen w-screen">
       {isDeleteMapClicked && <DeleteMapModal />}
       <div className="absolute top-0 z-50 h-[70px] w-full ">
         <HeaderBar />
