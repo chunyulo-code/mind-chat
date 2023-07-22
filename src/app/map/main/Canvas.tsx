@@ -1,12 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { CanvasProps } from "../../types/canvasTypes";
+import React, { useEffect, useState, useRef } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { UserMode } from "@/app/types/userModeSliceTypes";
+import { RefObject } from "react";
 
-const Canvas = ({ canvasRef, ctx, color }: CanvasProps) => {
+type CanvasProps = {
+  canvasRef: RefObject<HTMLCanvasElement> | null;
+};
+
+const Canvas = ({ canvasRef }: CanvasProps) => {
+  const color = useAppSelector((state) => state.canvas.color);
   const [isDrawing, setIsDrawing] = useState(false);
+  const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const userMode = useAppSelector((state) => state.userMode.value);
 
   useEffect(() => {
@@ -42,7 +48,6 @@ const Canvas = ({ canvasRef, ctx, color }: CanvasProps) => {
   }, [color]);
 
   const handleMouseDown = ({ nativeEvent }: React.MouseEvent) => {
-    console.log("this");
     const { offsetX, offsetY } = nativeEvent;
     if (ctx && ctx.current) {
       ctx.current.beginPath();
@@ -62,6 +67,7 @@ const Canvas = ({ canvasRef, ctx, color }: CanvasProps) => {
       ctx.current.stroke();
     }
   };
+
   const handleMouseUp = () => {
     if (ctx && ctx.current) {
       ctx.current.closePath();

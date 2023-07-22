@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, ReactElement } from "react";
-import { ClearCanvas } from "../../types/canvasTypes";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toMindMapMode, toDrawingMode } from "@/redux/features/userModeSlice";
 import { addImageUrls } from "@/redux/features/imageUrlsSlice";
@@ -11,10 +10,10 @@ import { MdAttachFile } from "react-icons/md";
 import { storage } from "@/app/utils/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { updateFSImages } from "@/app/utils/firestoreUpdater";
+import { setColor } from "@/redux/features/canvasSlice";
 
 type ToolBarProps = {
-  clearCanvas: ClearCanvas;
-  setColor: (color: string) => void;
+  canvasRef: any;
 };
 
 type Tool = {
@@ -24,13 +23,22 @@ type Tool = {
   toolTipText: string;
 };
 
-export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
+export default function ToolBar({ canvasRef }: ToolBarProps) {
   const dispatch = useAppDispatch();
   const toMindMapModeHandler = () => dispatch(toMindMapMode());
   const toDrawingModeHandler = () => dispatch(toDrawingMode());
   const clearCanvasHandler = () => clearCanvas();
   const userUid = useAppSelector((state) => state.userInfo.uid);
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
+
+  function clearCanvas() {
+    const canvas = canvasRef.current;
+
+    if (canvas) {
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const fileList = e.target.files;
@@ -82,25 +90,25 @@ export default function ToolBar({ clearCanvas, setColor }: ToolBarProps) {
   ];
 
   const primaryClickHandler = () => {
-    setColor("#42f0ed");
+    dispatch(setColor("#42f0ed"));
   };
   const redClickHandler = () => {
-    setColor("rgb(252, 165, 165)");
+    dispatch(setColor("rgb(252, 165, 165)"));
   };
   const orangeClickHandler = () => {
-    setColor("rgb(255, 171, 68)");
+    dispatch(setColor("rgb(255, 171, 68)"));
   };
   const yellowClickHandler = () => {
-    setColor("rgb(250, 238, 129)");
+    dispatch(setColor("rgb(250, 238, 129)"));
   };
   const greenClickHandler = () => {
-    setColor("rgb(161, 255, 158)");
+    dispatch(setColor("rgb(161, 255, 158)"));
   };
   const blueClickHandler = () => {
-    setColor("rgb(151, 194, 255)");
+    dispatch(setColor("rgb(151, 194, 255)"));
   };
   const purpleClickHandler = () => {
-    setColor("rgb(197, 156, 255)");
+    dispatch(setColor("rgb(197, 156, 255)"));
   };
 
   const colors = [

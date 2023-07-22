@@ -8,6 +8,7 @@ import libraryReducer from "@/redux/features/librarySlice";
 import outputReducer from "@/redux/features/outputSlice";
 import userInfoReducer from "@/redux/features/userInfoSlice";
 import leftBarReducer from "@/redux/features/leftBarSlice";
+import canvasReducer from "@/redux/features/canvasSlice";
 
 export const store = configureStore({
   reducer: {
@@ -19,7 +20,8 @@ export const store = configureStore({
     library: libraryReducer,
     output: outputReducer,
     userInfo: userInfoReducer,
-    leftBar: leftBarReducer
+    leftBar: leftBarReducer,
+    canvas: canvasReducer
   },
   devTools: process.env.NODE_ENV !== "production"
 });

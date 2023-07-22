@@ -11,7 +11,6 @@ import ToolBar from "./tools/ToolBar";
 import FormatConverter from "./tools/FormatConverter";
 import { useAppSelector } from "@/redux/hooks";
 import { DisplayFormatNumber } from "../types/displayFormatSliceTypes";
-import { ClearCanvas } from "../types/canvasTypes";
 import Images from "./tools/Images";
 import "allotment/dist/style.css";
 import HeaderBar from "../components/HeaderBar";
@@ -19,23 +18,10 @@ import DeleteMapModal from "@/app/components/DeleteMapModal";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const ctx = useRef<CanvasRenderingContext2D | null>(null);
-  const MINDCHAT_PRIMARY_COLOR = "#42f0ed";
-  const [color, setColor] = useState(MINDCHAT_PRIMARY_COLOR);
   const formatValue = useAppSelector((state) => state.dataFormat.value);
   const isDeleteMapClicked = useAppSelector(
     (state) => state.leftBar.isDeleteMapClicked
   );
-
-  const clearCanvas: ClearCanvas = () => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const context = canvas.getContext("2d", { willReadFrequently: true });
-      if (context) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-      }
-    }
-  };
 
   return (
     <div className="relative h-screen w-screen">
@@ -56,8 +42,8 @@ export default function Page() {
             ) : (
               <Outline />
             )}
-            <Canvas canvasRef={canvasRef} ctx={ctx} color={color} />
-            <ToolBar clearCanvas={clearCanvas} setColor={setColor} />
+            <Canvas canvasRef={canvasRef} />
+            <ToolBar canvasRef={canvasRef} />
           </ReactFlowProvider>
         </Allotment.Pane>
         <Allotment.Pane preferredSize={220} minSize={190}>
