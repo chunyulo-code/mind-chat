@@ -1,14 +1,16 @@
+"use client";
 import React from "react";
 import Image from "next/image";
-import { GoPerson } from "react-icons/go";
 import Link from "next/link";
 import { useAppSelector } from "@/redux/hooks";
 import { nativeGoogleSignOut } from "../utils/firebaseAuth";
 import blankProfilePicture from "@/img/blank-profile-picture.png";
+import { Logo } from "./HeaderLogo";
 
 export default function Header() {
   const userPhotoURL = useAppSelector((state) => state.userInfo.photoURL);
   const userUid = useAppSelector((state) => state.userInfo.uid);
+
   const listItems = [
     {
       text: "FEATURES",
@@ -36,20 +38,29 @@ export default function Header() {
     }
   ];
 
-  return (
-    <header className="absolute left-[130px] right-[130px] top-0 flex h-[130px] items-center justify-between py-10 text-white">
-      <Link href="/" title="logo" className="flex items-center">
+  function DisplayProfileOrSignIn() {
+    return userUid ? (
+      <Link href="/map">
         <Image
-          src="/mindChat.svg"
-          alt="Mind Chat Logo"
-          width={50}
-          height={50}
-          style={{ cursor: "pointer" }}
+          src={userPhotoURL ? userPhotoURL : blankProfilePicture}
+          width={35}
+          height={35}
+          alt="Profile photo"
+          className="cursor-pointer rounded-full border border-white"
         />
-        <span className="ml-5 text-xl font-bold text-mindchat-primary">
-          MIND CHAT
-        </span>
       </Link>
+    ) : (
+      <Link
+        href="/signin"
+        className="flex items-center rounded-full border border-mindchat-primary px-10 py-2 hover:text-mindchat-primary"
+      >
+        <span className="">SIGN IN</span>
+      </Link>
+    );
+  }
+
+  function ListItems() {
+    return (
       <ul className="flex items-center gap-8 text-sm font-normal">
         {listItems.map(
           (listItem) =>
@@ -68,26 +79,16 @@ export default function Header() {
             )
         )}
         <li>
-          {userUid ? (
-            <Link href="/map">
-              <Image
-                src={userPhotoURL ? userPhotoURL : blankProfilePicture}
-                width={35}
-                height={35}
-                alt="Profile photo"
-                className="cursor-pointer rounded-full border border-white"
-              />
-            </Link>
-          ) : (
-            <Link
-              href="/signin"
-              className="flex items-center rounded-full border border-mindchat-primary px-10 py-2 hover:text-mindchat-primary"
-            >
-              <span className="">LOG IN</span>
-            </Link>
-          )}
+          <DisplayProfileOrSignIn />
         </li>
       </ul>
+    );
+  }
+
+  return (
+    <header className="absolute left-[130px] right-[130px] top-0 flex h-[130px] items-center justify-between py-10 text-white">
+      <Logo logoSize={50} />
+      <ListItems />
     </header>
   );
 }

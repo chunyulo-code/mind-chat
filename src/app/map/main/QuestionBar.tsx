@@ -11,7 +11,7 @@ import {
 import { syncPrevNodesNEdges } from "@/redux/features/flowSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
-import { systemResponseRules } from "@/app/utils/askTopicRules";
+import { systemResponseRules } from "@/app/constants/askTopicRules";
 import { nanoid } from "nanoid";
 
 export default function QuestionBar() {

@@ -10,7 +10,7 @@ import {
 } from "@/redux/features/flowSlice";
 import { addToLibrary } from "@/redux/features/librarySlice";
 import { useChat } from "ai/react";
-import { systemResponseRules } from "@/app/utils/askTopicRules";
+import { systemResponseRules } from "@/app/constants/askTopicRules";
 import { nanoid } from "nanoid";
 import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
 import { setGptStatus } from "@/redux/features/gptResponseSlice";

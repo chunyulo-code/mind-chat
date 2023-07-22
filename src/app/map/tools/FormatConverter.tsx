@@ -11,7 +11,7 @@ import { MdOutlineOutput } from "react-icons/md";
 import { TbLayout2 } from "react-icons/tb";
 import { nanoid } from "nanoid";
 import { useChat } from "ai/react";
-import { systemResponseRules } from "@/app/utils/summarizeSelectedDataRules";
+import { systemResponseRules } from "@/app/constants/summarizeSelectedDataRules";
 import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
 import { emptyOutput, setOutput } from "@/redux/features/outputSlice";
 import { layoutNodes } from "@/app/utils/onLayout";
