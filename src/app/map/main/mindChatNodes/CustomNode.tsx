@@ -1,6 +1,10 @@
 "use client";
-import React, { memo, useEffect } from "react";
-import { Handle, Position, NodeToolbar } from "reactflow";
+
+import { memo, useEffect } from "react";
+import { Node, Handle, Position, NodeToolbar } from "reactflow";
+import { useChat } from "ai/react";
+import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
+import { nanoid } from "nanoid";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   setNodes,
@@ -9,16 +13,12 @@ import {
   syncPrevNodesNEdges
 } from "@/redux/features/flowSlice";
 import { addToLibrary } from "@/redux/features/librarySlice";
-import { useChat } from "ai/react";
-import { systemResponseRules } from "@/app/constants/askTopicRules";
-import { nanoid } from "nanoid";
-import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
 import { setGptStatus } from "@/redux/features/gptResponseSlice";
-import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 import { setGptResponse } from "@/redux/features/gptResponseSlice";
-import { Node } from "reactflow";
+import { GptStatus } from "@/app/types/gptResponseSliceTypes";
+import { systemResponseRules } from "@/app/constants/askTopicRules";
 
-type dataProps = {
+type CustomNodeProps = {
   id: string;
   data: {
     label: string;
@@ -29,9 +29,16 @@ type dataProps = {
   selected: boolean;
 };
 
-function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
+function CustomNode({ id, data, xPos, yPos, selected }: CustomNodeProps) {
   const dispatch = useAppDispatch();
+  const nodes = useAppSelector((state) => state.flow.nodes);
   const editableNode = useAppSelector((state) => state.flow.editableNode);
+
+  const normalStyle = "border-2 border-mindchat-primary";
+  const selectedStyle = "border-2 border-mindchat-focus";
+  const borderStyle = selected ? selectedStyle : normalStyle;
+  const toolbarButtonStyle =
+    "rounded-md bg-slate-700 px-2 py-1 text-slate-300 hover:bg-transparent hover:border hover:border-mindchat-primary";
 
   const { messages, handleSubmit, setInput } = useChat({
     api: "/api/gpt",
@@ -43,19 +50,12 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
       }
     ],
     onResponse: () => {
-      console.log("DOING");
       dispatch(setGptStatus(GptStatus.DOING));
     },
     onFinish: () => {
-      console.log("DONE");
       dispatch(setGptStatus(GptStatus.DONE));
     }
   });
-  const nodes = useAppSelector((state) => state.flow.nodes);
-  const selectedStyle = `border-4 border-mindchat-focus`;
-  const normalStyle = "border-2 border-mindchat-primary";
-  const toolbarButtonStyle =
-    "rounded-md bg-slate-700 px-2 py-1 text-slate-300 hover:bg-transparent hover:border hover:border-mindchat-primary";
 
   async function copyTextToClipboard(text: string | undefined) {
     if (text !== undefined) {
@@ -73,7 +73,6 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
     dispatch(setPositionToGenetate({ x: xPos + 250, y: yPos }));
     dispatch(setNewTopicParentNodeId(id));
     setInput(keyword);
-    console.log(`keyword: ${keyword}`);
   }
 
   function updateText(inputText: string) {
@@ -116,18 +115,45 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
     }
   ];
 
+  function ContentDisplayed() {
+    return (
+      <>
+        <div
+          className={`text-lg font-bold text-[#ffffff] ${
+            editableNode?.id === id ? "hidden" : "block"
+          }`}
+        >
+          {data.label}
+        </div>
+        <label htmlFor="nodeLabelInput" className="hidden">
+          label:
+        </label>
+        <input
+          type="text"
+          id="nodeLabelInput"
+          className={`w-full bg-transparent px-2 py-1 text-white ${
+            editableNode?.id === id ? "block" : "hidden"
+          }`}
+          value={data.label}
+          onChange={(e) => dispatch(setNodes(updateText(e.target.value)))}
+        />
+      </>
+    );
+  }
+
   useEffect(() => {
-    if (messages && messages.length !== 1) {
-      dispatch(setGptResponse(messages.slice(-1)[0].content));
+    function updateGptResponse() {
+      if (messages && messages.length !== 1) {
+        const latestMessage = messages[messages.length - 1];
+        dispatch(setGptResponse(latestMessage.content));
+      }
     }
-  }, [messages]);
+
+    updateGptResponse();
+  }, [messages, dispatch]);
 
   return (
-    <div
-      className={`rounded-md px-4 py-2 ${
-        selected ? selectedStyle : normalStyle
-      }`}
-    >
+    <div className={`rounded-md px-4 py-2 ${borderStyle}`}>
       <NodeToolbar
         isVisible={data.toolbarVisible}
         position={Position.Top}
@@ -146,25 +172,7 @@ function CustomNode({ id, data, xPos, yPos, selected }: dataProps) {
           </form>
         ))}
       </NodeToolbar>
-      <div
-        className={`text-lg font-bold text-[#ffffff] ${
-          editableNode?.id === id ? "hidden" : "block"
-        }`}
-      >
-        {data.label}
-      </div>
-      <label htmlFor="nodeLabelInput" className="hidden">
-        label:
-      </label>
-      <input
-        type="text"
-        id="nodeLabelInput"
-        className={`w-full bg-transparent px-2 py-1 text-white ${
-          editableNode?.id === id ? "block" : "hidden"
-        }`}
-        value={data.label}
-        onChange={(e) => dispatch(setNodes(updateText(e.target.value)))}
-      />
+      <ContentDisplayed />
       <Handle
         type="source"
         position={Position.Right}

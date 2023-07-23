@@ -1,20 +1,20 @@
 "use client";
-import { useState, useRef } from "react";
+import { useRef } from "react";
+import "allotment/dist/style.css";
 import { ReactFlowProvider } from "reactflow";
 import { Allotment } from "allotment";
-import Outline from "./main/Outline";
+import HeaderBar from "../components/HeaderBar";
+import FormatConverter from "./tools/FormatConverter";
 import Flow from "./main/Flow";
+import Outline from "./main/Outline";
 import Canvas from "./main/Canvas";
 import LeftBar from "./left/LeftBar";
 import RightBar from "./right/RightBar";
 import ToolBar from "./tools/ToolBar";
-import FormatConverter from "./tools/FormatConverter";
+import Images from "./tools/Images";
+import DeleteMapModal from "@/app/components/DeleteMapModal";
 import { useAppSelector } from "@/redux/hooks";
 import { DisplayFormatNumber } from "../types/displayFormatSliceTypes";
-import Images from "./tools/Images";
-import "allotment/dist/style.css";
-import HeaderBar from "../components/HeaderBar";
-import DeleteMapModal from "@/app/components/DeleteMapModal";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

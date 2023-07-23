@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect } from "react";
-// import askTopic from "@/app/utils/askTopic";
+import { useEffect } from "react";
 import { useChat } from "ai/react";
 import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
+import { nanoid } from "nanoid";
 import {
   setGptResponse,
   setGptStatus
@@ -12,10 +12,10 @@ import { syncPrevNodesNEdges } from "@/redux/features/flowSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { GptStatus } from "@/app/types/gptResponseSliceTypes";
 import { systemResponseRules } from "@/app/constants/askTopicRules";
-import { nanoid } from "nanoid";
 
 export default function QuestionBar() {
   const dispatch = useAppDispatch();
+
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: "/api/gpt",
     initialMessages: [
@@ -26,24 +26,21 @@ export default function QuestionBar() {
       }
     ],
     onResponse: () => {
-      console.log("DOING");
       dispatch(setGptStatus(GptStatus.DOING));
     },
     onFinish: () => {
-      console.log("DONE");
       dispatch(setGptStatus(GptStatus.DONE));
     }
   });
 
   useEffect(() => {
     if (messages && messages.length !== 1) {
-      console.log(messages.slice(-1)[0].content);
       dispatch(setGptResponse(messages.slice(-1)[0].content));
     }
-  }, [messages]);
+  }, [messages, dispatch]);
 
   return (
-    <div className="absolute left-1/2 top-1/2 z-50 flex items-center">
+    <div className="absolute left-1/2 top-1/2 z-50 flex -translate-x-1/2 -translate-y-1/2 items-center">
       <form
         onSubmit={(e) => {
           dispatch(syncPrevNodesNEdges());
@@ -56,7 +53,7 @@ export default function QuestionBar() {
             placeholder="Type any topics..."
             value={input}
             onChange={handleInputChange}
-            className="h-10 w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-mindchat-primary bg-transparent px-4 text-white"
+            className="h-10 w-[300px] rounded-full border border-mindchat-primary bg-mindchat-bg-dark px-4 text-white"
           />
         </label>
       </form>

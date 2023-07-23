@@ -1,79 +1,78 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, RefObject, useCallback } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { UserMode } from "@/app/types/userModeSliceTypes";
-import { RefObject } from "react";
 
 type CanvasProps = {
   canvasRef: RefObject<HTMLCanvasElement> | null;
 };
 
-const Canvas = ({ canvasRef }: CanvasProps) => {
+function Canvas({ canvasRef }: CanvasProps) {
   const color = useAppSelector((state) => state.canvas.color);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const ctx = useRef<CanvasRenderingContext2D | null>(null);
   const userMode = useAppSelector((state) => state.userMode.value);
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  const ctx = useRef<CanvasRenderingContext2D | null>(null);
+
+  function handleMouseDown(event: React.MouseEvent) {
+    const { offsetX, offsetY } = event.nativeEvent;
+
+    if (ctx && ctx.current) {
+      ctx.current.beginPath();
+      ctx.current.moveTo(offsetX, offsetY);
+      setIsDrawing(true);
+    }
+  }
+
+  function handleMouseMove(event: React.MouseEvent) {
+    if (!isDrawing) {
+      return;
+    }
+
+    const { offsetX, offsetY } = event.nativeEvent;
+    if (ctx && ctx.current) {
+      ctx.current.lineTo(offsetX, offsetY);
+      ctx.current.stroke();
+    }
+  }
+
+  function handleMouseUp() {
+    if (ctx && ctx.current) {
+      ctx.current.closePath();
+    }
+
+    setIsDrawing(false);
+  }
 
   useEffect(() => {
-    if (canvasRef) {
+    function initializeCanvas() {
+      if (!canvasRef || !canvasRef.current) return;
+
       const canvas = canvasRef.current;
-      if (canvas) {
-        canvas.height = window.innerHeight * 2;
-        canvas.width = window.innerWidth * 2;
-        canvas.style.width = `${window.innerWidth}px`;
-        canvas.style.height = `${window.innerHeight}px`;
-        const context = canvas.getContext("2d", { willReadFrequently: true });
+      canvas.height = window.innerHeight * 2;
+      canvas.width = window.innerWidth * 2;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
 
-        if (context) {
-          context.scale(2, 2);
-          context.lineCap = "round";
-          context.strokeStyle = color;
-          context.lineWidth = 5;
-          context.fillStyle = "rgba(31,40,51,0.1)";
-          context.fillRect(0, 0, canvas.width, canvas.height); // 填滿整個畫布
+      const context = canvas.getContext("2d", { willReadFrequently: true })!;
+      context.scale(2, 2);
+      context.lineCap = "round";
+      context.lineWidth = 5;
+      context.fillStyle = "rgba(31, 40, 51, 0.1)";
+      context.fillRect(0, 0, canvas.width, canvas.height);
 
-          if (ctx) {
-            ctx.current = context;
-          }
-        }
-      }
+      ctx.current = context;
     }
-  }, []);
+
+    initializeCanvas();
+  }, [canvasRef]);
 
   useEffect(() => {
     if (ctx && ctx.current) {
       ctx.current.strokeStyle = color;
     }
   }, [color]);
-
-  const handleMouseDown = ({ nativeEvent }: React.MouseEvent) => {
-    const { offsetX, offsetY } = nativeEvent;
-    if (ctx && ctx.current) {
-      ctx.current.beginPath();
-      ctx.current.moveTo(offsetX, offsetY);
-      setIsDrawing(true);
-    }
-  };
-  const handleMouseMove = ({ nativeEvent }: React.MouseEvent) => {
-    console.log("this");
-    if (!isDrawing) {
-      return;
-    }
-    const { offsetX, offsetY } = nativeEvent;
-
-    if (ctx && ctx.current) {
-      ctx.current.lineTo(offsetX, offsetY);
-      ctx.current.stroke();
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (ctx && ctx.current) {
-      ctx.current.closePath();
-    }
-    setIsDrawing(false);
-  };
 
   return (
     <div
@@ -87,6 +86,6 @@ const Canvas = ({ canvasRef }: CanvasProps) => {
       <canvas ref={canvasRef} />
     </div>
   );
-};
+}
 
 export default Canvas;
