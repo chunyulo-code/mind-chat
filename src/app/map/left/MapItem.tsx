@@ -1,95 +1,63 @@
-import { useRef } from "react";
-import useHover from "@/app/hooks/useHover";
+"use client";
+
+import { memo } from "react";
 import { MdDeleteOutline } from "react-icons/md";
-import { Map } from "@/app/types/userInfoSliceTypes";
-import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+
+import MapItemInput from "./MapItemInput";
 import {
   setSelectedMap,
   setEditableMapId
 } from "@/redux/features/userInfoSlice";
-import { setAllMaps } from "@/redux/features/userInfoSlice";
-import { updateFSMapName, FSDeleteMap } from "@/app/utils/firestoreUpdater";
 import {
   setIsDeleteMapClicked,
   setMapIdToDelete
 } from "@/redux/features/leftBarSlice";
+import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { Map } from "@/app/types/userInfoSliceTypes";
 
 type MapItemProps = { map: Map };
 
-export default function MapItem({ map }: MapItemProps) {
+function MapItem({ map }: MapItemProps) {
+  const { mapId, mapName } = map;
+
   const dispatch = useAppDispatch();
+
   const selectedMap = useAppSelector((state) => state.userInfo.selectedMap);
   const editableMapId = useAppSelector((state) => state.userInfo.editableMapId);
-  const allMaps = useAppSelector((state) => state.userInfo.allMaps);
-  const [mapItemRef, isHovered] = useHover();
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  function updateMapNames(newMapName: string) {
-    const newAllMaps = allMaps.map((map) => {
-      if (map.mapId === editableMapId) return { ...map, mapName: newMapName };
-      else return map;
-    });
-    console.log(newAllMaps);
-    return newAllMaps;
-  }
-
-  function blurInput(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      if (inputRef.current) {
-        inputRef.current.blur();
-        dispatch(setEditableMapId(undefined));
-      }
-    }
+  function MapItemText() {
+    return (
+      <div
+        className={`group relative cursor-pointer ${
+          editableMapId !== mapId ? "block" : "hidden"
+        }`}
+        onClick={() => dispatch(setSelectedMap(mapId))}
+        onDoubleClick={() => dispatch(setEditableMapId(mapId))}
+      >
+        <div className="truncate">{mapName}</div>
+        <div
+          className={`absolute right-0 top-1/2 hidden -translate-y-1/2 cursor-pointer rounded-md bg-gray-700 pl-2 text-xl group-hover:block hover:text-mindchat-primary`}
+          onClick={() => {
+            dispatch(setMapIdToDelete(mapId));
+            dispatch(setIsDeleteMapClicked(true));
+          }}
+        >
+          <MdDeleteOutline />
+        </div>
+      </div>
+    );
   }
 
   return (
     <div
-      id={map.mapId}
-      ref={mapItemRef}
-      className={`relative flex cursor-pointer items-center rounded-lg px-5 py-3 hover:bg-gray-700 ${
+      className={`rounded-lg px-4 py-3 hover:bg-gray-700 ${
         selectedMap === map.mapId ? "bg-gray-700" : "bg-transparent"
       }`}
-      onClick={() => {
-        dispatch(setSelectedMap(map.mapId));
-        if (map.mapId !== editableMapId) dispatch(setEditableMapId(undefined));
-      }}
-      onDoubleClick={() => dispatch(setEditableMapId(map.mapId))}
     >
-      <span
-        className={`overflow-hidden truncate ${
-          editableMapId === map.mapId ? "hidden" : "block"
-        }`}
-      >
-        {map.mapName}
-      </span>
-      <span
-        className={`absolute right-5 rounded-md bg-gray-700 p-2 text-xl hover:text-mindchat-primary ${
-          isHovered && editableMapId !== map.mapId ? "block" : "hidden"
-        }`}
-        onClick={() => {
-          dispatch(setMapIdToDelete(map.mapId));
-          dispatch(setIsDeleteMapClicked(true));
-        }}
-      >
-        <MdDeleteOutline />
-      </span>
-      <label htmlFor="mapNameEditor" className="hidden">
-        Map Name Editor
-      </label>
-      <input
-        id="mapNameEditor"
-        type="text"
-        value={map.mapName}
-        ref={inputRef}
-        className={`w-full rounded-lg border border-gray-500 bg-transparent px-2 py-1 ${
-          editableMapId === map.mapId ? "block" : "hidden"
-        }`}
-        onChange={(e) => {
-          dispatch(setAllMaps(updateMapNames(e.target.value)));
-          updateFSMapName(map.mapId, e.target.value);
-        }}
-        onKeyDown={blurInput}
-      />
+      <MapItemText />
+      <MapItemInput map={map} />
     </div>
   );
 }
+
+export default memo(MapItem);

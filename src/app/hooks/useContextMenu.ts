@@ -1,25 +1,29 @@
 import { useState, useEffect } from "react";
-const useContextMenu = () => {
-  const [clicked, setClicked] = useState(false);
+
+function useContextMenu() {
+  const [rightClicked, setRightClicked] = useState(false);
   const [points, setPoints] = useState({
     x: 0,
     y: 0
   });
+
   useEffect(() => {
-    const handleClick = () => {
-      setClicked(false);
-      console.log("document was clicked");
-    };
+    function handleClick() {
+      setRightClicked(false);
+    }
+
     document.addEventListener("click", handleClick);
+
     return () => {
       document.removeEventListener("click", handleClick);
     };
   }, []);
+
   return {
-    clicked,
-    setClicked,
+    rightClicked,
+    setRightClicked,
     points,
     setPoints
   };
-};
+}
 export default useContextMenu;

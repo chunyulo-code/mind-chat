@@ -73,39 +73,36 @@ export default function Flow() {
   const { fitView } = useReactFlow();
 
   const {
-    clicked: nodeClicked,
-    setClicked: setNodeClicked,
+    rightClicked: nodeRightClicked,
+    setRightClicked: setNodeRightClicked,
     points: nodePoints,
     setPoints: setNodePoints
   } = useContextMenu();
 
   const {
-    clicked: paneClicked,
-    setClicked: setPaneClicked,
+    rightClicked: paneRightClicked,
+    setRightClicked: setPaneRightClicked,
     points: panePoints,
     setPoints: setPanePoints
   } = useContextMenu();
 
-  const onNodeContextMenu: (e: React.MouseEvent) => void = (e) => {
+  function onNodeContextMenu(e: React.MouseEvent) {
     e.preventDefault();
-    setNodeClicked(true);
-    /**
-     * add 30 to leftBarWidth to make the position of context menu displat correctly
-     */
+    setNodeRightClicked(true);
     setNodePoints({
-      x: e.pageX - leftBarWidth - 30,
+      x: e.pageX - leftBarWidth,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
-  };
+  }
 
-  const onPaneContextMenu: (e: React.MouseEvent) => void = (e) => {
+  function onPaneContextMenu(e: React.MouseEvent) {
     e.preventDefault();
-    setPaneClicked(true);
+    setPaneRightClicked(true);
     setPanePoints({
-      x: e.pageX - leftBarWidth - 30,
+      x: e.pageX - leftBarWidth,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
-  };
+  }
 
   useEffect(() => {
     async function fetchSelectedMapNodesNEdges() {
@@ -203,8 +200,8 @@ export default function Flow() {
         <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
       </ReactFlow>
-      {nodeClicked && <NodeContextMenu points={nodePoints} />}
-      {paneClicked && <PaneContextMenu points={panePoints} />}
+      {nodeRightClicked && <NodeContextMenu points={nodePoints} />}
+      {paneRightClicked && <PaneContextMenu points={panePoints} />}
     </div>
   );
 }

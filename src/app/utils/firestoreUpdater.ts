@@ -9,21 +9,16 @@ import {
   serverTimestamp,
   setDoc,
   addDoc,
-  getDocs,
   collection,
   deleteDoc
 } from "firebase/firestore";
 import { Node, Edge } from "reactflow";
-import { nanoid } from "nanoid";
 import { setAllMaps, setSelectedMap } from "@/redux/features/userInfoSlice";
 import { setImageUrls } from "@/redux/features/imageUrlsSlice";
 
 export async function updateFSNodesNEdges() {
   const userUid = store.getState().userInfo.uid;
-  const userEmail = store.getState().userInfo.email;
-  const userDisplayName = store.getState().userInfo.displayName;
   const selectedMap = store.getState().userInfo.selectedMap;
-  const allMaps = store.getState().userInfo.allMaps;
 
   if (userUid) {
     const userDocRef = doc(db, "users", userUid);
