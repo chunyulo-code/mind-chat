@@ -20,11 +20,11 @@ export default function Page() {
   return isLoading ? (
     <Loading />
   ) : (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-tr from-mindchat-bg-dark to-mindchat-bg-dark-darker p-[20px] pr-0 text-white md:items-center">
-      <div className="h-full w-1/2">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-tr from-mindchat-bg-dark to-mindchat-bg-dark-darker p-[20px] pr-0 text-white md:items-center md:pr-[20px]">
+      <div className="h-full w-1/2 md:w-full">
         <LeftForm />
       </div>
-      <div className="h-full w-1/2">
+      <div className="h-full w-1/2 md:hidden">
         <RightImage />
       </div>
     </div>
@@ -33,7 +33,7 @@ export default function Page() {
 
 function LeftForm() {
   return (
-    <div className="flex h-full w-full flex-col justify-center gap-[30px] px-[200px] 2xl:px-[150px] xl:px-[100px] lg:px-[50px] md:w-full">
+    <div className="flex h-full w-full flex-col justify-center gap-[30px] px-[200px] 2xl:px-[150px] xl:px-[100px] lg:px-[50px] md:px-[20px]">
       <FormLogo />
       <SignInForm />
     </div>
@@ -42,7 +42,7 @@ function LeftForm() {
 
 function RightImage() {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-l-3xl bg-mindchat-login-bg md:hidden">
+    <div className="relative h-full w-full overflow-hidden rounded-l-3xl bg-mindchat-login-bg">
       <Image
         src={pad}
         width={1200}

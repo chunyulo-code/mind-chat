@@ -15,7 +15,7 @@ function LogoImage({ logoSize }: { logoSize: number }) {
 
 function LogoText() {
   return (
-    <span className="ml-5 text-lg font-bold text-mindchat-primary">
+    <span className="ml-5 text-lg font-bold text-mindchat-primary sm:hidden">
       MIND CHAT
     </span>
   );

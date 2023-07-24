@@ -13,24 +13,6 @@ export default function Header() {
 
   const listItems = [
     {
-      text: "FEATURES",
-      isLink: true,
-      shouldDisplay: true,
-      clickHandler: () => {}
-    },
-    {
-      text: "PRICING",
-      isLink: true,
-      shouldDisplay: true,
-      clickHandler: () => {}
-    },
-    {
-      text: "TUTORIAL",
-      isLink: true,
-      shouldDisplay: true,
-      clickHandler: () => {}
-    },
-    {
       text: "LOG OUT",
       isLink: false,
       shouldDisplay: userUid ? true : false,
@@ -61,7 +43,7 @@ export default function Header() {
 
   function ListItems() {
     return (
-      <ul className="flex items-center gap-8 text-sm font-normal">
+      <ul className="flex items-center gap-8 text-sm font-normal sm:gap-6">
         {listItems.map(
           (listItem) =>
             listItem.shouldDisplay && (
@@ -86,7 +68,7 @@ export default function Header() {
   }
 
   return (
-    <header className="absolute left-[130px] right-[130px] top-0 flex h-[130px] items-center justify-between py-10 text-white">
+    <header className="absolute left-[130px] right-[130px] top-0 flex h-[130px] items-center justify-between py-10 text-white lg:left-[65px] lg:right-[65px] sm:left-[40px] sm:right-[40px]">
       <Logo logoSize={50} />
       <ListItems />
     </header>
