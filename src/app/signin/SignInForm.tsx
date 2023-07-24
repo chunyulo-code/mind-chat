@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { MdEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
-import { ImGithub } from "react-icons/im";
 import { nativeSignIn } from "../utils/firebaseAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,7 +11,7 @@ import { googleSignIn } from "../utils/firebaseAuth";
 type AccountData = {
   email: string;
   password: string;
-  [key: string]: string; // Specify other keys if needed
+  [key: string]: string;
 };
 
 const labels = [
@@ -80,18 +79,13 @@ export default function SignInForm() {
       <div className="flex gap-2">
         <button
           className="flex w-full items-center justify-center gap-5 rounded-lg border border-gray-600 py-3 hover:border-mindchat-primary"
+          type="button"
           onClick={googleSignInHandler}
         >
           <span>
             <FcGoogle />
           </span>
           <span className="text-sm">Google</span>
-        </button>
-        <button className="flex w-full items-center justify-center gap-5 rounded-lg border border-gray-600 py-3 hover:border-mindchat-primary">
-          <span>
-            <ImGithub />
-          </span>
-          <span className="text-sm">GitHub</span>
         </button>
       </div>
     );
