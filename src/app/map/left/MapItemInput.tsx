@@ -8,6 +8,19 @@ import { Map } from "@/app/types/userInfoSliceTypes";
 
 type MapItemInputProps = { map: Map };
 
+export function updateMapName(
+  allMaps: Map[],
+  mapIdToUpdate: string,
+  newName: string
+) {
+  const newAllMaps = allMaps.map((map) => {
+    if (map.mapId === mapIdToUpdate) return { ...map, mapName: newName };
+    else return map;
+  });
+
+  return newAllMaps;
+}
+
 function MapItemInput({ map }: MapItemInputProps) {
   const { mapId, mapName } = map;
 
@@ -19,27 +32,23 @@ function MapItemInput({ map }: MapItemInputProps) {
 
   const dispatch = useAppDispatch();
 
-  function updateMapName(mapIdToUpdate: string, newMapName: string) {
-    const newAllMaps = allMaps.map((map) => {
-      if (map.mapId === mapIdToUpdate) return { ...map, mapName: newMapName };
-      else return map;
-    });
-
-    dispatch(setAllMaps(newAllMaps));
-  }
-
-  function onBlurHandler(mapIdToUpdate: string, newName: string) {
-    updateMapName(mapIdToUpdate, newName);
+  function onBlurHandler(
+    allMaps: Map[],
+    mapIdToUpdate: string,
+    newName: string
+  ) {
+    dispatch(setAllMaps(updateMapName(allMaps, mapIdToUpdate, newName)));
     updateFSMapName(mapIdToUpdate, newName);
   }
 
   function enterPressedHandler(
     key: string,
+    allMaps: Map[],
     mapIdToUpdate: string,
     newName: string
   ) {
     if (key === "Enter" && inputRef.current) {
-      updateMapName(mapIdToUpdate, newName);
+      dispatch(setAllMaps(updateMapName(allMaps, mapIdToUpdate, newName)));
       updateFSMapName(mapIdToUpdate, newName);
       dispatch(setEditableMapId(undefined));
       inputRef.current.blur();
@@ -59,8 +68,10 @@ function MapItemInput({ map }: MapItemInputProps) {
         className={`w-full rounded-xl border border-gray-500 bg-transparent px-2 py-1`}
         value={newMapName}
         onChange={(e) => setNewMapName(e.target.value)}
-        onBlur={() => onBlurHandler(mapId, newMapName)}
-        onKeyDown={(e) => enterPressedHandler(e.key, mapId, newMapName)}
+        onBlur={() => onBlurHandler(allMaps, mapId, newMapName)}
+        onKeyDown={(e) =>
+          enterPressedHandler(e.key, allMaps, mapId, newMapName)
+        }
       />
     </div>
   );
