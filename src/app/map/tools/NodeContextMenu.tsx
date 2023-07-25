@@ -67,7 +67,6 @@ export default function NodeContextMenu({ points }: NodeContextMenuProps) {
       text: "Add node",
       id: "addNode",
       clickHandler: () => {
-        console.log("Add node clicked");
         dispatch(
           addNode({
             id: nanoid(),
@@ -82,7 +81,6 @@ export default function NodeContextMenu({ points }: NodeContextMenuProps) {
       text: "Add to library",
       id: "AddToLibrary",
       clickHandler: () => {
-        console.log(textToAdd);
         if (textToAdd) {
           dispatch(addToLibrary(textToAdd));
         }

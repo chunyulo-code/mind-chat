@@ -16,7 +16,6 @@ import { doc, setDoc } from "firebase/firestore";
 
 export default function BindAuthStateHandler() {
   useEffect(() => {
-    console.log("BindAuthStateHandler");
     store.dispatch(setIsLoading(true));
 
     const authStateListner = onAuthStateChanged(auth, (user) => {
@@ -32,14 +31,12 @@ export default function BindAuthStateHandler() {
           email: email,
           userName: displayName
         });
-        console.log(`Current user is: ${displayName}`);
       } else {
         store.dispatch(setIsLogIn(false));
         store.dispatch(setUserUid(null));
         store.dispatch(setUserEmail(null));
         store.dispatch(setUserEmail(null));
         store.dispatch(setUserPhotoURL(null));
-        console.log("No user logged in now");
       }
 
       store.dispatch(setIsLoading(false));
