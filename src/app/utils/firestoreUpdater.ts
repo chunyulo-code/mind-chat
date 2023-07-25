@@ -1,7 +1,7 @@
 "use client";
 
 import { store } from "@/redux/store";
-import { db, auth } from "./firebase";
+import { db } from "./firebase";
 import {
   getDoc,
   updateDoc,
@@ -36,7 +36,6 @@ export async function updateFSNodesNEdges() {
           edges: edges,
           updatedTime: serverTimestamp()
         });
-        console.log("updateFSNodesNEdges Updated!!!");
       }
       return;
     }
@@ -58,7 +57,6 @@ export async function updateFSNodesNEdges() {
       });
 
       const generatedId = newMapRef.id;
-      console.log(generatedId);
 
       if (generatedId) {
         store.dispatch(
@@ -88,11 +86,10 @@ export async function updateFSNodes(deletedNodes: Node[]) {
           nodes: updatedNodes,
           updatedTime: serverTimestamp()
         });
-        console.log("Updated!!!");
       }
       return;
     }
-    console.log("userDoc not existed");
+    console.error("userDoc not existed");
   }
 }
 
@@ -114,11 +111,10 @@ export async function updateFSEdges(deletedEdges: Edge[]) {
           edges: updatedEdges,
           updatedTime: serverTimestamp()
         });
-        console.log("Updated!!!");
       }
       return;
     }
-    console.log("userDoc not existed");
+    console.error("userDoc not existed");
   }
 }
 
@@ -143,11 +139,10 @@ export async function updateFSDraggedNodes(draggedNodes: Node[]) {
           nodes: updatedNodes,
           updatedTime: serverTimestamp()
         });
-        console.log("Updated!!!");
       }
       return;
     }
-    console.log("userDoc not existed");
+    console.error("userDoc not existed");
   }
 }
 
@@ -160,8 +155,10 @@ export async function updateFSLibrary() {
     const mapDocSnap = await getDoc(mapDocRef);
     if (mapDocSnap.exists()) {
       const keywords = store.getState().library.value;
-      await updateDoc(mapDocRef, { library: keywords });
-      console.log("updateFSLibrary updated");
+      await updateDoc(mapDocRef, {
+        library: keywords,
+        updatedTime: serverTimestamp()
+      });
     }
   }
 }
@@ -180,7 +177,6 @@ export async function updateFSMapName(
         mapName: newMapName,
         updatedTime: serverTimestamp()
       });
-      console.log("updateFSMapName: Updated!!!");
     }
   }
 }
@@ -229,11 +225,10 @@ export async function updateFSImages() {
           images: allImages,
           updatedTime: serverTimestamp()
         });
-        console.log("Updated!!!");
       }
       return;
     }
-    console.log("userDoc not existed");
+    console.error("userDoc not existed");
   }
 }
 
@@ -254,6 +249,6 @@ export async function getFSImages() {
       }
       return;
     }
-    console.log("userDoc not existed");
+    console.error("userDoc not existed");
   }
 }

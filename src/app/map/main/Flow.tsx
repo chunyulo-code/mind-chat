@@ -187,7 +187,7 @@ export default function Flow() {
         onNodesDelete={(deletedNodes) => updateFSNodes(deletedNodes)}
         onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
         onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
-        onNodeDoubleClick={(e, Node) => dispatch(setEditableNode(Node))}
+        onNodeDoubleClick={(e, node) => dispatch(setEditableNode(node))}
         onPaneClick={() => {
           dispatch(setEditableNode(undefined));
           dispatch(setEditableMapId(undefined));

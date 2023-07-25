@@ -20,18 +20,12 @@ export async function googleSignIn() {
         const token = credential.accessToken;
         const user = result.user;
         const { uid, email, displayName, photoURL } = user;
-
-        console.log(`Welcome ${displayName}`);
-        console.log(`uid: ${uid}`);
-        console.log(`email: ${email}`);
-        console.log(`photoURL: ${photoURL}`);
       }
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      const email = error.email;
-      const credential = GoogleAuthProvider.credentialFromError(error);
+      console.error(`${errorCode}: ${errorMessage}`);
     });
 }
 
@@ -44,7 +38,6 @@ export async function nativeCreateAccount(
     .then((userCredential: any) => {
       // Signed in
       const { uid, displayName } = userCredential.user;
-      console.log(`Create account successfully: ${displayName}, ${uid}`);
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -62,20 +55,16 @@ export async function nativeSignIn(email: string, password: string) {
   await signInWithEmailAndPassword(auth, email, password)
     .then((userCredential: any) => {
       const uid = userCredential.user.uid;
-      console.log(`Log in successfully`);
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(`Error Code: ${errorCode}, Error Msg: ${errorMessage}`);
     });
 }
 
 export async function nativeGoogleSignOut() {
   signOut(auth)
-    .then(() => {
-      console.log("Sign out successfully!");
-    })
+    .then(() => {})
     .catch((error) => {
       console.error(error);
     });

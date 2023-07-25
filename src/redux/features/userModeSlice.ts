@@ -11,11 +11,9 @@ export const userMode = createSlice({
   reducers: {
     toMindMapMode: (state) => {
       state.value = UserMode.MIND_MAP;
-      console.log(`Set to MIND_MAP displaying mode`);
     },
     toDrawingMode: (state) => {
       state.value = UserMode.DRAWING;
-      console.log(`Set to DRAWING mode`);
     }
   }
 });

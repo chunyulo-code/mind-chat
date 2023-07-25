@@ -75,9 +75,9 @@ function CustomNode({ id, data, xPos, yPos, selected }: CustomNodeProps) {
     setInput(keyword);
   }
 
-  function updateText(inputText: string) {
-    return nodes.map((node: Node) => {
-      if (node.id === id) return { ...node, data: { label: inputText } };
+  function updateText(nodes: Node[], nodeId: string, inputText: string) {
+    return nodes.map((node) => {
+      if (node.id === nodeId) return { ...node, data: { label: inputText } };
       else return node;
     });
   }
@@ -115,32 +115,6 @@ function CustomNode({ id, data, xPos, yPos, selected }: CustomNodeProps) {
     }
   ];
 
-  function ContentDisplayed() {
-    return (
-      <>
-        <div
-          className={`text-lg font-bold text-[#ffffff] ${
-            editableNode?.id === id ? "hidden" : "block"
-          }`}
-        >
-          {data.label}
-        </div>
-        <label htmlFor="nodeLabelInput" className="hidden">
-          label:
-        </label>
-        <input
-          type="text"
-          id="nodeLabelInput"
-          className={`w-full bg-transparent px-2 py-1 text-white ${
-            editableNode?.id === id ? "block" : "hidden"
-          }`}
-          value={data.label}
-          onChange={(e) => dispatch(setNodes(updateText(e.target.value)))}
-        />
-      </>
-    );
-  }
-
   useEffect(() => {
     function updateGptResponse() {
       if (messages && messages.length !== 1) {
@@ -172,15 +146,39 @@ function CustomNode({ id, data, xPos, yPos, selected }: CustomNodeProps) {
           </form>
         ))}
       </NodeToolbar>
-      <ContentDisplayed />
-      <Handle
-        type="source"
-        position={Position.Right}
-        className="h-3 w-3 rounded-full border-2 border-white !bg-[#66fcf1]"
-      />
+      <>
+        <div
+          className={`text-lg font-bold text-[#ffffff] ${
+            editableNode?.id === id ? "hidden" : "block"
+          }`}
+        >
+          {data.label}
+        </div>
+        <div>
+          <label htmlFor="nodeLabelInput" className="hidden">
+            label:
+          </label>
+          <input
+            type="text"
+            id="nodeLabelInput"
+            className={`w-full bg-transparent px-2 py-1 text-white ${
+              editableNode?.id === id ? "block" : "hidden"
+            }`}
+            value={data.label}
+            onChange={(e) =>
+              dispatch(setNodes(updateText(nodes, id, e.target.value)))
+            }
+          />
+        </div>
+      </>
       <Handle
         type="target"
         position={Position.Left}
+        className="h-3 w-3 rounded-full border-2 border-white !bg-[#66fcf1]"
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
         className="h-3 w-3 rounded-full border-2 border-white !bg-[#66fcf1]"
       />
     </div>

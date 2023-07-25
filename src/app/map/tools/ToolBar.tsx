@@ -69,7 +69,6 @@ export default function ToolBar({ canvasRef }: ToolBarProps) {
           await uploadBytes(ImageToUploadRef, image);
           const url = await getDownloadURL(ImageToUploadRef);
           downloadUrls.push(url);
-          console.log(downloadUrls);
         }
       }
 
