@@ -11,10 +11,21 @@ type AccountData = {
   userName: string;
   email: string;
   password: string;
-  [key: string]: string; // Specify other keys if needed
+  [key: string]: string;
 };
 
-export default function Login() {
+const labels = [
+  {
+    text: "User name",
+    icon: <BiSolidUserBadge />,
+    id: "userName",
+    type: "text"
+  },
+  { text: "Email", icon: <MdEmail />, id: "email", type: "email" },
+  { text: "Password", icon: <TbPassword />, id: "password", type: "password" }
+];
+
+export default function SignUpForm() {
   const router = useRouter();
 
   const [accountData, setAccountData] = useState<AccountData>({
@@ -23,46 +34,44 @@ export default function Login() {
     password: ""
   });
 
-  const labels = [
-    {
-      text: "User name",
-      icon: <BiSolidUserBadge />,
-      id: "userName",
-      type: "text"
-    },
-    { text: "Email", icon: <MdEmail />, id: "email", type: "email" },
-    { text: "Password", icon: <TbPassword />, id: "password", type: "password" }
-  ];
+  async function createAccountHandler() {
+    if (!accountData.userName || !accountData.email || !accountData.password)
+      return;
 
-  async function clickHandler() {
-    console.log("clicked");
     await nativeCreateAccount(
       accountData.userName,
       accountData.email,
       accountData.password
     );
-    if (typeof window !== "undefined") {
-      window.alert("Signed up successfully");
-    }
+
     router.push("/map");
   }
 
-  return (
-    <div className="rounded-2xl text-white">
-      <div className="font-medium text-mindchat-secondary">START FOR FREE</div>
-      <div className="mt-7 text-[52px] font-black leading-[60px]">
-        Create new account
-        <span className="ml-2 text-5xl text-mindchat-primary">.</span>
+  function Description() {
+    return (
+      <div>
+        <div className="font-medium text-mindchat-secondary">
+          START FOR FREE
+        </div>
+        <div className="mt-7 text-[52px] font-black leading-[60px]">
+          Create new account
+          <span className="ml-2 text-5xl text-mindchat-primary">.</span>
+        </div>
+        <div className="mt-6 text-sm text-mindchat-secondary">
+          Alright A Member?
+          <Link href="/signin">
+            <span className="ml-2 cursor-pointer font-medium text-mindchat-primary">
+              Sign In
+            </span>
+          </Link>
+        </div>
       </div>
-      <div className="mt-6 text-sm text-mindchat-secondary">
-        Alright A Member?
-        <Link href="/signin">
-          <span className="ml-2 cursor-pointer font-medium text-mindchat-primary">
-            Sign In
-          </span>
-        </Link>
-      </div>
-      <div className="mt-[56px] flex flex-col gap-6">
+    );
+  }
+
+  function CreateAccountForm() {
+    return (
+      <div className="flex flex-col gap-6">
         {labels.map((label) => (
           <div key={label.text} className="relative ">
             <input
@@ -91,12 +100,19 @@ export default function Login() {
         <div className="text-right">
           <button
             className="rounded-full bg-mindchat-primary px-10 py-3 text-sm font-medium text-mindchat-bg-dark"
-            onClick={clickHandler}
+            onClick={createAccountHandler}
           >
             Create account
           </button>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-12 text-white">
+      <Description />
+      <CreateAccountForm />
     </div>
   );
 }

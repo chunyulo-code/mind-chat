@@ -5,7 +5,7 @@ import {
   setBufferNodes,
   setBufferEdges
 } from "@/redux/features/flowSlice";
-import { getLayoutedElements } from "../map/main/autoLayout";
+import { getLayoutedElements } from "./autoLayout";
 
 type Direction = "LR" | "TB";
 const dispatch = store.dispatch;

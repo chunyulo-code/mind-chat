@@ -1,43 +1,30 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
+import "allotment/dist/style.css";
 import { ReactFlowProvider } from "reactflow";
 import { Allotment } from "allotment";
-import Outline from "./main/Outline";
+import HeaderBar from "../components/HeaderBar";
+import FormatConverter from "./tools/FormatConverter";
 import Flow from "./main/Flow";
+import Outline from "./main/Outline";
 import Canvas from "./main/Canvas";
 import LeftBar from "./left/LeftBar";
 import RightBar from "./right/RightBar";
 import ToolBar from "./tools/ToolBar";
-import FormatConverter from "./tools/FormatConverter";
+import Images from "./tools/Images";
+import DeleteMapModal from "@/app/components/DeleteMapModal";
 import { useAppSelector } from "@/redux/hooks";
 import { DisplayFormatNumber } from "../types/displayFormatSliceTypes";
-import { ClearCanvas } from "../types/canvasTypes";
-import Images from "./tools/Images";
-import "allotment/dist/style.css";
-import HeaderBar from "../components/HeaderBar";
-import DeleteMapModal from "@/app/components/DeleteMapModal";
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const ctx = useRef<CanvasRenderingContext2D | null>(null);
-  const [color, setColor] = useState("#42f0ed");
   const formatValue = useAppSelector((state) => state.dataFormat.value);
   const isDeleteMapClicked = useAppSelector(
     (state) => state.leftBar.isDeleteMapClicked
   );
 
-  const clearCanvas: ClearCanvas = () => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const context = canvas.getContext("2d", { willReadFrequently: true });
-      if (context) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-      }
-    }
-  };
-
   return (
-    <div className="h-screen w-screen">
+    <div className="relative h-screen w-screen">
       {isDeleteMapClicked && <DeleteMapModal />}
       <div className="absolute top-0 z-50 h-[70px] w-full ">
         <HeaderBar />
@@ -55,8 +42,8 @@ export default function Page() {
             ) : (
               <Outline />
             )}
-            <Canvas canvasRef={canvasRef} ctx={ctx} color={color} />
-            <ToolBar clearCanvas={clearCanvas} setColor={setColor} />
+            <Canvas canvasRef={canvasRef} />
+            <ToolBar canvasRef={canvasRef} />
           </ReactFlowProvider>
         </Allotment.Pane>
         <Allotment.Pane preferredSize={220} minSize={190}>

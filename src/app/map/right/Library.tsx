@@ -9,12 +9,12 @@ import {
   setOutput
 } from "@/redux/features/outputSlice";
 import { nanoid } from "nanoid";
-import { systemResponseRules } from "@/app/utils/summarizeLibraryRules";
+import { systemResponseRules } from "@/app/constants/summarizeLibraryRules";
 import { useEffect } from "react";
 import { setLibrary } from "@/redux/features/librarySlice";
 import { TiDeleteOutline } from "react-icons/ti";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import { db, auth } from "@/app/utils/firebase";
+import { db } from "@/app/utils/firebase";
 import { updateFSLibrary } from "@/app/utils/firestoreUpdater";
 
 export default function Library() {

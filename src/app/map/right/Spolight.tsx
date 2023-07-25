@@ -1,8 +1,9 @@
 "use client";
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import WordCloud from "react-d3-cloud";
 import { scaleLinear } from "d3-scale";
 import { useAppSelector } from "@/redux/hooks";
+import { rgb } from "d3-color";
 
 type WordData = {
   text: string;
@@ -14,6 +15,67 @@ type WordCloudSize = {
   height: number;
 };
 
+type WordCloudConfig = {
+  fontSize: (wordData: WordData) => number;
+  rotate: () => number;
+  fill: (wordData: WordData, index: number) => string;
+};
+
+export function getValidWords(text: string): string[] {
+  return text.split(/[^a-zA-Z0-9-]+/).filter((text) => text !== "-");
+}
+
+export function calculateWordFrequency(validWords: string[]) {
+  const wordFrequency: { [key: string]: number } = {};
+
+  validWords.forEach((word) => {
+    wordFrequency[word] = (wordFrequency[word] || 0) + 1;
+  });
+
+  return wordFrequency;
+}
+
+export function sortWordFrequency(wordFrequency: {
+  [key: string]: number;
+}): WordData[] {
+  const result = Object.entries(wordFrequency).map(([text, value]) => ({
+    text,
+    value
+  }));
+
+  result.sort((a, b) => b.value - a.value);
+
+  return result;
+}
+
+export function sortByFrequency(text: string): WordData[] {
+  const validWords = getValidWords(text);
+  const wordFrequency = calculateWordFrequency(validWords);
+  const result = sortWordFrequency(wordFrequency);
+
+  return result;
+}
+
+export function getWordCloudConfig(sortedData: WordData[]): WordCloudConfig {
+  const colorScale = scaleLinear()
+    .domain([
+      Math.min(...sortedData.map((d) => d.value)),
+      Math.max(...sortedData.map((d) => d.value))
+    ])
+    .range(["#c5c6c7", "#66fcf1"] as any);
+
+  const fontSize = (wordData: WordData) => Math.log2(wordData.value) * 25;
+  const rotate = () => 0;
+  const fill = (wordData: WordData, index: number) =>
+    String(colorScale(wordData.value));
+
+  return {
+    fontSize,
+    rotate,
+    fill
+  };
+}
+
 export default function Spotlight() {
   const wordCloudRef = useRef<HTMLDivElement>(null);
   const [wordCloudRendered, setWordCloudRendered] = useState(false);
@@ -21,67 +83,31 @@ export default function Spotlight() {
     width: 0,
     height: 0
   });
+
   const gptResponse = useAppSelector((state) => state.gptResponse.allResponse);
-
-  function sortByFrequency(text: string): WordData[] {
-    const filteredData = text
-      .split(/[^a-zA-Z0-9-]+/)
-      .filter((text) => text !== "-");
-    const wordFrequency: { [key: string]: number } = {};
-
-    // 統計單字出現頻率
-    filteredData.forEach((word) => {
-      wordFrequency[word] = (wordFrequency[word] || 0) + 1;
-    });
-
-    // 轉化為物件並按照順序排列
-    const result = Object.entries(wordFrequency).map(([text, value]) => ({
-      text,
-      value
-    }));
-
-    result.sort((a, b) => b.value - a.value); // 按照频率降序排列
-
-    return result;
-  }
-
   const sortedData = sortByFrequency(gptResponse);
-  const fontSize = useCallback(
-    (word: WordData) => Math.log2(word.value) * 25,
-    []
-  );
-  const rotate = useCallback(() => 0, []);
-  const colorScale = scaleLinear()
-    .domain([
-      Math.min(...sortedData.map((d) => d.value)),
-      Math.max(...sortedData.map((d) => d.value))
-    ])
-    .range(["#c5c6c7", "#66fcf1"] as any);
-  const fill = useCallback((d: WordData, i: number) => {
-    return colorScale(d.value);
-  }, []);
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const { width, height } = entry.contentRect;
-        setWordCloudSize({ width, height });
-      }
-    });
-
-    if (wordCloudRef.current) {
-      resizeObserver.observe(wordCloudRef.current);
-    }
-
-    return () => {
-      if (wordCloudRef.current) {
-        resizeObserver.unobserve(wordCloudRef.current);
-      }
-    };
-  }, []);
+  const { fontSize, rotate, fill } = getWordCloudConfig(sortedData);
 
   useEffect(() => {
     setWordCloudRendered(true);
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const spotlightEntry = entries[0];
+      const { width, height } = spotlightEntry.contentRect;
+      setWordCloudSize({ width, height });
+    });
+
+    const currentWordCloudRef = wordCloudRef.current;
+
+    if (currentWordCloudRef) {
+      resizeObserver.observe(currentWordCloudRef);
+    }
+
+    return () => {
+      if (currentWordCloudRef) {
+        resizeObserver.unobserve(currentWordCloudRef);
+      }
+    };
   }, []);
 
   return (
@@ -98,7 +124,7 @@ export default function Spotlight() {
           rotate={rotate}
           spiral="archimedean"
           random={Math.random}
-          fill={fill as any}
+          fill={fill}
         />
       )}
     </div>
