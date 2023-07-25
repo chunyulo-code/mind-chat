@@ -66,22 +66,6 @@ export default function Library() {
     }
 
     fetchMapLibrary();
-  }, [userUid, selectedMap, dispatch]);
-
-  useEffect(() => {
-    async function fetchMapLibrary() {
-      if (userUid && selectedMap) {
-        const docRef = doc(db, "users", userUid, "maps", selectedMap);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          dispatch(setLibrary(docSnap.data().library));
-        } else {
-          console.error("Doc is not existed");
-        }
-      }
-    }
-
-    fetchMapLibrary();
 
     if (userUid && selectedMap) {
       const docRef = doc(db, "users", userUid, "maps", selectedMap);
@@ -113,7 +97,7 @@ export default function Library() {
     }
   }, [messages, dispatch]);
 
-  function AllKeywordTags({ keywords }: { keywords: string[] }) {
+  function renderAllKeywordTags(keywords: string[]) {
     return (
       <>
         {keywords?.length > 0 &&
@@ -135,7 +119,7 @@ export default function Library() {
     );
   }
 
-  function Button({ keywords }: { keywords: string[] }) {
+  function renderButton(keywords: string[]) {
     return (
       <form onSubmit={handleSubmit} className="h-[35px]">
         <button
@@ -155,10 +139,10 @@ export default function Library() {
     <div className="z-50 flex h-[calc(100%-28px-8px)] max-h-[calc(100%-28px-8px)] w-full flex-col justify-between gap-3 overflow-hidden rounded-xl border border-mindchat-secondary p-2 font-normal shadow-md shadow-slate-700">
       <div className="h-[calc(100%-35px-12px)] overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
         <div className="flex flex-wrap gap-2">
-          <AllKeywordTags keywords={keywords} />
+          {renderAllKeywordTags(keywords)}
         </div>
       </div>
-      <Button keywords={keywords} />
+      {renderButton(keywords)}
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function HeaderBar() {
   function UserPhoto() {
     return (
       <Image
-        src={userPhotoURL ? userPhotoURL : blankProfilePicture}
+        src={userPhotoURL || blankProfilePicture}
         width={35}
         height={35}
         alt="Profile photo"
