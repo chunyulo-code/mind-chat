@@ -45,6 +45,10 @@
 
 - Email: demo@gmail.com
 - password: 111111
+  
+- or log in with Google accounts
+  ![logIn](https://github.com/chunyulo-code/mind-chat/assets/73751851/742a801b-c3dd-4572-b06b-33bedbd7e176)
+
 
 ## Features
 
