@@ -22,8 +22,8 @@ const labels = [
 export default function SignInForm() {
   const router = useRouter();
   const [accountData, setAccountData] = useState<AccountData>({
-    email: "",
-    password: ""
+    email: "demo@gmail.com",
+    password: "111111"
   });
 
   async function nativeSignInHandler() {
@@ -40,7 +40,7 @@ export default function SignInForm() {
     router.push("/map");
   }
 
-  function Description() {
+  function renderDescription() {
     return (
       <div>
         <div className="font-medium text-mindchat-secondary">
@@ -62,7 +62,7 @@ export default function SignInForm() {
     );
   }
 
-  function ContinueWith() {
+  function renderContinueWith() {
     return (
       <div className="flex items-center justify-between">
         <div className="h-[1px] w-[35%] bg-gray-700"></div>
@@ -74,7 +74,7 @@ export default function SignInForm() {
     );
   }
 
-  function ThirdPartySignInButtons() {
+  function renderThirdPartySignInButtons() {
     return (
       <div className="flex gap-2">
         <button
@@ -91,7 +91,7 @@ export default function SignInForm() {
     );
   }
 
-  function OrEmail() {
+  function renderOrEmail() {
     return (
       <div className="flex items-center justify-between">
         <div className="h-[1px] w-2/5 bg-gray-700"></div>
@@ -103,7 +103,7 @@ export default function SignInForm() {
     );
   }
 
-  function NativeSignInForm() {
+  function renderNativeSignInForm() {
     return (
       <div className="flex flex-col gap-6">
         {labels.map((label) => (
@@ -145,11 +145,11 @@ export default function SignInForm() {
 
   return (
     <div className="flex flex-col gap-8 text-white">
-      <Description />
-      <ContinueWith />
-      <ThirdPartySignInButtons />
-      <OrEmail />
-      <NativeSignInForm />
+      {renderDescription()}
+      {renderContinueWith()}
+      {renderThirdPartySignInButtons()}
+      {renderOrEmail()}
+      {renderNativeSignInForm()}
     </div>
   );
 }

@@ -47,7 +47,7 @@ export default function SignUpForm() {
     router.push("/map");
   }
 
-  function Description() {
+  function renderDescription() {
     return (
       <div>
         <div className="font-medium text-mindchat-secondary">
@@ -69,7 +69,7 @@ export default function SignUpForm() {
     );
   }
 
-  function CreateAccountForm() {
+  function renderCreateAccountForm() {
     return (
       <div className="flex flex-col gap-6">
         {labels.map((label) => (
@@ -111,8 +111,8 @@ export default function SignUpForm() {
 
   return (
     <div className="flex flex-col gap-12 text-white">
-      <Description />
-      <CreateAccountForm />
+      {renderDescription()}
+      {renderCreateAccountForm()}
     </div>
   );
 }
