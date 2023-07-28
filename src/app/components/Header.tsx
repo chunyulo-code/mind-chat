@@ -15,7 +15,7 @@ export default function Header() {
     {
       text: "LOG OUT",
       isLink: false,
-      shouldDisplay: userUid ? true : false,
+      shouldDisplay: !!userUid,
       clickHandler: () => nativeGoogleSignOut()
     }
   ];

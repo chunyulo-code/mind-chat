@@ -24,52 +24,6 @@ export default function LeftBar() {
 
   const leftBarRef = useRef(null);
 
-  function fetchMapsFromFirestore(userUid: string) {
-    const mapsRef = collection(db, "users", userUid, "maps");
-    return getDocs(query(mapsRef, orderBy("updatedTime")));
-  }
-
-  function addNewMap() {
-    FSAddNewMap().then((newMapId) => {
-      if (newMapId) {
-        const newAllMaps = [
-          { mapId: newMapId, mapName: "New map" },
-          ...allMaps
-        ];
-        dispatch(setAllMaps(newAllMaps));
-        dispatch(setSelectedMap(newMapId));
-        dispatch(showQuestionBar());
-      }
-    });
-  }
-
-  function AddNewMap() {
-    return (
-      <div
-        className="flex cursor-pointer items-center rounded-lg px-4 py-3 hover:bg-gray-700"
-        onClick={() => addNewMap()}
-      >
-        <MdOutlineAdd />
-        <span className="ml-3">New map</span>
-      </div>
-    );
-  }
-
-  function DividingLine() {
-    return <div className="h-[2px] w-full bg-gray-700"></div>;
-  }
-
-  function AllMaps() {
-    return (
-      <div className="flex flex-col gap-2 overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
-        {allMaps.length > 0 &&
-          allMaps.map((map) => (
-            <MapItem key={`MapItem_${map.mapId}`} map={map} />
-          ))}
-      </div>
-    );
-  }
-
   useEffect(() => {
     async function fetchUserAllMaps(userUid: string) {
       try {
@@ -119,6 +73,52 @@ export default function LeftBar() {
       observer.disconnect();
     };
   }, [dispatch]);
+
+  function fetchMapsFromFirestore(userUid: string) {
+    const mapsRef = collection(db, "users", userUid, "maps");
+    return getDocs(query(mapsRef, orderBy("updatedTime")));
+  }
+
+  function addNewMap() {
+    FSAddNewMap().then((newMapId) => {
+      if (newMapId) {
+        const newAllMaps = [
+          { mapId: newMapId, mapName: "New map" },
+          ...allMaps
+        ];
+        dispatch(setAllMaps(newAllMaps));
+        dispatch(setSelectedMap(newMapId));
+        dispatch(showQuestionBar());
+      }
+    });
+  }
+
+  function AddNewMap() {
+    return (
+      <div
+        className="flex cursor-pointer items-center rounded-lg px-4 py-3 hover:bg-gray-700"
+        onClick={() => addNewMap()}
+      >
+        <MdOutlineAdd />
+        <span className="ml-3">New map</span>
+      </div>
+    );
+  }
+
+  function DividingLine() {
+    return <div className="h-[2px] w-full bg-gray-700"></div>;
+  }
+
+  function AllMaps() {
+    return (
+      <div className="flex flex-col gap-2 overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
+        {allMaps.length > 0 &&
+          allMaps.map((map) => (
+            <MapItem key={`MapItem_${map.mapId}`} map={map} />
+          ))}
+      </div>
+    );
+  }
 
   return (
     <div
