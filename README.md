@@ -83,7 +83,7 @@
 ![uploadFiles](https://github.com/chunyulo-code/mind-chat/assets/73751851/0853ae96-a0aa-4690-bd87-39cdab1d48c2)
 
 ## Chrome Extension
-###### MIND CHAT provides a chrome extension allow users to store the keywords they are interested in to their MIND CHAT projects
+###### MIND CHAT provides a [chrome extension](https://github.com/chunyulo-code/mind-chat-extension) allow users to store the keywords they are interested in to their MIND CHAT projects
 ![extension](https://github.com/chunyulo-code/mind-chat/assets/73751851/8733911b-0b56-45b9-91ca-bf9f90620c99)
 
 
