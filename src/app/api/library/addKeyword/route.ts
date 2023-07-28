@@ -5,8 +5,6 @@ import { db } from "@/app/utils/firebase";
 export async function POST(req: Request) {
   const requestBody = await req.json(); // 解析請求內容為 JSON
   const { userUid, mapToAdd, keywordToAdd } = requestBody;
-  console.log(`myKeyWord: ${keywordToAdd}`);
-  console.log("=====!!!=====");
   const docRef = doc(db, "users", userUid, "maps", mapToAdd);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
@@ -14,7 +12,7 @@ export async function POST(req: Request) {
     const newKeywords = [...keywords, keywordToAdd];
     await updateDoc(docRef, { library: newKeywords });
   } else {
-    console.log("DocSnap doesn't exist");
+    console.error("DocSnap doesn't exist");
   }
   return new NextResponse(`Keyword is added: ${keywordToAdd}`);
 }

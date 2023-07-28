@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import ReactMarkdown from "react-markdown";
 import { useAppSelector } from "@/redux/hooks";
 

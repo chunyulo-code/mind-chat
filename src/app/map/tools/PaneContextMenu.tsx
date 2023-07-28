@@ -34,7 +34,6 @@ export default function PaneContextMenu({ points }: PaneContextMenuProps) {
       text: "Add node",
       id: "addNode",
       clickHandler: () => {
-        console.log("Add node clicked");
         dispatch(
           addNode({
             id: nanoid(),

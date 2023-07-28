@@ -11,7 +11,7 @@ import { MdOutlineOutput } from "react-icons/md";
 import { TbLayout2 } from "react-icons/tb";
 import { nanoid } from "nanoid";
 import { useChat } from "ai/react";
-import { systemResponseRules } from "@/app/utils/summarizeSelectedDataRules";
+import { systemResponseRules } from "@/app/constants/summarizeSelectedDataRules";
 import { ChatCompletionResponseMessageRoleEnum } from "openai-edge";
 import { emptyOutput, setOutput } from "@/redux/features/outputSlice";
 import { layoutNodes } from "@/app/utils/onLayout";
@@ -42,12 +42,10 @@ export default function FormatConverter() {
       }
     ],
     onResponse: () => {
-      console.log("DOING");
       dispatch(emptyOutput());
       dispatch(setGptStatus(GptStatus.DOING));
     },
     onFinish: () => {
-      console.log("DONE");
       dispatch(setGptStatus(GptStatus.DONE));
     }
   });
@@ -71,10 +69,9 @@ export default function FormatConverter() {
 
   useEffect(() => {
     if (messages && messages.length !== 1) {
-      console.log(messages.slice(-1)[0].content);
       dispatch(setOutput(messages.slice(-1)[0].content));
     }
-  }, [messages]);
+  }, [messages, dispatch]);
 
   const buttonStyle = `flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-mindchat-primary text-white hover:text-mindchat-primary`;
   const buttons = [

@@ -19,28 +19,64 @@ import MapItem from "./MapItem";
 
 export default function LeftBar() {
   const dispatch = useAppDispatch();
-  const allMaps = useAppSelector((state) => state.userInfo.allMaps);
   const userUid = useAppSelector((state) => state.userInfo.uid);
+  const allMaps = useAppSelector((state) => state.userInfo.allMaps);
 
   const leftBarRef = useRef(null);
 
-  async function fetchUserMaps() {
-    if (userUid) {
-      console.log("UserUid exists");
-      const mapsRef = collection(db, "users", userUid, "maps");
-      const querySnapshot = await getDocs(
-        query(mapsRef, orderBy("updatedTime"))
-      );
-      let fetchedMaps: Map[] = [];
-      querySnapshot.forEach((doc) => {
-        fetchedMaps.push({ mapId: doc.id, mapName: doc.data().mapName });
-      });
-      dispatch(setAllMaps(fetchedMaps.reverse()));
-      return;
+  useEffect(() => {
+    async function fetchUserAllMaps(userUid: string) {
+      try {
+        if (userUid) {
+          const querySnapshot = await fetchMapsFromFirestore(userUid);
+          const fetchedMaps: Map[] = [];
+
+          querySnapshot.forEach((doc) => {
+            fetchedMaps.push({ mapId: doc.id, mapName: doc.data().mapName });
+          });
+
+          const reversedMaps = fetchedMaps.reverse();
+          dispatch(setAllMaps(reversedMaps));
+          dispatch(setSelectedMap(reversedMaps[0].mapId));
+        } else {
+          dispatch(setAllMaps([]));
+        }
+      } catch (error) {
+        console.error("Error fetching maps:", error);
+      }
     }
 
-    console.log("No userUid");
-    dispatch(setAllMaps([]));
+    if (userUid) {
+      fetchUserAllMaps(userUid);
+
+      const unsub = onSnapshot(collection(db, "users", userUid, "maps"), () => {
+        fetchUserAllMaps(userUid);
+      });
+
+      return () => unsub();
+    }
+  }, [userUid, dispatch]);
+
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      const leftBarEntry = entries[0];
+      const { x, width } = leftBarEntry.contentRect;
+      const leftBarPadding = x * 2;
+      dispatch(setLeftBarWidth(width + leftBarPadding));
+    });
+
+    if (leftBarRef.current) {
+      observer.observe(leftBarRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [dispatch]);
+
+  function fetchMapsFromFirestore(userUid: string) {
+    const mapsRef = collection(db, "users", userUid, "maps");
+    return getDocs(query(mapsRef, orderBy("updatedTime")));
   }
 
   function addNewMap() {
@@ -57,40 +93,8 @@ export default function LeftBar() {
     });
   }
 
-  useEffect(() => {
-    console.log("Ready to fetch");
-    fetchUserMaps();
-
-    if (userUid) {
-      const unsub = onSnapshot(collection(db, "users", userUid, "maps"), () => {
-        fetchUserMaps();
-      });
-      return () => unsub();
-    }
-  }, [userUid]);
-
-  useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const { width } = entry.contentRect;
-        dispatch(setLeftBarWidth(width));
-      }
-    });
-
-    if (leftBarRef.current) {
-      observer.observe(leftBarRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  return (
-    <div
-      className="flex h-full flex-col gap-3 bg-mindchat-bg-dark p-4 text-white"
-      ref={leftBarRef}
-    >
+  function AddNewMap() {
+    return (
       <div
         className="flex cursor-pointer items-center rounded-lg px-4 py-3 hover:bg-gray-700"
         onClick={() => addNewMap()}
@@ -98,11 +102,32 @@ export default function LeftBar() {
         <MdOutlineAdd />
         <span className="ml-3">New map</span>
       </div>
-      <div className="h-[2px] w-full bg-gray-700"></div>
+    );
+  }
+
+  function DividingLine() {
+    return <div className="h-[2px] w-full bg-gray-700"></div>;
+  }
+
+  function AllMaps() {
+    return (
       <div className="flex flex-col gap-2 overflow-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
         {allMaps.length > 0 &&
-          allMaps.map((map) => <MapItem key={map.mapId} map={map} />)}
+          allMaps.map((map) => (
+            <MapItem key={`MapItem_${map.mapId}`} map={map} />
+          ))}
       </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex h-full flex-col gap-3 bg-mindchat-bg-dark p-4 text-white"
+      ref={leftBarRef}
+    >
+      <AddNewMap />
+      <DividingLine />
+      <AllMaps />
     </div>
   );
 }

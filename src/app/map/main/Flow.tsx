@@ -1,7 +1,7 @@
 "use client";
+
 import { useEffect } from "react";
 import ReactFlow, {
-  ReactFlowProvider,
   Background,
   Controls,
   MiniMap,
@@ -12,37 +12,24 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import CustomNode from "@/app/map/main/mindChatNodes/CustomNode";
-import CustomInputNode from "./mindChatNodes/CustomInputNode";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import useContextMenu from "@/app/hooks/useContextMenu";
 import NodeContextMenu from "@/app/map/tools/NodeContextMenu";
 import PaneContextMenu from "../tools/PaneContextMenu";
 import QuestionBar from "./QuestionBar";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   setNodes,
   setEdges,
-  addNode,
-  addNodes,
-  addEdges,
   setBufferNodes,
   setBufferEdges,
   setPrevNodes,
   setPrevEdges,
-  syncPrevNodesNEdges,
   updateNodes,
   updateEdges,
   mergeNodes,
   mergeEdges,
-  onNodesChange,
-  onEdgesChange,
-  onConnect,
-  setSelectedNode,
   setEditableNode,
-  showQuestionBar,
-  hideQuestionBar,
-  setPositionToGenetate,
-  updatePositionToGenetate,
-  setNewTopicParentNodeId
+  hideQuestionBar
 } from "@/redux/features/flowSlice";
 import { setEditableMapId } from "@/redux/features/userInfoSlice";
 import { convertStringToNodes } from "@/app/utils/convertStringToNodes";
@@ -52,15 +39,9 @@ import {
   edgesChangeHandler,
   onConnectHandler
 } from "@/app/utils/reactFlowProps";
-import { layoutNodes, layoutBufferNodes } from "@/app/utils/onLayout";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  setDoc,
-  serverTimestamp
-} from "firebase/firestore";
-import { db, auth } from "@/app/utils/firebase";
+import { layoutNodes } from "@/app/utils/onLayout";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/app/utils/firebase";
 import {
   updateFSNodesNEdges,
   updateFSNodes,
@@ -70,8 +51,7 @@ import {
 import { setSelectedImage } from "@/redux/features/imageUrlsSlice";
 
 const nodeTypes = {
-  custom: CustomNode,
-  customInput: CustomInputNode
+  custom: CustomNode
 };
 
 const edgeOptions = {
@@ -84,8 +64,6 @@ export default function Flow() {
   const dispatch = useAppDispatch();
   const nodes = useAppSelector((state) => state.flow.nodes);
   const edges = useAppSelector((state) => state.flow.edges);
-  const bufferNodes = useAppSelector((state) => state.flow.bufferNodes);
-  const bufferEdges = useAppSelector((state) => state.flow.bufferEdges);
   const allResponse = useAppSelector((state) => state.gptResponse.allResponse);
   const gptStatus = useAppSelector((state) => state.gptResponse.gptStatus);
   const isAllowAsked = useAppSelector((state) => state.flow.isAllowAsked);
@@ -95,42 +73,39 @@ export default function Flow() {
   const { fitView } = useReactFlow();
 
   const {
-    clicked: nodeClicked,
-    setClicked: setNodeClicked,
+    rightClicked: nodeRightClicked,
+    setRightClicked: setNodeRightClicked,
     points: nodePoints,
     setPoints: setNodePoints
   } = useContextMenu();
 
   const {
-    clicked: paneClicked,
-    setClicked: setPaneClicked,
+    rightClicked: paneRightClicked,
+    setRightClicked: setPaneRightClicked,
     points: panePoints,
     setPoints: setPanePoints
   } = useContextMenu();
 
-  const onNodeContextMenu: (e: React.MouseEvent) => void = (e) => {
+  function onNodeContextMenu(e: React.MouseEvent) {
     e.preventDefault();
-    setNodeClicked(true);
-    /**
-     add 30 to leftBarWidth to make the position of context menu displat correctly
-     */
+    setNodeRightClicked(true);
     setNodePoints({
-      x: e.pageX - leftBarWidth - 30,
+      x: e.pageX - leftBarWidth,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
-  };
+  }
 
-  const onPaneContextMenu: (e: React.MouseEvent) => void = (e) => {
+  function onPaneContextMenu(e: React.MouseEvent) {
     e.preventDefault();
-    setPaneClicked(true);
+    setPaneRightClicked(true);
     setPanePoints({
-      x: e.pageX - leftBarWidth - 30,
+      x: e.pageX - leftBarWidth,
       y: e.pageY - HEADER_BAR_HEIGHT
     });
-  };
+  }
 
   useEffect(() => {
-    async function fetchMapNodesNEdges() {
+    async function fetchSelectedMapNodesNEdges() {
       if (userUid && selectedMap) {
         const docRef = doc(db, "users", userUid, "maps", selectedMap);
         const docSnap = await getDoc(docRef);
@@ -139,46 +114,60 @@ export default function Flow() {
           const fetchedEdges = docSnap.data().edges;
           dispatch(setNodes(fetchedNodes));
           dispatch(setPrevNodes(fetchedNodes));
-          dispatch(setPrevEdges(fetchedEdges));
           dispatch(setEdges(fetchedEdges));
+          dispatch(setPrevEdges(fetchedEdges));
           if (fetchedNodes?.length) {
             dispatch(hideQuestionBar());
           }
         } else {
-          console.log("Doc is not existed");
+          console.error("Doc is not existed");
         }
       }
     }
-    fetchMapNodesNEdges();
+
+    fetchSelectedMapNodesNEdges();
+
     setTimeout(() => fitView(), 300);
-  }, [selectedMap]);
+  }, [userUid, selectedMap, dispatch, fitView]);
 
   useEffect(() => {
-    if (gptStatus === GptStatus.DOING) {
-      if (allResponse) {
-        const convertedData: { nodes: Node[]; edges: Edge[] } =
-          convertStringToNodes(allResponse);
-        dispatch(setBufferNodes(convertedData.nodes));
-        dispatch(setBufferEdges(convertedData.edges));
-        dispatch(updateNodes());
-        dispatch(updateEdges());
-        fitView();
+    function updateNodesFromGptResponse() {
+      if (gptStatus === GptStatus.DOING) {
+        if (allResponse) {
+          const convertedData: { nodes: Node[]; edges: Edge[] } =
+            convertStringToNodes(allResponse);
+
+          dispatch(setBufferNodes(convertedData.nodes));
+          dispatch(setBufferEdges(convertedData.edges));
+          dispatch(updateNodes());
+          dispatch(updateEdges());
+
+          fitView();
+        }
       }
     }
-  }, [allResponse]);
+
+    updateNodesFromGptResponse();
+  }, [allResponse, gptStatus, dispatch, fitView]);
 
   useEffect(() => {
-    if (gptStatus === GptStatus.DONE) {
-      dispatch(hideQuestionBar());
-      dispatch(mergeNodes());
-      dispatch(mergeEdges());
-      layoutNodes("LR");
-      updateFSNodesNEdges();
-      setTimeout(() => {
-        fitView();
-      }, 300);
+    function organizeResult() {
+      if (gptStatus === GptStatus.DONE) {
+        dispatch(hideQuestionBar());
+
+        dispatch(mergeNodes());
+        dispatch(mergeEdges());
+        layoutNodes("LR");
+        updateFSNodesNEdges();
+
+        setTimeout(() => {
+          fitView();
+        }, 300);
+      }
     }
-  }, [gptStatus]);
+
+    organizeResult();
+  }, [gptStatus, dispatch, fitView]);
 
   return (
     <div className="absolute left-0 top-0 flex h-full w-full">
@@ -198,7 +187,7 @@ export default function Flow() {
         onNodesDelete={(deletedNodes) => updateFSNodes(deletedNodes)}
         onEdgesDelete={(deletedEdges) => updateFSEdges(deletedEdges)}
         onNodeDragStop={(e, node, nodes) => updateFSDraggedNodes(nodes)}
-        onNodeDoubleClick={(e, Node) => dispatch(setEditableNode(Node))}
+        onNodeDoubleClick={(e, node) => dispatch(setEditableNode(node))}
         onPaneClick={() => {
           dispatch(setEditableNode(undefined));
           dispatch(setEditableMapId(undefined));
@@ -211,8 +200,8 @@ export default function Flow() {
         <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
       </ReactFlow>
-      {nodeClicked && <NodeContextMenu points={nodePoints} />}
-      {paneClicked && <PaneContextMenu points={panePoints} />}
+      {nodeRightClicked && <NodeContextMenu points={nodePoints} />}
+      {paneRightClicked && <PaneContextMenu points={panePoints} />}
     </div>
   );
 }
