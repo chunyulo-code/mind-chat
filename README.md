@@ -21,7 +21,7 @@
 [MIND CHAT](https://www.mindchat.me/) is a web application that facilitates visual thinking for users by combining mind maps and ChatGPT. Users can brainstorm creative ideas related to a topic and engage in follow-up questions based on selected keywords of interest. Additionally, they have the option to add interesting keywords to the database, which can be used to generate articles, diagrams, and more.
 
 
-## Tech Stack
+## 🛢 Tech Stack
 
 ![Static Badge](https://img.shields.io/badge/next-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/typescript-blue?style=for-the-badge&logo=typescript&logoColor=white)
@@ -41,7 +41,7 @@
 - react-rnd
 - Husky
 
-## Test User
+## 👾 Test User
 
 - Email: demo@gmail.com
 - password: 111111
@@ -50,7 +50,7 @@
   ![logIn](https://github.com/chunyulo-code/mind-chat/assets/73751851/742a801b-c3dd-4572-b06b-33bedbd7e176)
 
 
-## Features
+## 🔥 Features
 
 #### Users can type any questions to generate **node-based answers**
 ![main_generateAnswers](https://github.com/chunyulo-code/mind-chat/assets/73751851/4de668af-c0c3-4970-a80b-9a447368e76a)
@@ -86,7 +86,7 @@
 ###### Uploads any files
 ![uploadFiles](https://github.com/chunyulo-code/mind-chat/assets/73751851/0853ae96-a0aa-4690-bd87-39cdab1d48c2)
 
-## Chrome Extension
+## 💡Chrome Extension
 ###### MIND CHAT provides a [chrome extension](https://github.com/chunyulo-code/mind-chat-extension) allow users to store the keywords they are interested in to their MIND CHAT projects
 ![extension](https://github.com/chunyulo-code/mind-chat/assets/73751851/8733911b-0b56-45b9-91ca-bf9f90620c99)
 
