@@ -6,9 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from "firebase/auth";
-import { store } from "@/redux/store";
-import { setIsLogIn, setUserUid } from "@/redux/features/userInfoSlice";
-import { db, auth } from "./firebase";
+import { auth } from "./firebase";
 
 const providerGoogle = new GoogleAuthProvider();
 
