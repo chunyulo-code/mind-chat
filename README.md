@@ -61,8 +61,8 @@
 ###### **CONTEXT MENU**
 ![contextMenu](https://github.com/chunyulo-code/mind-chat/assets/73751851/e7aa4787-f096-4eeb-90e0-d7caecc77764)
 
-#### All the nodes in MIND CHAT are interactable
- ![ezgif com-optimize](https://github.com/chunyulo-code/mind-chat/assets/73751851/99054e5f-3cb9-4bad-843a-631f395d03d3)
+#### All nodes in MIND CHAT are interactable
+ ![nodesDraggableNSelectable](https://github.com/chunyulo-code/mind-chat/assets/73751851/5be431ff-05ad-467c-9686-15979d46244a)
 
 
 #### Users can click **Brainstorm** to generate more content
